@@ -1,14 +1,14 @@
 function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(address)
-%  INPORTSIG Add the Gotos and Froms for Inports
+%  INPORTSIG Add the Gotos and Froms for Inports.
 %
 %   Function:
-%		[inaddress, inportGoto, inportFrom, inports, ingotoLength] = INPORTSIG(address);
+%		INPORTSIG(address)
 %  
 %	Inputs:
 %		address     Name and location in the model
 %
 %	Outputs:
-%       address
+%       address     ???
 %		inportGoto  Handles of the Inport Gotos
 %		inportFrom  Handles of the Inport Froms 
 %		inports 	Handles of the Inport

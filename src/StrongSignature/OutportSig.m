@@ -1,5 +1,5 @@
 function [address, outportGoto, outportFrom, outports, gotoLength] = OutportSig(address)
-%  OUTPORTSIG Add the Gotos and Froms for Outports
+%  OUTPORTSIG Add the Gotos and Froms for Outports.
 
     outports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Outport');
     outportGoto = {};

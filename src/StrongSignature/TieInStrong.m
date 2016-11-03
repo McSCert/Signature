@@ -1,21 +1,23 @@
-function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut scopedFromAddOut, globalGotosAddOut, globalFromsAddOut] = TieInStrong(address, updates, sys)
+function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
+    scopedFromAddOut, globalGotosAddOut, globalFromsAddOut] = ...
+    TieInStrong(address, hasUpdates, sys)
 % TIEINSTRONG Find the strong signature recursively and insert it into the model. 
 %
 %   Function:
-%       TIEINSTRONG(address, updates, sys)
+%       TIEINSTRONG(address, hasUpdates, sys)
 %
 %   Inputs:
 %       address
-%       updates
+%       hasUpdates  Boolean indicating whether updates are included in the signature.
 %       sys
 %
 %   Outputs:
-%       scopedGotoAddOut    The list of scoped gotos that the function will pass out
-%       dataStoreWriteAddOut The list of data store reads that the function will pass out
-%       dataStoreReadAddOut The list of data store writes that the function will pass out
-%       scopedFromAddOut    The list of scoped froms that the function will pass out
-%       globalGotos         The list of global gotos being passed in
-%       gGotoLength         The size in length of the global goto blocks being added
+%       scopedGotoAddOut    List of scoped gotos that the function will pass out.
+%       dataStoreWriteAddOut List of data store writes that the function will pass out.
+%       dataStoreReadAddOut List of data store reads that the function will pass out.
+%       scopedFromAddOut    List of scoped froms that the function will pass out.
+%       globalGotos         List of global gotos being passed in.
+%       gGotoLength         Length of the global goto blocks being added.
     
     % Elements in the signature being carried up from the signatures of lower levels
 	sGa     = {};   % Scoped Gotos
@@ -29,7 +31,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut scopedFrom
     [inAddress, InportGoto, InportFrom, Inports, inGotoLength] = InportSig(address);
     [outAddress, OutportGoto, OutportFrom, Outports, outGotoLength] = OutportSig(address); 
 
-    headingSize = 14;  % For headings
+    headingSize = 14; % For headings
     gotoLength = max([inGotoLength outGotoLength]);
 
     % Move the inputs into proper position
@@ -52,7 +54,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut scopedFrom
             % Recurse
             [scopedGotoAddOutx, dataStoreWriteAddOutx, dataStoreReadAddOutx, ...
                 scopedFromAddOutx, globalGotosAddOutx, globalFromsAddOutx] = ...
-                TieInStrong(allBlocks{z}, updates, sys); 
+                TieInStrong(allBlocks{z}, hasUpdates, sys); 
             
             % Append blocks found in subsystems
             sGa     = [sGa scopedGotoAddOutx];
@@ -97,13 +99,14 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut scopedFrom
     portTags = [inputPortsTags outputPortsTags];
 
     % Find implicit interface
-    [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, updateBlocks, globalFroms, globalGotos] = AddImplicitsStrong(address, sGa, sFa, dSWa, dSRa, gGa, gFa, portTags, updates);
+    [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
+        updateBlocks, globalFroms, globalGotos] = ...
+        AddImplicitsStrong(address, sGa, sFa, dSWa, dSRa, gGa, gFa, portTags, hasUpdates);
 
-    % verticalOffset is a value that represents the vertical offset between
-    %each block added to the model. The Reposition functions are called
-    %to Reposition their respective blocks, which pass in the current
-    %vertical position, and pass out the vertical position after adding
-    %blocks.
+    % verticalOffset is a value of the vertical offset between each block
+    % added to the model. The Reposition functions are called to Reposition
+    % their respective blocks, which pass in the current vertical position,
+    % and pass out the vertical position after adding blocks.
     verticalOffset = verticalOffset + 25;
     
     if gotoLength == 0
@@ -135,7 +138,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut scopedFrom
     end
 
     % Add updates, if enabled
-    if updates && ~isempty(updateBlocks(~cellfun('isempty', updateBlocks)))
+    if hasUpdates && ~isempty(updateBlocks(~cellfun('isempty', updateBlocks)))
         add_block('built-in/Note', [address '/Updates'], 'Position', [90 verticalOffset + 20], 'FontSize', headingSize);
         verticalOffset = verticalOffset + 25;
         verticalOffset = RepositionImplicits(verticalOffset, updateBlocks, gotoLength, 0);
@@ -183,7 +186,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut scopedFrom
         verticalOffset = MoveDataStoreDex(address, verticalOffset);
     end
 
-    % Sets information to be passed out
+    % Set information to be passed out
     scopedFromAddOut    = carryUp{1};
     scopedGotoAddOut    = carryUp{4};
     dataStoreReadAddOut	= carryUp{2};

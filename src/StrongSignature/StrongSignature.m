@@ -1,9 +1,9 @@
-function [metrics signatures] = StrongSignature(address, exportType, updates, sys, docFormat)
+function [metrics signatures] = StrongSignature(address, exportType, hasUpdates, sys, docFormat)
 % STRONGSIGNATURE Generate documentation of a system's strong signature or
 % 	produce the model of the strong signature.
 %
 %   Function:
-%       STRONGSIGNATURE(address, exportType, updates, sys, docFormat)
+%       STRONGSIGNATURE(address, exportType, hasUpdates, sys, docFormat)
 %
 %   Inputs:
 %       address     The Simulink model path.
@@ -11,15 +11,15 @@ function [metrics signatures] = StrongSignature(address, exportType, updates, sy
 %       exportType  Boolean indicating whether to export the signature as
 %                   a model(0) or as documentation (1).
 %
-%       updates     Boolean indicating whether updates are to be 
+%       hasUpdates  Boolean indicating whether updates are to be 
 %                   included in the signature.
 %               
 %       sys         Name of the system to find the documentation for. 
 %                   One can use a specific system name, or use 'All' to get 
 %                   documentation of the entire hierarchy.
 %
-%       docFormat   Boolean indicating which docmentation type to 
-%                   generate: .txt(0) or .tex(1).
+%       docFormat   Number indicating which docmentation type to 
+%                   generate: .txt(0) or .tex(1)
 %   Outputs:
 %       metrics     ???
 %
@@ -37,7 +37,7 @@ function [metrics signatures] = StrongSignature(address, exportType, updates, sy
         [scopeGotoAddOut, DataStoreWriteAddOut, DataStoreReadAddOut, ...
             scopeFromAddOut, globalGotosAddOut, globalFromsAddOut, ...
             metrics, signatures] = ...
-            TieInStrongData(address, sys, updates, docFormat, dataTypeMap);
+            TieInStrongData(address, sys, hasUpdates, docFormat, dataTypeMap);
     else % If producing model
         sigModel = strcat(address, '_STRONG_SIGNATURE');
         
@@ -55,7 +55,7 @@ function [metrics signatures] = StrongSignature(address, exportType, updates, sy
         set_param(address, 'Lock', 'off');
 
         % Generate signature
-        [carryOut] = TieInStrong(address, updates, sys);
+        [carryOut] = TieInStrong(address, hasUpdates, sys);
         metrics = 0;
         signatures = {};
         
