@@ -6,20 +6,21 @@ function [metrics signatures] = StrongSignature(address, exportType, hasUpdates,
 %       STRONGSIGNATURE(address, exportType, hasUpdates, sys, docFormat)
 %
 %   Inputs:
-%       address     The Simulink model path.
+%       address     Simulink system path.
 %
 %       exportType  Boolean indicating whether to export the signature as
 %                   a model(0) or as documentation (1).
 %
 %       hasUpdates  Boolean indicating whether updates are to be 
 %                   included in the signature.
-%               
-%       sys         Name of the system to find the documentation for. 
+%
+%       sys         Name of the system to generate the documentation for. 
 %                   One can use a specific system name, or use 'All' to get 
 %                   documentation of the entire hierarchy.
 %
 %       docFormat   Number indicating which docmentation type to 
-%                   generate: .txt(0) or .tex(1)
+%                   generate: .txt(0) or .tex(1).
+%
 %   Outputs:
 %       metrics     ???
 %
@@ -27,8 +28,8 @@ function [metrics signatures] = StrongSignature(address, exportType, hasUpdates,
 %
 %   Example:
 %       StrongSignature('SignatureDemo', 1, 1, 'All', 0)
-%           Generates string signature documentation for model 'SignatureDemo'
-%           and all its subsystems as .txt, including updates.    
+%           Generates strong signature documentation for model 'SignatureDemo'
+%           and all its subsystems as .txt, including updates.
 
     set_param(address, 'Lock', 'off');
     
@@ -41,6 +42,7 @@ function [metrics signatures] = StrongSignature(address, exportType, hasUpdates,
     else % If producing model
         sigModel = strcat(address, '_STRONG_SIGNATURE');
         
+        % Create signature model
         if exist(sigModel, 'file') == 4
             n = 1;
             while exist(strcat(sigModel, num2str(n)), 'file') == 4
@@ -50,7 +52,6 @@ function [metrics signatures] = StrongSignature(address, exportType, hasUpdates,
         end
         save_system(address, sigModel, 'BreakAllLinks', true);
         open_system(sigModel);
-        
         address = sigModel;
         set_param(address, 'Lock', 'off');
 

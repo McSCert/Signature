@@ -12,19 +12,19 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, ...
 %           globalFromsAdd, PortsTags, hasUpdates)
 %
 %   Inputs:
-%       address         The address of the subsystem.
+%       address         Simulink system path.
 %
-%       scopedGotoAdd   List of all scoped Gotos passed in that 
-%                       potentially could be included in the signature.
+%       scopedGotoAdd   List of scoped Gotos that potentially could be 
+%                       included in the signature.
 %
-%       scopedFromAdd 	List of all scoped Froms passed in that 
-%                       potentially could be included in the signature.
+%       scopedFromAdd 	List of scoped Froms that potentially could be 
+%                       included in the signature.
 %
-%       dataStoreWriteAdd List of all Data Store Writes passed in that 
-%                       potentially could be included in the signature.
+%       dataStoreWriteAdd List of Data Store Writes that potentially could
+%                       be included in the signature.
 %
-%       dataStoreReadAdd List of all Data Store Reads passed in that
-%                       potentially could be included in the signature.
+%       dataStoreReadAdd List of Data Store Reads that potentially could be 
+%                       included in the signature.
 %
 %       PortsTags       List of the tags used for the Gotos/Froms representing
 %                       input ports that are NOT to be included in updates.

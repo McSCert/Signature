@@ -22,7 +22,7 @@ function varargout = sigGUI(varargin)
 
 % Edit the above text to modify the response to help sigGUI
 
-% Last Modified by GUIDE v2.5 18-Oct-2016 09:06:38
+% Last Modified by GUIDE v2.5 10-Nov-2016 11:45:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;

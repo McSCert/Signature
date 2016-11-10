@@ -1,11 +1,15 @@
 function [blockPath, isTag] = getBlockPath(sys, blockID, blockType)
-% GETBLOCKPATH Find the full path of the block in system sys with 
+% GETBLOCKPATH Find the full path of a block in system sys with 
 % block type blockType, and a name of blockID.
-%   Note: For blocks with a tag parameter such as GotoTag or DataStoreName,
-%   blockID is assumed to be that tag (any block with this tag is accepted)
+%   Inputs:
+%       sys         Simulink system path to search.
+%       blockID     The block name, or GotoTag for Goto/Froms, or
+%                   DataStoreName for Data Store blocks.
+%       blockType   The block type.
 %
-% Also returns isTags as true if the block had a tag parameter such as 
-% GotoTag or DataStoreName.
+%   Outputs:
+%       isTag       True if the block had a tag parameter, such as GotoTag 
+%                   or DataStoreName.
 
 isTag = true;
 switch blockType
@@ -29,12 +33,11 @@ switch blockType
         getBlock;
     otherwise
         % Get block path
-        % Could have also done: block = [address '/' blockID];
+        % Could have also done: block = [sys '/' blockID];
         blockPath = find_system(sys, 'SearchDepth', 1, 'Name', blockID);
         blockPath = blockPath{1};
         isTag = false;
 end
-
     function getBlock
         if ~isempty(blockPath)
             blockPath = blockPath{1};

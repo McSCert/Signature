@@ -1,61 +1,64 @@
 function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(address)
-%  INPORTSIG Add the Gotos and Froms for Inports.
+%  INPORTSIG Add Inports to the signature in the model by adding Goto/Froms for Inports.
 %
 %   Function:
 %		INPORTSIG(address)
 %  
 %	Inputs:
-%		address     Name and location in the model
+%		address     Simulink system path.
 %
 %	Outputs:
-%       address     ???
-%		inportGoto  Handles of the Inport Gotos
-%		inportFrom  Handles of the Inport Froms 
-%		inports 	Handles of the Inport
-%		gotoLength  Max length of Inport signals
+%		address     Simulink system path.
+%		inportGoto  Handles of Inport Gotos.
+%		inportFrom  Handles of Inport Froms.
+%		inports 	Handles of Inport.
+%		gotoLength  Max length of Inport Goto/From tags.
+
+    % Constants: 
+    GOTOFROM_COLOR = 'green'; % Colour of signature Goto/Froms
     
     % Initialize outputs
+    inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');
     inportGoto = {};
     inportFrom = {};
-    inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');
     gotoLength = 0;
-    
+
     for z = 1:length(inports)
-        % Get inport info
+        % Get Inport info
         pConnect = get_param(inports{z}, 'portConnectivity');
         pName    = get_param(inports{z}, 'Name');
-        pHandle  = get_param(inports{z}, 'Handle');
-        pHandles = get(pHandle, 'portHandles');
-        
-        % Construct goto tag
-        pSID     = get_param(inports{z}, 'SID');
-        gotoTag  = ['GotoIn' pSID];
-        gotoTag  = strrep(gotoTag, ':', '');
 
-        % Get longest tag
-        if length(gotoTag) > gotoLength 
-            gotoLength = length(gotoTag);
+        % Construct Goto tag
+        pSID    = get_param(inports{z}, 'SID');
+        GotoTag = ['GotoIn' pSID];
+        GotoTag = strrep(GotoTag, ':', '');
+
+        % Save longest tag
+        if length(GotoTag) > gotoLength 
+            gotoLength = length(GotoTag);
         end
-        
-        % Goto
+
+        % Add Goto block
         Goto = add_block('built-in/Goto', [address '/GotoIn' pSID]);
-        GotoName = gotoTag;
+        GotoName = GotoTag;
         inportGoto{end + 1} = getfullname(Goto);
-        set_param(Goto, 'GotoTag', gotoTag);
-        set_param(Goto, 'BackgroundColor', 'green');
+        set_param(Goto, 'GotoTag', GotoTag);
+        set_param(Goto, 'BackgroundColor', GOTOFROM_COLOR);
         set_param(Goto, 'Position', get_param(inports{z}, 'Position'));
 
-        % From
+        % Add From block
         From = add_block('built-in/From', [address '/FromIn' pSID]);
         FromName = ['FromIn' pSID];
         inportFrom{end + 1} = getfullname(From);
-        set_param(From, 'GotoTag', gotoTag);
-        set_param(From, 'BackgroundColor', 'green');
+        set_param(From, 'GotoTag', GotoTag);
+        set_param(From, 'BackgroundColor', GOTOFROM_COLOR);
         set_param(From, 'Position', get_param(inports{z}, 'Position')); 
-        
-        % Signal lines
+
+        % Connect new Goto/Froms with signal lines
         DstBlocks = pConnect.DstBlock;
         DstPorts  = pConnect.DstPort;
+
+        % 1) Connect From to whatever the inport was connected to
         for y = 1:length(DstBlocks)
             DstBlockName = get_param(DstBlocks(y), 'Name');
             pName = strrep(pName, '/', '//');
@@ -90,8 +93,10 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
                 end
             end
         end
-        
+
+        % 2) Connect Inport to Goto
        	try add_line(address, [pName '/1'], [GotoName '/1'])
         catch
+                % Do nothing
         end
     end

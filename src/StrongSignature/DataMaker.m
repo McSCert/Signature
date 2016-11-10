@@ -4,22 +4,22 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
 % DATAMAKER Make a text file of all elements of a signature.
 %
 %   Inputs:
-%       address         The address of the current system
-%       inputs          List of inports
-%       outputs         List of outports
-%       scopedGotos     List of all scoped gotos in the signature
-%       scopedFroms     List of all scoped froms in the signature
-%       dataStoreWrites List of all data store writes in the signature
-%       dataStoreReads  List of all data store reads in the signature
-%       updates         List of all updates in the signature
-%       globalGotos     List of all global gotos in the signature
-%       globalFroms     List of all global froms in the signature
+%       address         Simulink system path.
+%       inputs          List of Inports.
+%       outputs         List of Outports.
+%       scopedGotos     List of all scoped Gotos in the signature.
+%       scopedFroms     List of all scoped Froms in the signature.
+%       dataStoreWrites List of all Data Store Writes in the signature.
+%       dataStoreReads  List of all Data Store Reads in the signature.
+%       updates         List of all updates in the signature.
+%       globalGotos     List of all global Gotos in the signature.
+%       globalFroms     List of all global Froms in the signature.
 %       tagDex
 %       dsDex
 %       hasUpdates      Boolean indicating whether updates are included in the signature.
 %       docFormat
 %       dataTypeMap
-%       signatures      Struct array of the signatures of each subsystem
+%       signatures      Struct array of the signatures of each subsystem.
 %
 %   Outputs: 
 %       N/A
@@ -29,11 +29,11 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         filename = [address '.txt'];
         filename = strrep(filename, '/', '_');
         filename = filename(1:end);
-        filename = strrep(filename, sprintf('\n'),'');
-        filename = strrep(filename, sprintf('\r'),'');
+        filename = strrep(filename, sprintf('\n'), '');
+        filename = strrep(filename, sprintf('\r'), '');
         
-        % Open the file, then print a header and the blocks of said type for
-        % each block type onto the file
+        % Open the file, then print a header
+        % Fill with blocks names and their type
         file = fopen(filename, 'wt');
 
         fprintf(file, 'INPUTS\n');
@@ -62,17 +62,17 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         fprintf(file, 'DATA STORE DECLARATIONS');
         printTxtSection(address, file, dataTypeMap, '', dsDex, 'DataStoreMemory');
         fclose(file);
-                
+
     elseif docFormat == 1 % .tex
         % Create a valid file name based on the current subsystem name
         filename = [address '.tex'];
         filename = strrep(filename, '/', '_');
         filename = filename(1:end);
-        filename = strrep(filename, sprintf('\n'),'');
-        filename = strrep(filename, sprintf('\r'),'');
+        filename = strrep(filename, sprintf('\n'), '');
+        filename = strrep(filename, sprintf('\r'), '');
         
-        % Open the file, then print a header and the blocks of said type for
-        % each block type onto the file.
+        % Open the file, then print a header
+        % Fill with blocks names and their type
         file = fopen(filename, 'wt');
 
         texPreamble = '%To use this LaTeX, the following should be in the preamble:';
@@ -146,7 +146,7 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         table = '\\\\';
         fprintf(file, '%s\n', table);
         fclose(file);
-        
+
     elseif docFormat == 2 % .doc, RTF
         filename = address;
         filename = strrep(filename, '/', '_');
@@ -163,15 +163,15 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
             'sigParams', 'tableSections', ...
             'index', 'table', 'tableTitle', 'sigParam'};
 
-        tempVarsFromBase = SaveBaseVars(varsForReport); % Saves values from base workspace in tempVarsFromBase
-        OverwriteBaseVars(varsForReport); % Replaces values in base workspace with values from this workspace
+        tempVarsFromBase = SaveBaseVars(varsForReport); % Save values from base workspace in tempVarsFromBase
+        OverwriteBaseVars(varsForReport); % Replace values in base workspace with values from this workspace
 
-        % Generate the Word document.
+        % Generate the Word document
         % The report function uses the base workspace hence the need for saving
         % values originally in the base workspace
         report('Signature', '-fdoc'); % Default generation produces .docx, the formatting style is a bit different with .doc
 
-        LoadBaseVars(varsForReport, tempVarsFromBase); % Returns values in base workspace to the way they were with values from tempVarsFromBase
+        LoadBaseVars(varsForReport, tempVarsFromBase); % Return values in base workspace to the way they were with values from tempVarsFromBase
     end
 end
 

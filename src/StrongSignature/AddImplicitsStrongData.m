@@ -10,7 +10,7 @@ function [address, scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
 %           globalFromsAdd, hasUpdates)
 %
 %   Inputs:
-%       address         The address of the subsystem.
+%       address         Simulink system path.
 %
 %       scopeGotoAdd    List of all scoped Gotos being passed in to be
 %                       potentially added to the signature.
@@ -27,7 +27,7 @@ function [address, scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
 %       hasUpdates      Boolean indicating whether updates are included in the signature.
 %
 %   Outputs:
-%       address     The address of the subsystem.
+%       address     Simulink system path.
 %
 %       scopedGoto  List of all scoped Gotos that will be included in the
 %                   signature(unless they are part of an update).

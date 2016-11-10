@@ -6,14 +6,15 @@ function yOffset = RepositionInportSig(address, inGo, inFrom, inports, gotoLengt
 %       RESPOSITIONINPORTSIG(address, inGo, inFrom, inports, gotoLength)
 %  
 %	Inputs:
-%		address     Name and location in the model.
+%       address     Simulink system path.
 %		inGo        Inport goto handles.
 %		inFrom      Inport from handles.
 %		inports     Inport handles.
-%		gotoLength  Max length of the input signal names.
+%		gotoLength  Max length of the goto signal names.
 %
 %	Outputs:
-%		yOffset     Point in the y-axis to start positioning blocks.
+%		yOffset     Point in the y-axis to start positioning blocks next
+%                   time.
 
     allBlocks   = find_system(address, 'SearchDepth', 1);
     allBlocks   = setdiff(allBlocks, address);
@@ -92,7 +93,8 @@ function yOffset = RepositionInportSig(address, inGo, inFrom, inports, gotoLengt
         bPosition(3) = bPosition(3) + offset;
 		bPosition(4) = bPosition(4) + 200;
         set_param(nonInportGoFrom{z}, 'Position', bPosition);
-	end      
+    end
+    
 	for gg = 1:length(annotations)
         bPosition    = get_param(annotations(gg), 'Position');
         bPosition(1) = bPosition(1) + offset;

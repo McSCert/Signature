@@ -5,11 +5,11 @@ function [address, inports] = InportSigData(address)
 %       INPORTSIGDATA(address)
 %  
 %	Inputs:
-%		address     Name and location in the model
+%		address     Simulink system path.
 %
 %	Outputs:
-%       address
-%		inports     Inport handles
+%       address     ????
+%		inports     Inport handles.
 
     inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');
     for i = 1:length(inports)

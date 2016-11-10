@@ -5,7 +5,7 @@ function yOffsetFinal = MoveDataStoreDex(address, yOffset)
 %       MOVEDATASTOREDEX(address, yOffset)
 %
 %   Inputs:
-%       address     The address of the current system.
+%       address     Simulink system path.
 %       yOffset     Point in the y-axis to start positioning blocks.
 %
 %   Outputs:

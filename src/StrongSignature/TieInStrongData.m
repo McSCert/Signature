@@ -1,54 +1,60 @@
 function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
     scopeFromAddout, globalGotosAddout, globalFromsAddout, metrics, ...
     signatures] = TieInStrongData(address, sys, hasUpdates, docFormat, dataTypeMap)
-% TIEINSTRONGDATA Second to top level in function hierarchy. Recursively 
-%   calls itself to find the signature of itself and all subsystems of
-%   itself.
+% TIEINSTRONGDATA Find the strong signature recursively and output as documentation.
 %
 %   Function:
 %       TIEINSTRONGDATA(address, sys, hasUpdates, docFormat, dataTypeMap)
 %
 %   Inputs:
-%       address         The current address.
-%       sys             String of the subsystem name or all subsystems to
-%                       obtain data for.
-%       hasUpdates      Boolean indicating whether updates are included in the signature.
+%       address         Simulink system path.
+%
+%       sys             Name of the system to generate the documentation for. 
+%                       One can use a specific system name, or use 'All' to 
+%                       get documentation of the entire hierarchy.
+%
+%       hasUpdates      Boolean indicating whether updates are included in 
+%                       the signature.
+%
 %       docFormat       Boolean indicating which docmentation type to 
 %                       generate: .txt(0) or .tex(1).
+%
 %       dataTypeMap     ???
 %
 %   Outputs:
-%       scopeGotoAddout         The list of scoped gotos that the function will pass out
-%       scopeFromAddOut         The list of scoped froms that the function will pass out
-%       dataStoreReadAddout     The list of data store reads that the function will pass out
-%       dataStoreWriteAddout    The list of data store writes that the function will pass out
-%       metrics                 The data needed for use in the MetricGetter function
-%       signatures              The data of all blocks in the signature
+%       scopeGotoAddout         List of scoped gotos that the function will pass out
+%       dataStoreWriteAddout    List of data store reads that the function will pass out
+%       dataStoreReadAddout     List of data store writes that the function will pass out
+%       scopeFromAddOut         List of scoped froms that the function will pass out
+%       globalGotosAddOut       List of global gotos being passed out.
+%       globalFromsAddOut       List of global froms being passed out.
+%       metrics                 Data for use in the MetricGetter function
+%       signatures              Data of all blocks in the signature
 
     % Initialize output sets
-    scopeGotoAddout     = {};
-    dataStoreWriteAddout = {};
-    dataStoreReadAddout = {};
-    scopeFromAddout     = {};
-    globalGotosAddout   = {};
-    globalFromsAddout   = {};
-    id                  = {};
+    scopeGotoAddout         = {};
+    dataStoreWriteAddout    = {};
+    dataStoreReadAddout     = {};
+    scopeFromAddout         = {};
+    globalGotosAddout       = {};
+    globalFromsAddout       = {};
+    id                      = {};
+    metrics                 = {};
+    signatures              = {};
     
-    % Elements in the sig
+    % Elements in the signature being carried up from the signatures of lower levels
 	sGa     = {};   % Scoped Gotos
 	sFa     = {};   % Scoped Froms
 	dSWa    = {};   % Data Store Writes
     dSRa    = {};   % Data Store Reads
     gGa     = {};   % Global Gotos
-    gFa     = {};   % Global Froms
-    
-    metrics     = {};
-    signatures  = {};
-	BlockName   = get_param(address,'Name');
+    gFa     = {};   % Global Froms   
 
-    % Get info on inports and outports    
-    [inaddress, Inports] = InportSigData(address); 
-    [outaddress, Outports] = OutportSigData(address); 
+	BlockName = get_param(address,'Name');
+
+    % Get signature for Inports and Outports    
+    [inaddress, Inports] = InportSigData(address);
+    [outaddress, Outports] = OutportSigData(address);
     
     % Get all blocks, but remove the current address
     allBlocks = find_system(address, 'SearchDepth', 1); 
@@ -69,7 +75,7 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
             sGa     = [sGa scopeGotoAddoutx]; 
             sFa     = [sFa scopeFromAddoutx];
             dSWa    = [dSWa dataStoreWriteAddoutx];
-            dSRa    =  [dSRa dataStoreReadAddoutx];
+            dSRa    = [dSRa dataStoreReadAddoutx];
             gGa     = [gGa globalGotosAddoutx];
             gFa     = [gFa globalFromsAddoutx];
             
@@ -86,7 +92,7 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
     gGa     = unique(gGa);
     gFa     = unique(gFa);
 
-    % Find all data store reads, writes, scoped gotos/froms, and updates
+    % Find all Data Store Reads, Writes, scoped Gotos/Froms, and updates
     [address, scopedGoto, scopedFrom, DataStoreW, DataStoreR, Updates, ...
         GlobalGotos, GlobalFroms] = AddImplicitsStrongData(address, sGa, ...
         sFa, dSWa, dSRa,gGa,gFa, hasUpdates); 
@@ -105,7 +111,7 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
     globalGotosAddout   = GlobalGotos;
     globalFromsAddout   = GlobalFroms;
 
-    % Gets declarations for the signature
+    % Get declarations for the signature
     [tagDex, dsDex] = ImposedData(address);
 
     % For the metrics, returns a struct for each subsystem with the
@@ -118,6 +124,7 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
     size = num2str(size);
     system = strrep(address,'_STRONG_SIGNATURE','');
     metrics{end + 1} = struct('Subsystem', system, 'Size', size);
+    
     % For the signatures, returns a struct for each subsystem with all
     % blocks in the signature as well as subsytem's name and size
     signatures{end + 1} = struct(...

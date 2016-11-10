@@ -1,6 +1,13 @@
 function [tagDex, dsDex] = ImposedData(address)
 % IMPOSEDDATA Get the imposed component of the signature.
-    
+%
+%   Inports:
+%		address     Simulink system path.
+%
+%   Outports:
+%       tagDex
+%       dsDex
+
     tagDex  = {};
     dsDex   = {};
     

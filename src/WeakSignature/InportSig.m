@@ -1,81 +1,102 @@
 function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(address)
-	%  InportSig - A function that adds the inport gotos and froms as
-	%  well as connect them
-    %
-    %   Typical use:
-    %		[inaddress, inportGoto, inportFrom, inports, ingotoLength] = InportSig(address);
-    %  
-	%	Inputs:
-	%		address: the name and location in the model
-	%	Outputs:
-	%		inportGoto: inport goto handles
-	%		inportFrom: inport from handles
-	%		inports:    inport handles
-	%		gotoLength: max length of inport signals
-	%
+%  INPORTSIG Add Inports to the signature in the model by adding Goto/Froms for Inports.
+%
+%   Function:
+%		INPORTSIG(address)
+%  
+%	Inputs:
+%		address     Simulink system path.
+%
+%	Outputs:
+%		address     Simulink system path.
+%		inportGoto  Handles of Inport Gotos.
+%		inportFrom  Handles of Inport Froms.
+%		inports 	Handles of Inport.
+%		gotoLength  Max length of Inport Goto/From tags.
 
+    % Constants: 
+    GOTOFROM_COLOR = 'green'; % Colour of signature Goto/Froms
+    
+    % Initialize outputs
     inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');
     inportGoto = {};
     inportFrom = {};
-    maxGotoTag = [];
+    gotoLength = 0;
 
     for z = 1:length(inports)
+        % Get Inport info
         pConnect = get_param(inports{z}, 'portConnectivity');
         pName    = get_param(inports{z}, 'Name');
-        pHandle  = get_param(inports{z}, 'Handle');
-        pSID     = get_param(inports{z}, 'SID');
-        
-        pHandles = get(pHandle, 'portHandles');
-                
-%GotoTag = get_param(pHandles.Outport, 'PropagatedSignals');
-%if strcmp(GotoTag, '')
+
+        % Construct Goto tag
+        pSID    = get_param(inports{z}, 'SID');
         GotoTag = ['GotoIn' pSID];
         GotoTag = strrep(GotoTag, ':', '');
-%else
-%end
-        maxGotoTag(end+1) = length(GotoTag);
-        
+
+        % Save longest tag
+        if length(GotoTag) > gotoLength 
+            gotoLength = length(GotoTag);
+        end
+
+        % Add Goto block
         Goto = add_block('built-in/Goto', [address '/GotoIn' pSID]);
-        GotoName = ['GotoIn' pSID];
-        inportGoto{end+1} = getfullname(Goto);
+        GotoName = GotoTag;
+        inportGoto{end + 1} = getfullname(Goto);
         set_param(Goto, 'GotoTag', GotoTag);
-        set_param(Goto, 'BackgroundColor', 'green');
+        set_param(Goto, 'BackgroundColor', GOTOFROM_COLOR);
         set_param(Goto, 'Position', get_param(inports{z}, 'Position'));
 
-        From = add_block('built-in/From', [address  '/FromIn' pSID]);
+        % Add From block
+        From = add_block('built-in/From', [address '/FromIn' pSID]);
         FromName = ['FromIn' pSID];
-        inportFrom{end+1} = getfullname(From);
+        inportFrom{end + 1} = getfullname(From);
         set_param(From, 'GotoTag', GotoTag);
-        set_param(From, 'BackgroundColor', 'green');
+        set_param(From, 'BackgroundColor', GOTOFROM_COLOR);
         set_param(From, 'Position', get_param(inports{z}, 'Position')); 
-        
+
+        % Connect new Goto/Froms with signal lines
         DstBlocks = pConnect.DstBlock;
         DstPorts  = pConnect.DstPort;
-        for y=1:length(DstBlocks)
+
+        % 1) Connect From to whatever the inport was connected to
+        for y = 1:length(DstBlocks)
             DstBlockName = get_param(DstBlocks(y), 'Name');
-            pName = strrep(pName,'/','//');
+            pName = strrep(pName, '/', '//');
+            
+            % Inport connected to Enable port
             try
-            	delete_line([address] ,[pName '/1' ] , [DstBlockName '/' 'Enable']);
-                add_line([address],[FromName '/1'] ,[DstBlockName '/' 'Enable'], 'autorouting', 'on');
-            catch
-            end;
+            	delete_line(address, [pName '/1'], [DstBlockName '/' 'Enable']);
+                add_line(address, [FromName '/1'], [DstBlockName '/' 'Enable'], 'autorouting', 'on');
+            catch ME
+                if strcmp(ME.identifier, 'Simulink:Commands:InvSimulinkObjectName')
+                    % Do nothing
+                end
+            end
+            
+            % Inport connected to Trigger port
             try
-                delete_line([address] ,[pName '/1' ] , [DstBlockName '/' 'Trigger']);
-                add_line([address],[FromName '/1'] ,[DstBlockName '/' 'Trigger'], 'autorouting', 'on');
-            catch
-            end;
+                delete_line(address, [pName '/1'], [DstBlockName '/' 'Trigger']);
+                add_line(address, [FromName '/1'], [DstBlockName '/' 'Trigger'], 'autorouting', 'on');
+            catch ME
+                if strcmp(ME.identifier, 'Simulink:Commands:InvSimulinkObjectName')
+                    % Do nothing
+                end
+            end
+            
+            % Inport connected to regular block port
             try
-                delete_line([address ] ,[pName '/1' ] , [DstBlockName '/' num2str(DstPorts(y)+1)]);
-                add_line([address ],[FromName '/1'] ,[DstBlockName '/' num2str(DstPorts(y)+1)], 'autorouting', 'on');
-            catch
-            end;
-        end;
-       	try add_line([address ], [pName '/1'], [GotoName '/1']); catch end;
-	end
-    if isempty(maxGotoTag)
-    	gotoLength = 0;
-    else
-    	gotoLength = max(maxGotoTag);
-    end;
-end
-        
+                delete_line(address ,[pName '/1'], [DstBlockName '/' num2str(DstPorts(y)+1)]);
+                add_line(address,[FromName '/1'], [DstBlockName '/' num2str(DstPorts(y)+1)], 'autorouting', 'on');
+            catch ME
+                if strcmp(ME.identifier, 'Simulink:Commands:InvSimulinkObjectName')
+                    % Do nothing
+                end
+            end
+        end
+
+        % 2) Connect Inport to Goto
+       	try add_line(address, [pName '/1'], [GotoName '/1'])
+        catch
+                % Do nothing
+        end
+    end

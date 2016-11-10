@@ -1,9 +1,9 @@
-function [metrics signatures] = WeakSignature(address, exportType, updates, sys, docFormat)
+function [metrics signatures] = WeakSignature(address, exportType, hasUpdates, sys, docFormat)
 % WEAKSIGNATURE Generate documentation of a system's weak signature or
 % 	produce the model of the weak signature.
 %
 %   Function:
-%       WEAKSIGNATURE(address, exportType, updates, sys, docFormat)
+%       WEAKSIGNATURE(address, exportType, hasUpdates, sys, docFormat)
 %
 %   Inputs:
 %       address     The Simulink model path.
@@ -11,14 +11,14 @@ function [metrics signatures] = WeakSignature(address, exportType, updates, sys,
 %       exportType  Boolean indicating whether to export the signature as
 %                   a model(0) or as documentation (1).
 %
-%       updates     Boolean indicating whether updates are to be 
+%       hasUpdates  Boolean indicating whether updates are to be 
 %                   included in the signature.
 %
-%       sys         Name of the system to find the documentation for. 
+%       sys         Name of the system to generate the documentation for. 
 %                   One can use a specific system name, or use 'All' to get 
 %                   documentation of the entire hierarchy.
 %
-%       docFormat   Boolean indicating which docmentation type to 
+%       docFormat   Number indicating which docmentation type to 
 %                   generate: .txt(0) or .tex(1).
 %
 %   Outputs:
@@ -34,17 +34,18 @@ function [metrics signatures] = WeakSignature(address, exportType, updates, sys,
 %   Example:
 %       WeakSignature('SignatureDemo', 1, 1, 'All', 0)
 %           Generates weak signature documentation for model 'SignatureDemo'
-%           and all its subsystems as .txt, including updates.   
+%           and all its subsystems as .txt, including updates.
 
     set_param(address, 'Lock', 'off');
 
     if exportType % If producing documentation
         dataTypeMap = mapDataTypes(address);
-        [metrics signatures] = TieInData(address, 0, {}, {}, {}, {}, {}, ...
-            {}, sys, {}, {}, updates, docFormat, dataTypeMap);
+        [metrics, signatures] = ...
+            TieInData(address, 0, {}, {}, {}, {}, {}, {}, sys, {}, {}, hasUpdates, docFormat, dataTypeMap);
     else % If producing model
         sigModel = strcat(address, '_WEAK_SIGNATURE');
         
+        % Create signature model
         if exist(sigModel, 'file') == 4
             n = 1;
             while exist(strcat(sigModel, num2str(n)), 'file') == 4
@@ -54,12 +55,11 @@ function [metrics signatures] = WeakSignature(address, exportType, updates, sys,
         end
         save_system(address, sigModel, 'BreakAllLinks', true);
         open_system(sigModel);
-
         address = sigModel;
         set_param(address, 'Lock', 'off');
-        
+
         % Generate signature
-        TieIn(address, 0, {}, {}, {}, {}, {}, {}, updates);
+        TieIn(address, 0, {}, {}, {}, {}, {}, {}, hasUpdates);
         metrics = 0;
         signatures = {};
         
