@@ -52,7 +52,7 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
 
         if hasUpdates
             fprintf(file, 'UPDATES');
-            printTxtSection(address, file, dataTypeMap, '', updates, 'DataStoreRead'); % Assumes updates can only occur with Data Stores
+            printTxtSection(address, file, dataTypeMap, '', updates, 'DataStoreRead'); % Assumes updates can only occur with data stores
             fprintf(file, '\n');
         end
 
@@ -247,8 +247,8 @@ function fillTexTable(address, file, blocks, tlabel, dataTypeMap, blockType)
 end
 
 function type = getBlockDataType(address, dataTypeMap, blockID, blockType)
-    [block, ~] = getBlockPath(address, blockID, blockType);
     try
+        [block, ~] = getBlockPath(address, blockID, blockType);
         if isKey(dataTypeMap,block)
             type = dataTypeMap(block);
         else

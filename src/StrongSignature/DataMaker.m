@@ -247,8 +247,8 @@ function fillTexTable(address, file, blocks, tlabel, dataTypeMap, blockType)
 end
 
 function type = getBlockDataType(address, dataTypeMap, blockID, blockType)
-    [block, ~] = getBlockPath(address, blockID, blockType);
     try
+        [block, ~] = getBlockPath(address, blockID, blockType);
         if isKey(dataTypeMap,block)
             type = dataTypeMap(block);
         else
