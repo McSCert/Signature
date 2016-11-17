@@ -1,10 +1,10 @@
-function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, ... 
-    gotoBlocks, updateBlocks, globalFroms, globalGotos] = ...
+function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks,...
+    updateBlocks, globalFroms, globalGotos] = ...
     AddImplicitsStrong(address, scopedGotoAdd, scopedFromAdd, ...
     dataStoreWriteAdd, dataStoreReadAdd, globalGotosAdd, globalFromsAdd, ...
     PortsTags, hasUpdates)
-% ADDIMPLICITSSTRONG Find the implicit inputs and outputs for the signature
-%   of a subsystem.
+% ADDIMPLICITSSTRONG Add the implicit inputs and outputs (i.e., scoped Gotos
+%   and Data Store Memorys) for the signature of a subsystem.
 %
 %   Function:
 %       ADDIMPLICITSSTRONG(address, scopedGotoAdd, scopedFromAdd, 
@@ -66,7 +66,7 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, ...
 %                       Goto blocks, and that of the global Goto blocks' 
 %                       corresponding terminators.
     
-    % Initialize everything
+    % Initialize sets, matrices, and maps
     num = 0;
     termnum = 0;
     fromToRepo = [];
@@ -91,6 +91,7 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, ...
     mapObjTU = containers.Map();
     mapObjAddedBlock = containers.Map();
     updatesToAdd = {};
+    
     removableDataStoresNames = {};
     removableScopedTagsNames = {};
     removableScopedFromsNames = {};

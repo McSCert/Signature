@@ -57,13 +57,12 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
         % Connect new Goto/Froms with signal lines
         DstBlocks = pConnect.DstBlock;
         DstPorts  = pConnect.DstPort;
-
-        % 1) Connect From to whatever the inport was connected to
+        % 1) Connect From to whatever the Inport was connected to
         for y = 1:length(DstBlocks)
             DstBlockName = get_param(DstBlocks(y), 'Name');
             pName = strrep(pName, '/', '//');
             
-            % Inport connected to Enable port
+            % 1a) Inport connected to Enable port
             try
             	delete_line(address, [pName '/1'], [DstBlockName '/' 'Enable']);
                 add_line(address, [FromName '/1'], [DstBlockName '/' 'Enable'], 'autorouting', 'on');
@@ -73,7 +72,7 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
                 end
             end
             
-            % Inport connected to Trigger port
+            % 1b) Inport connected to Trigger port
             try
                 delete_line(address, [pName '/1'], [DstBlockName '/' 'Trigger']);
                 add_line(address, [FromName '/1'], [DstBlockName '/' 'Trigger'], 'autorouting', 'on');
@@ -83,10 +82,10 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
                 end
             end
             
-            % Inport connected to regular block port
+            % 1c) Inport connected to regular block port
             try
-                delete_line(address ,[pName '/1'], [DstBlockName '/' num2str(DstPorts(y)+1)]);
-                add_line(address,[FromName '/1'], [DstBlockName '/' num2str(DstPorts(y)+1)], 'autorouting', 'on');
+                delete_line(address ,[pName '/1'], [DstBlockName '/' num2str(DstPorts(y) + 1)]);
+                add_line(address,[FromName '/1'], [DstBlockName '/' num2str(DstPorts(y) + 1)], 'autorouting', 'on');
             catch ME
                 if strcmp(ME.identifier, 'Simulink:Commands:InvSimulinkObjectName')
                     % Do nothing
@@ -95,8 +94,9 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
         end
 
         % 2) Connect Inport to Goto
-       	try add_line(address, [pName '/1'], [GotoName '/1'])
+       	try 
+            add_line(address, [pName '/1'], [GotoName '/1'], 'autorouting', 'on')
         catch
-                % Do nothing
+            % Do nothing
         end
     end

@@ -1,7 +1,7 @@
 function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
     dataStoreWrites, dataStoreReads, updates, globalGotos, globalFroms, ...
     tagDex, dsDex, hasUpdates, docFormat, dataTypeMap, signatures)
-% DATAMAKER Make a text file of all elements of a signature.
+% DATAMAKER Make a text file of a signature.
 %
 %   Inputs:
 %       address         Simulink system path.
@@ -52,7 +52,7 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
 
         if hasUpdates
             fprintf(file, 'UPDATES');
-            printTxtSection(address, file, dataTypeMap, '', updates, 'DataStoreRead'); % Assumes updates can only occur with data stores
+            printTxtSection(address, file, dataTypeMap, '', updates, 'DataStoreRead'); % Assumes updates can only occur with Data Stores
             fprintf(file, '\n');
         end
 
@@ -128,7 +128,7 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
             tlabel = strrep(filename, '.tex', '');
             tlabel = ['table:' tlabel '_UPDATES'];
             fprintf(file, '%s\n\n', ['\label{' tlabel '}']);
-            fillTexTable(address, file, updates, tlabel, dataTypeMap, 'DataStoreRead'); % Assumes updates can only occur with data stores
+            fillTexTable(address, file, updates, tlabel, dataTypeMap, 'DataStoreRead'); % Assumes updates can only occur with Data Stores
         end
 
         fprintf(file, '\n');

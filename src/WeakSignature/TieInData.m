@@ -72,7 +72,6 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
         removableGotosNames{end + 1} = get_param(removableGotos{i}, 'GotoTag');
     end
     globalGotosx = setdiff(globalGotos, removableGotosNames);
-
     scopedGotoTags = setdiff(setdiff(scopedGoto, removableTags),updates);
     dataStoreWrites = setdiff(setdiff(DataStoreW, updates), removableDS);
     dataStoreReads = setdiff(setdiff(DataStoreR, updates), removableDS);
@@ -84,11 +83,16 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
 
     % Make the documentation for the designated subsystem indicated in sys
     if strcmp(sys, address) || strcmp(sys, 'All')
-        DataMaker(address, Inports, Outports, scopedGotoTags, scopedFromTags, dataStoreWrites, dataStoreReads, updates, globalGotos, globalFroms, tagDex, dsDex, hasUpdates, txt, dataTypeMap);
+        DataMaker(address, Inports, Outports, scopedGotoTags, scopedFromTags,...
+            dataStoreWrites, dataStoreReads, updates, globalGotos, ...
+            globalFroms, tagDex, dsDex, hasUpdates, txt, dataTypeMap);
     end
 
     % Get the metric
-    size = length(Inports) + length(Outports) + length(globalFroms) + length(globalGotosx) + length(scopedGotoTags) + length(scopedFromTags) + length(dataStoreReads) + length(dataStoreWrites) + 2*length(updates) + length(tagDex) + length(dsDex);
+    size = length(Inports) + length(Outports) + length(globalFroms) + ...
+        length(globalGotosx) + length(scopedGotoTags) + length(scopedFromTags) + ...
+        length(dataStoreReads) + length(dataStoreWrites) + 2*length(updates) + ...
+        length(tagDex) + length(dsDex);
     size = num2str(size);
     system = strrep(address,'_WEAK_SIGNATURE','');
     metrics{end + 1} = struct('Subsystem', system, 'Size', size);

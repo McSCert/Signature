@@ -1,4 +1,5 @@
-function [metrics signatures] = StrongSignature(address, exportType, hasUpdates, sys, docFormat)
+function [metrics signatures] = StrongSignature(address, exportType,...
+    hasUpdates, sys, docFormat)
 % STRONGSIGNATURE Generate documentation of a system's strong signature or
 % 	produce the model of the strong signature.
 %

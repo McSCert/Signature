@@ -1,4 +1,5 @@
-function [metrics signatures] = WeakSignature(address, exportType, hasUpdates, sys, docFormat)
+function [metrics signatures] = WeakSignature(address, exportType,...
+    hasUpdates, sys, docFormat)
 % WEAKSIGNATURE Generate documentation of a system's weak signature or
 % 	produce the model of the weak signature.
 %

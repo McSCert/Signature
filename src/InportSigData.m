@@ -1,5 +1,5 @@
 function [address, inports] = InportSigData(address)
-%  INPORTSIGDATA List inputs for the level's signature.
+%  INPORTSIGDATA List Imports for a system.
 %
 %   Function:
 %       INPORTSIGDATA(address)
@@ -8,8 +8,8 @@ function [address, inports] = InportSigData(address)
 %		address     Simulink system path.
 %
 %	Outputs:
-%       address     ????
-%		inports     Inport handles.
+%       address     Simulink system path.
+%		inports     List of Inport names.
 
     inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');
     for i = 1:length(inports)

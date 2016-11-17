@@ -1,5 +1,5 @@
 function [address, outportGoto, outportFrom, outports, gotoLength] = OutportSig(address)
-%  IOUTPORTSIG Adds Outports to the signature in the model by adding Goto/Froms for Outports.
+%  OUTPORTSIG Adds Outports to the signature in the model by adding Goto/Froms for Outports.
 %
 %   Function:
 %       OUTPORTSIG(address)
@@ -18,21 +18,21 @@ function [address, outportGoto, outportFrom, outports, gotoLength] = OutportSig(
     GOTOFROM_COLOR = 'green';
 
     % Initialize outputs
-    outportGoto = {};
-    outportFrom = {};
-    outports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Outport');
-    gotoLength = 0;
+	outportGoto = {};
+	outportFrom = {};
+	gotoLength  = 0;
+	outports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Outport');
 
-    for z = 1:length(outports)
+	for z = 1:length(outports)
         % Get Outport info
         pConnect = get_param(outports{z}, 'portConnectivity');
         pName    = get_param(outports{z}, 'Name');
         pHandle  = get_param(outports{z}, 'Handle');
         pHandles = get(pHandle, 'portHandles');
-  
+
         % Construct Goto tag
-        pSID     = get_param(outports{z}, 'SID');
-        GotoTag	 = get(pHandles.Inport, 'PropagatedSignals');
+        pSID    = get_param(outports{z}, 'SID');
+        GotoTag = get(pHandles.Inport, 'PropagatedSignals');
         if strcmp(GotoTag, '')
             GotoTag = ['GotoOut' pSID];
             GotoTag = strrep(GotoTag, ':', '');
@@ -42,36 +42,42 @@ function [address, outportGoto, outportFrom, outports, gotoLength] = OutportSig(
         if length(GotoTag) > gotoLength 
             gotoLength = length(GotoTag);
         end
-        
+
         % Add Goto block
-        Goto = add_block('built-in/Goto', [address  '/GotoOut' pSID]);
+        Goto = add_block('built-in/Goto', [address '/GotoOut' pSID]);
         GotoName = ['GotoOut' pSID];
-        GotoFullName = getfullname(Goto);
         set_param(Goto, 'GotoTag', GotoTag);
         set_param(Goto, 'BackgroundColor', GOTOFROM_COLOR);
         set_param(Goto, 'Position', get_param(outports{z}, 'Position'));
-        outportGoto{end + 1} = GotoFullName;
-        
+        outportGoto{end + 1} = getfullname(Goto);
+
         % Add From block
-        From = add_block('built-in/From', [address  '/FromOut' pSID]);
+        From = add_block('built-in/From', [address '/FromOut' pSID]);
         FromName = ['FromOut' pSID];
-        FromFullName = getfullname(From);
-        outportFrom{end + 1} = FromFullName;
         set_param(From, 'GotoTag', GotoTag);
         set_param(From, 'BackgroundColor', GOTOFROM_COLOR);
         set_param(From, 'Position', get_param(outports{z}, 'Position'));
-        
-        % Connect new Goto/Froms with signal liness
+        outportFrom{end + 1} = getfullname(From);
+
+        % Connect new Goto/Froms with signal lines
         SrcBlocks = pConnect.SrcBlock;
         SrcPorts  = pConnect.SrcPort;
+        % 1) Connect Goto to whatever the Outport was connected to
         for y = 1:length(SrcBlocks)
             SrcBlockName = get_param(SrcBlocks(y), 'Name');
-            SrcBlockName = strrep(SrcBlockName, '/','//');
+            SrcBlockName = strrep(SrcBlockName, '/', '//');
             try
                 delete_line(address, [SrcBlockName '/' num2str(SrcPorts(y) + 1)], [pName '/1']);
+                add_line(address, [SrcBlockName '/' num2str(SrcPorts(y) + 1)], [GotoName '/1'], 'autorouting', 'on');
             catch
+                % Do nothing
             end
-            add_line(address, [SrcBlockName '/' num2str(SrcPorts(y) + 1)],[GotoName '/1'], 'autorouting', 'on');
         end
-        add_line(address, [FromName '/1'], [pName '/1'], 'autorouting', 'on');
-    end
+        
+         % 2) Connect From to Outport
+        try
+            add_line(address, [FromName '/1'], [pName '/1'], 'autorouting', 'on');
+        catch
+            % Do nothing
+        end
+	end
