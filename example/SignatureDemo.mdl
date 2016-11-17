@@ -1,5 +1,5 @@
 Model {
-  Name			  "nonSig"
+  Name			  "SignatureDemo"
   Version		  7.8
   MdlSubVersion		  0
   GraphicalInterface {
@@ -51,7 +51,7 @@ Model {
       Name		      ""
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.14"
+    ComputedModelVersion    "1.15"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -81,11 +81,11 @@ Model {
   Creator		  "Jeff"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
-  LastModifiedBy	  "chrysler2"
+  LastModifiedBy	  "monika"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Fri Jul 04 13:39:04 2014"
-  RTWModifiedTimeStamp	  326381744
-  ModelVersionFormat	  "1.%<AutoIncrement:14>"
+  LastModifiedDate	  "Thu Nov 17 16:40:14 2016"
+  RTWModifiedTimeStamp	  401301612
+  ModelVersionFormat	  "1.%<AutoIncrement:15>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -123,7 +123,6 @@ Model {
     $ObjectID		    2
     $ClassName		    "Simulink.SimulationData.ModelLoggingInfo"
     model_		    "nonSig"
-    signals_		    []
     overrideMode_	    [0.0]
     Array {
       Type		      "Cell"
@@ -667,13 +666,6 @@ Model {
 	  Version		  "1.11.1"
 	  Description		  "HDL Coder custom configuration component"
 	  Name			  "HDL Coder"
-	  Array {
-	    Type		    "Cell"
-	    Dimension		    1
-	    Cell		    ""
-	    PropName		    "HDLConfigFile"
-	  }
-	  HDLCActiveTab		  "0"
 	}
 	PropName		"Components"
       }
@@ -872,7 +864,7 @@ Model {
     }
   }
   System {
-    Name		    "nonSig"
+    Name		    "SignatureDemo"
     Location		    [95, 105, 1441, 738]
     Open		    on
     ModelBrowserVisibility  off
@@ -1029,7 +1021,7 @@ Model {
       System {
 	Name			"Subsystem"
 	Location		[144, 250, 1490, 906]
-	Open			on
+	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -1618,7 +1610,7 @@ Model {
       Name		      "Subsystem1"
       SID		      "78"
       Ports		      [1]
-      Position		      [565, 69, 715, 201]
+      Position		      [570, 69, 720, 201]
       ZOrder		      -17
       ShowName		      off
       ShowPortLabels	      "none"
