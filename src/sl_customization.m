@@ -1,33 +1,33 @@
 %% Register custom menu function to beginning of Simulink Editor's context menu
 function sl_customization(cm)
-	cm.addCustomMenuFcn('Simulink:PreContextMenu', @getMySLToolbox);
+	cm.addCustomMenuFcn('Simulink:PreContextMenu', @getMcMasterTool);
 end
 
 %% Define the custom menu function
-function schemaFcns = getMySLToolbox(callbackInfo) 
-	schemaFcns = {@getSigToolbox}; 
+function schemaFcns = getMcMasterTool(callbackInfo) 
+	schemaFcns = {@getSignatureToolbox}; 
 end
 
-%% Define top-level menu item
-function schema = getSigToolbox(callbackInfo)
+%% Define custom menu item
+function schema = getSignatureToolbox(callbackInfo)
     schema = sl_container_schema;
-    schema.label = 'Signature Tool';
-    schema.ChildrenFcns = {@getSignatureTool, @getTestHarness}; 
+    schema.label = 'Signature';
+    schema.ChildrenFcns = {@getSignature @getTestHarness}; 
 end
 
-%% Define first sub-menu item
-function schema = getSignatureTool(callbackInfo)
+%% Define first action
+function schema = getSignature(callbackInfo)
     schema = sl_action_schema;
     schema.label = 'Extract Signature';
     schema.userdata = 'Signature';
-    schema.callback = @SignatureToolCallback;
+    schema.callback = @SignatureCallback;
 end
 
-function SignatureToolCallback(callbackInfo)
+function SignatureCallback(callbackInfo)
     sigGUI;
 end
 
-%% Define second sub-menu item
+%% Define second action
 function schema = getTestHarness(callbackInfo)
     schema = sl_action_schema;
     schema.label = 'Augment for Test Harness';
