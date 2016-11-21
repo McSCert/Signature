@@ -1,10 +1,10 @@
 function [metrics signatures] = StrongSignature(address, exportType,...
-    hasUpdates, sys, docFormat)
+    hasUpdates, system, docFormat)
 % STRONGSIGNATURE Generate documentation of a system's strong signature or
 % 	produce the model of the strong signature.
 %
 %   Function:
-%       STRONGSIGNATURE(address, exportType, hasUpdates, sys, docFormat)
+%       STRONGSIGNATURE(address, exportType, hasUpdates, system, docFormat)
 %
 %   Inputs:
 %       address     Simulink system path.
@@ -15,7 +15,7 @@ function [metrics signatures] = StrongSignature(address, exportType,...
 %       hasUpdates  Boolean indicating whether updates are to be 
 %                   included in the signature.
 %
-%       sys         Name of the system to generate the documentation for. 
+%       system      Name of the system to generate the documentation for. 
 %                   One can use a specific system name, or use 'All' to get 
 %                   documentation of the entire hierarchy.
 %
@@ -39,7 +39,7 @@ function [metrics signatures] = StrongSignature(address, exportType,...
         [scopeGotoAddOut, DataStoreWriteAddOut, DataStoreReadAddOut, ...
             scopeFromAddOut, globalGotosAddOut, globalFromsAddOut, ...
             metrics, signatures] = ...
-            TieInStrongData(address, sys, hasUpdates, docFormat, dataTypeMap);
+            TieInStrongData(address, system, hasUpdates, docFormat, dataTypeMap);
     else % If producing model
         sigModel = strcat(address, '_STRONG_SIGNATURE');
         
@@ -57,7 +57,7 @@ function [metrics signatures] = StrongSignature(address, exportType,...
         set_param(address, 'Lock', 'off');
 
         % Generate signature
-        [carryOut] = TieInStrong(address, hasUpdates, sys);
+        [carryOut] = TieInStrong(address, hasUpdates, system);
         metrics = 0;
         signatures = {};
         

@@ -1,10 +1,10 @@
 function [metrics signatures] = WeakSignature(address, exportType,...
-    hasUpdates, sys, docFormat)
+    hasUpdates, system, docFormat)
 % WEAKSIGNATURE Generate documentation of a system's weak signature or
 % 	produce the model of the weak signature.
 %
 %   Function:
-%       WEAKSIGNATURE(address, exportType, hasUpdates, sys, docFormat)
+%       WEAKSIGNATURE(address, exportType, hasUpdates, system, docFormat)
 %
 %   Inputs:
 %       address     The Simulink model path.
@@ -15,7 +15,7 @@ function [metrics signatures] = WeakSignature(address, exportType,...
 %       hasUpdates  Boolean indicating whether updates are to be 
 %                   included in the signature.
 %
-%       sys         Name of the system to generate the documentation for. 
+%       system      Name of the system to generate the documentation for. 
 %                   One can use a specific system name, or use 'All' to get 
 %                   documentation of the entire hierarchy.
 %
@@ -42,7 +42,7 @@ function [metrics signatures] = WeakSignature(address, exportType,...
     if exportType % If producing documentation
         dataTypeMap = mapDataTypes(address);
         [metrics, signatures] = ...
-            TieInData(address, 0, {}, {}, {}, {}, {}, {}, sys, {}, {}, hasUpdates, docFormat, dataTypeMap);
+            TieInData(address, 0, {}, {}, {}, {}, {}, {}, system, {}, {}, hasUpdates, docFormat, dataTypeMap);
     else % If producing model
         sigModel = strcat(address, '_WEAK_SIGNATURE');
         
