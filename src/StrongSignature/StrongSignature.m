@@ -7,7 +7,7 @@ function [metrics signatures] = StrongSignature(address, exportType,...
 %       STRONGSIGNATURE(address, exportType, hasUpdates, system, docFormat)
 %
 %   Inputs:
-%       address     Simulink system path.
+%       address     Simulink model name or path.
 %
 %       exportType  Boolean indicating whether to export the signature as
 %                   a model(0) or as documentation (1).
@@ -34,12 +34,56 @@ function [metrics signatures] = StrongSignature(address, exportType,...
 %                   DataStoreWrites, Updates, GotoTagVisibilities, and 
 %                   DataStoreMemories.
 %
-%   Example:
-%       StrongSignature('SignatureDemo', 1, 1, 'All', 0)
-%           Generates strong signature documentation for model 'SignatureDemo'
-%           and all its subsystems as .txt, including updates.
+%   Example 1:
+%       StrongSignature('SignatureDemo', 0, 1, 'All', 0)
+%           Generates a strong signature model, that include updates, for 
+%           the model 'SignatureDemo' and all its subsystems.
+%
+%   Example 2:
+%       StrongSignature('SignatureDemo', 1, 1, 'SignatureDemo/Subsystem/Subsystem0', 0)
+%           Generates strong signature documentation, that includes updates, 
+%           for a specific subsystem of 'SignatureDemo', as a .txt file.
 
-    set_param(address, 'Lock', 'off');
+    % Check number of arguments
+    try
+        assert(nargin == 5)
+    catch
+        disp(['Error using ' mfilename ':' char(10) ...
+            ' Not enough arguments.' char(10)])
+        return
+    end        
+
+    % Check address argument
+    % 1) Check model at address is open
+    try
+       assert(ischar(address));
+       assert(bdIsLoaded(bdroot(address)));
+    catch
+        disp(['Error using ' mfilename ':' char(10) ...
+            ' Invalid argument: address. Model may not be loaded or name is invalid.' char(10)])
+        return
+    end
+
+    % 2) Check that model is unlocked
+    try
+        assert(strcmp(get_param(bdroot(address), 'Lock'), 'off'));
+    catch ME
+        if strcmp(ME.identifier, 'MATLAB:assert:failed') || ... 
+                strcmp(ME.identifier, 'MATLAB:assertion:failed')
+            disp(['Error using ' mfilename ':' char(10) ...
+                ' File is locked.'])
+            return
+        end
+    end
+
+    % Check system argument
+    try
+        find_system(system, 'SearchDepth', 0, 'BlockType', 'SubSystem');
+    catch
+        disp(['Error using ' mfilename ':' char(10) ...
+                ' Invalid argument: system. Subsystem ' system ' is not found.'])
+        return
+    end
     
     if exportType % If producing documentation
         dataTypeMap = mapDataTypes(address);
