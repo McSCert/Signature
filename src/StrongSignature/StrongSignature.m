@@ -23,9 +23,14 @@ function [metrics signatures] = StrongSignature(address, exportType,...
 %                   generate: .txt(0) or .tex(1).
 %
 %   Outputs:
-%       metrics     ???
+%       metrics     List of structs with fields Subsystem and Size (of
+%                   signature).
 %
-%       signatures  ???
+%       signatures  List of structs with fields Subsystem, Size, 
+%                   Inports, Outports, GlobalFroms, GlobalGotos, 
+%                   ScopedFromTags, ScopedGotoTags, DataStoreReads, 
+%                   DataStoreWrites, Updates, GotoTagVisibilities, and 
+%                   DataStoreMemories (of signature).
 %
 %   Example:
 %       StrongSignature('SignatureDemo', 1, 1, 'All', 0)

@@ -18,7 +18,7 @@ function yOffsetFinal = RepositionImplicits(yOffset, blocksToRepo, blockLength, 
 %                       or block to the left (1).
 %
 %   Outputs:
-%       yOffsetFinal    Final offest after repositioning is done.
+%       yOffsetFinal    Point in the y-axis to start repositioning blocks next time.
 
     if num % Block to the left of the terminator
         for z = 1:length(blocksToRepo{1})

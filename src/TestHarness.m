@@ -1,9 +1,9 @@
 function TestHarness(system)
 % TESTHARNESS Augment a system with a test harness which accounts for
-% hidden data flow of data stores.
+%   hidden data flow of data stores.
 %
 %   Inputs:
-%       system      Simulink system path to generate the harness for
+%       system      Simulink system path to generate the harness for.
 %
 %   Outputs:
 %       N/A
@@ -165,9 +165,9 @@ function TestHarness(system)
     numBlock = length(addedBlocks);
     rowNum = ceil(numBlock/2);
     colNum = 10;
-    mdlLines = find_system(system,'Searchdepth',1, 'FollowLinks', 'on', 'LookUnderMasks', 'All', 'FindAll', 'on', 'Type', 'line');
+    mdlLines = find_system(system, 'Searchdepth',1, 'FollowLinks', 'on', 'LookUnderMasks', 'All', 'FindAll', 'on', 'Type', 'line');
     allBlocks = find_system(system, 'SearchDepth', 1);
-    annotations = find_system(system,'FindAll', 'on', 'SearchDepth', 1, 'type', 'annotation');
+    annotations = find_system(system, 'FindAll', 'on', 'SearchDepth', 1, 'type', 'annotation');
     
     for zm = 1:length(mdlLines)
         lPint = get_param(mdlLines(zm), 'Points');
@@ -207,7 +207,7 @@ function TestHarness(system)
         newPos(3) = start + (blockpos(3) - blockpos(1))*5;
         newPos(4) = top + (blockpos(4) - blockpos(2));
         start = newPos(3) + 20;
-        set_param(addedBlocks{j},'Position', newPos);
+        set_param(addedBlocks{j}, 'Position', newPos);
         newPos = [];
     end
     
@@ -224,6 +224,7 @@ function TestHarness(system)
         nextSys(end) = [];
         nextSys = strjoin(nextSys, '/');
         ports = get_param(sysName, 'PortHandles');
+
         num = 0;
         for j = 1:numIns
             inport = add_block('built-in/Inport', [nextSys '/HarnessInport' num2str(num)]);
@@ -237,6 +238,7 @@ function TestHarness(system)
             add_line(nextSys, inportPort, subInports(sysIns + j));
             num = num + 1;
         end
+
         num = 0;
         for j = 1:numOuts
             outport = add_block('built-in/Outport', [nextSys '/HarnessOutport' num2str(num)]);

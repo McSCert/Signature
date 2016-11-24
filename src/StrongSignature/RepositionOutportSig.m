@@ -5,15 +5,15 @@ function yOffsetFinal = RepositionOutportSig(address, outGo, outFrom, outports, 
 %       REPOSITIONOUTPORTSIG(address, outGo, outFrom, outports, gotoLength, yOffset)
 %
 %   Inputs:
-%       address     Simulink system path.
-%		outGo       Outport goto handles.
-%		outFrom     Outport from handles.
-%		outports    Outport handles.
-%		gotoLength  Max length of the goto signal names.
-%		yOffset     Point in the y-axis to start positioning blocks.
+%       address         Simulink system path.
+%		outGo            Outport goto handles.
+%		outFrom          Outport from handles.
+%		outports         Outport handles.
+%		gotoLength       Max length of the goto signal names.
+%		yOffset          Point in the y-axis to start positioning blocks.
 %
 %	Outputs:
-%		yOffsetFinal    Point in the y-axis to start positioning blocks next time.
+%		yOffsetFinal    Point in the y-axis to start repositioning blocks next time.
 
     offset = 50 + 10 * gotoLength;
     

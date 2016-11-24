@@ -13,8 +13,7 @@ function yOffset = RepositionInportSig(address, inGo, inFrom, inports, gotoLengt
 %		gotoLength  Max length of the goto signal names.
 %
 %	Outputs:
-%		yOffset     Point in the y-axis to start positioning blocks next
-%                   time.
+%		yOffset     Point in the y-axis to start repositioning blocks next time.
 
     allBlocks   = find_system(address, 'SearchDepth', 1);
     allBlocks   = setdiff(allBlocks, address);

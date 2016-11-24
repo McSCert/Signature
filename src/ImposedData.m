@@ -22,5 +22,3 @@ function [tagDex, dsDex] = ImposedData(address)
             tagDex{end + 1} = get_param(allBlocks{z}, 'GotoTag');
         end
 	end
-
-

@@ -15,7 +15,7 @@ function schema = getSignatureToolbox(callbackInfo)
     schema.ChildrenFcns = {@getSignature @getTestHarness}; 
 end
 
-%% Define first action
+%% Define first action: Extract Signature
 function schema = getSignature(callbackInfo)
     schema = sl_action_schema;
     schema.label = 'Extract Signature';
@@ -27,7 +27,7 @@ function SignatureCallback(callbackInfo)
     sigGUI;
 end
 
-%% Define second action
+%% Define second action: Augment for Test Harness
 function schema = getTestHarness(callbackInfo)
     schema = sl_action_schema;
     schema.label = 'Augment for Test Harness';

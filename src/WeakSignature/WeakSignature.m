@@ -24,13 +24,13 @@ function [metrics signatures] = WeakSignature(address, exportType,...
 %
 %   Outputs:
 %       metrics     List of structs with fields Subsystem and Size (of
-%                   signature)
+%                   signature).
 %
 %       signatures  List of structs with fields Subsystem, Size, 
 %                   Inports, Outports, GlobalFroms, GlobalGotos, 
 %                   ScopedFromTags, ScopedGotoTags, DataStoreReads, 
 %                   DataStoreWrites, Updates, GotoTagVisibilities, and 
-%                   DataStoreMemories (of signature)
+%                   DataStoreMemories (of signature).
 %
 %   Example:
 %       WeakSignature('SignatureDemo', 1, 1, 'All', 0)
@@ -42,7 +42,8 @@ function [metrics signatures] = WeakSignature(address, exportType,...
     if exportType % If producing documentation
         dataTypeMap = mapDataTypes(address);
         [metrics, signatures] = ...
-            TieInData(address, 0, {}, {}, {}, {}, {}, {}, system, {}, {}, hasUpdates, docFormat, dataTypeMap);
+            TieInData(address, 0, {}, {}, {}, {}, {}, {}, system, {}, ...
+                {}, hasUpdates, docFormat, dataTypeMap);
     else % If producing model
         sigModel = strcat(address, '_WEAK_SIGNATURE');
         

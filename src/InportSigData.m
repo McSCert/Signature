@@ -15,4 +15,3 @@ function [address, inports] = InportSigData(address)
     for i = 1:length(inports)
         inports{i} = get_param(inports{i}, 'Name');
     end
-        

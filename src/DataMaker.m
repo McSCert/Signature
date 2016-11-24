@@ -75,21 +75,21 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         % Fill with blocks names and their type
         file = fopen(filename, 'wt');
 
-        texPreamble = '%To use this LaTeX, the following should be in the preamble:';
+        texPreamble = '% To use this LaTeX, the following should be in the preamble:';
         fprintf(file, '%s\n', texPreamble);
         fprintf(file, '%%\t%s\n\n', '\usepackage[pdfusetitle]{hyperref}');
 
-        table = '%To add the generated tables to a latex document, use the following line (edit the path as appropriate):';
+        table = '% To add the generated tables to a latex document, use the following line (edit the path as appropriate):';
         fprintf(file, '%s\n', table);
         table = ['\input{path_to_file/' filename '}'];
         fprintf(file, '%%\t%s\n\n', table);
 
-        table = '%To hyperlink to a table in this file, use the following line:';
+        table = '% To hyperlink to a table in this file, use the following line:';
         fprintf(file, '%s\n', table);
         table = ['\hyperref[table:' filename '_table title]{hyperlinked text here}'];
         fprintf(file, '%%\t%s\n\n', table);
 
-        table = '%To hyperlink to a row in a table in this file, use the following line:';
+        table = '% To hyperlink to a row in a table in this file, use the following line:';
         fprintf(file, '%s\n', table);
         table = ['\hyperref[table:' filename '_table title_variable name]{hyperlinked text here}'];
         fprintf(file, '%%\t%s\n\n', table);
@@ -98,10 +98,10 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         fprintf(file, '%s\n\n', table);
 
         if ~isempty(outputs) || ~isempty(scopedGotos) || ~isempty(globalGotos) || ~isempty(dataStoreWrites)
-            makeTexTable(address, filename, file, 'Inports',inputs,dataTypeMap, 'Inport');
-            makeTexTable(address, filename, file, 'Scoped Froms',scopedFroms,dataTypeMap, 'From');
-            makeTexTable(address, filename, file, 'Global Froms',globalFroms,dataTypeMap, 'From');
-            makeTexTable(address, filename, file, 'Data Store Reads',dataStoreReads,dataTypeMap, 'DataStoreRead');
+            makeTexTable(address, filename, file, 'Inports', inputs, dataTypeMap, 'Inport');
+            makeTexTable(address, filename, file, 'Scoped Froms', scopedFroms, dataTypeMap, 'From');
+            makeTexTable(address, filename, file, 'Global Froms', globalFroms, dataTypeMap, 'From');
+            makeTexTable(address, filename, file, 'Data Store Reads', dataStoreReads, dataTypeMap, 'DataStoreRead');
         else
             table = 'N/A \\';
             fprintf(file, '%s\n', table);
@@ -112,10 +112,10 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         fprintf(file, '%s\n\n', table);
 
         if ~isempty(outputs) || ~isempty(scopedGotos) || ~isempty(globalGotos) || ~isempty(dataStoreWrites)
-            makeTexTable(address, filename, file, 'Outports',outputs,dataTypeMap, 'Outport');
-            makeTexTable(address, filename, file, 'Scoped Gotos',scopedGotos,dataTypeMap, 'Goto');
-            makeTexTable(address, filename, file, 'Global Gotos',globalGotos,dataTypeMap, 'Goto');
-            makeTexTable(address, filename, file, 'Data Store Writes',dataStoreWrites,dataTypeMap, 'DataStoreWrite');
+            makeTexTable(address, filename, file, 'Outports', outputs, dataTypeMap, 'Outport');
+            makeTexTable(address, filename, file, 'Scoped Gotos', scopedGotos, dataTypeMap, 'Goto');
+            makeTexTable(address, filename, file, 'Global Gotos', globalGotos, dataTypeMap, 'Goto');
+            makeTexTable(address, filename, file, 'Data Store Writes', dataStoreWrites, dataTypeMap, 'DataStoreWrite');
         else
             table = 'N/A \\';
             fprintf(file, '%s\n', table);
@@ -136,8 +136,8 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         fprintf(file, '%s\n\n', table);
 
         if ~isempty(tagDex) || ~isempty(dsDex)
-            makeTexTable(address, filename, file, 'Tag Declarations',tagDex,dataTypeMap, 'GotoTagVisibility');
-            makeTexTable(address, filename, file, 'Data Store Declarations',dsDex,dataTypeMap, 'DataStoreMemory');
+            makeTexTable(address, filename, file, 'Tag Declarations', tagDex,dataTypeMap, 'GotoTagVisibility');
+            makeTexTable(address, filename, file, 'Data Store Declarations', dsDex,dataTypeMap, 'DataStoreMemory');
         else
             table = 'N/A';
             fprintf(file, '%s\n', table);
@@ -151,33 +151,30 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         filename = address;
         filename = strrep(filename, '/', '_');
         filename = filename(1:end);
-        filename = strrep(filename, sprintf('\n'),'');
-        filename = strrep(filename, sprintf('\r'),'');
+        filename = strrep(filename, sprintf('\n'), '');
+        filename = strrep(filename, sprintf('\r'), '');
 
         chapter = [get_param(address, 'Name'), ' ', 'Signature'];
 
-        % List of variables in the base workspace that are expected to be
-        % overwritten by the report function below
-        varsForReport = {'filename','dataTypeMap','address','signatures','chapter'...
-            'getUnit', 'k', 'includeTableDefaults', 'removeInterfaceCols', ...
-            'sigParams', 'tableSections', ...
-            'index', 'table', 'tableTitle', 'sigParam'};
-
-        tempVarsFromBase = SaveBaseVars(varsForReport); % Save values from base workspace in tempVarsFromBase
+        % Save workspace variables because using the 'report' function 
+        % later on will overwrite them
+        varsForReport = {'filename', 'dataTypeMap', 'address', 'signatures', ...
+            'chapter', 'getUnit', 'k', 'includeTableDefaults', 'removeInterfaceCols', ...
+            'sigParams', 'tableSections', 'index', 'table', 'tableTitle', 'sigParam'};
+        tempVarsFromBase = SaveBaseVars(varsForReport);
         OverwriteBaseVars(varsForReport); % Replace values in base workspace with values from this workspace
 
         % Generate the Word document
-        % The report function uses the base workspace hence the need for saving
-        % values originally in the base workspace
         report('Signature', '-fdoc'); % Default generation produces .docx, the formatting style is a bit different with .doc
 
-        LoadBaseVars(varsForReport, tempVarsFromBase); % Return values in base workspace to the way they were with values from tempVarsFromBase
+        % Restore the workspace
+        LoadBaseVars(varsForReport, tempVarsFromBase);
     end
 end
 
 function tempVarsFromBase = SaveBaseVars(varsToSave)
-% Save variables in the base workspace
-    tempVarsFromBase = cell(1,length(varsToSave));
+% SAVEBASEVARS Save variables in the base workspace.
+    tempVarsFromBase = cell(1, length(varsToSave));
     for i = 1:length(varsToSave)
         % Save variable if it exists
         try
@@ -187,17 +184,17 @@ function tempVarsFromBase = SaveBaseVars(varsToSave)
 end
 
 function OverwriteBaseVars(varsToSave)
-% Overwrite variables in the base workspace with values from the caller
+% OVERWRITEBASEVARS Overwrite variables in the base workspace with values from the caller.
     for i = 1:length(varsToSave)
         % Overwrite variable from caller
-        if evalin('caller',['exist(''', varsToSave{i}, ''',''var'')'])
+        if evalin('caller', ['exist(''', varsToSave{i}, ''',''var'')'])
             assignin('base', varsToSave{i}, evalin('caller', varsToSave{i}));
         end
     end
 end
 
-function LoadBaseVars(varsToLoad,tempVarsFromBase)
-% Return base workspace to its original state
+function LoadBaseVars(varsToLoad, tempVarsFromBase)
+% LOADBASEVARS Return base workspace to its original state.
     for i = 1:length(varsToLoad)
         % Load Variables
         try

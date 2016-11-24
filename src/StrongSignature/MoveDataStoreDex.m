@@ -1,15 +1,12 @@
 function yOffsetFinal = MoveDataStoreDex(address, yOffset)
 % MOVEDATASTOREDEX Move Data Store Memory blocks to the left side of the signature.
 %
-%   Function:
-%       MOVEDATASTOREDEX(address, yOffset)
-%
 %   Inputs:
 %       address     Simulink system path.
 %       yOffset     Point in the y-axis to start positioning blocks.
 %
 %   Outputs:
-%       yOffsetFinal
+%       yOffsetFinal Point in the y-axis to start repositioning blocks next time.
 
 	allBlocks = find_system(address, 'SearchDepth', 1);
 	allBlocks = setdiff(allBlocks, address);

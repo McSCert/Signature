@@ -4,21 +4,17 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
     dataStoreReadAdd, hasUpdates)
 %   ADDIMPLICITS Add the implicit inputs and outputs (i.e., scoped Gotos
 %    and Data Store Memorys) for the signature of a subsystem.
-% 
-%    Function:
-%        ADDIMPLICITS (address, scopeGotoAdd, scopeFromAdd,
-%            dataStoreWriteAdd, dataStoreReadAdd, hasUpdates)
-%   
+%  
 % 	Inputs:
 %       address         Simulink system path.
 %
-% 		scopeGotoAdd	additional scoped gotos to add to the address
+% 		scopeGotoAdd	additional scoped gotos to add to the address.
 %
 %       scopeFromAdd    ??
 %
-%       dataStoreWriteAdd additional data stores writes to add to the address
+%       dataStoreWriteAdd additional data stores writes to add to the address.
 %
-% 		dataStoreReadAdd additional Data Stores reads to add to the address
+% 		dataStoreReadAdd additional Data Stores reads to add to the address.
 %
 %       hasUpdates      Boolean indicating whether updates are included in 
 %                       the signature.
