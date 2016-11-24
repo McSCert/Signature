@@ -51,7 +51,7 @@ Model {
       Name		      ""
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.15"
+    ComputedModelVersion    "1.17"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -83,9 +83,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "monika"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Thu Nov 17 16:40:14 2016"
-  RTWModifiedTimeStamp	  401301612
-  ModelVersionFormat	  "1.%<AutoIncrement:15>"
+  LastModifiedDate	  "Thu Nov 24 13:25:54 2016"
+  RTWModifiedTimeStamp	  401894729
+  ModelVersionFormat	  "1.%<AutoIncrement:17>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -123,6 +123,7 @@ Model {
     $ObjectID		    2
     $ClassName		    "Simulink.SimulationData.ModelLoggingInfo"
     model_		    "nonSig"
+    signals_		    []
     overrideMode_	    [0.0]
     Array {
       Type		      "Cell"
@@ -1217,7 +1218,6 @@ Model {
 	  Ports			  [2, 2]
 	  Position		  [260, 306, 370, 384]
 	  ZOrder		  -17
-	  ShowName		  off
 	  MinAlgLoopOccurrences	  off
 	  PropExecContextOutsideSubsystem off
 	  RTWSystemCode		  "Auto"
@@ -1244,7 +1244,7 @@ Model {
 	      BlockType		      Inport
 	      Name		      "In1"
 	      SID		      "50"
-	      Position		      [95, 133, 125, 147]
+	      Position		      [95, 128, 125, 142]
 	      ZOrder		      -1
 	      ShowName		      off
 	      IconDisplay	      "Port number"
@@ -1253,7 +1253,7 @@ Model {
 	      BlockType		      Inport
 	      Name		      "In2"
 	      SID		      "51"
-	      Position		      [95, 168, 125, 182]
+	      Position		      [95, 163, 125, 177]
 	      ZOrder		      -1
 	      ShowName		      off
 	      Port		      "2"
@@ -1277,7 +1277,6 @@ Model {
 	      Ports		      [2, 2]
 	      Position		      [200, 119, 300, 186]
 	      ZOrder		      -17
-	      ShowName		      off
 	      MinAlgLoopOccurrences   off
 	      PropExecContextOutsideSubsystem off
 	      RTWSystemCode	      "Auto"
@@ -1772,11 +1771,11 @@ Model {
       DstPort		      1
     }
     Annotation {
-      Name		      "Subsystem1"
+      Name		      "Subsystem"
       Position		      [245, 207]
     }
     Annotation {
-      Name		      "Subsystem2"
+      Name		      "Subsystem1"
       Position		      [638, 207]
     }
   }
