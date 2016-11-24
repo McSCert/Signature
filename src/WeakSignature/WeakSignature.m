@@ -23,14 +23,16 @@ function [metrics signatures] = WeakSignature(address, exportType,...
 %                   generate: .txt(0) or .tex(1).
 %
 %   Outputs:
-%       metrics     List of structs with fields Subsystem and Size (of
-%                   signature).
+%       metrics     Cell array listing the system and its subsystems, with
+%                   the size of their signature (i.e. number of elements in 
+%                   the signature).
 %
-%       signatures  List of structs with fields Subsystem, Size, 
+%       signatures  Cell array of signature data for the system and its 
+%                   subsystems. Signature data includes: Subsystem, Size, 
 %                   Inports, Outports, GlobalFroms, GlobalGotos, 
 %                   ScopedFromTags, ScopedGotoTags, DataStoreReads, 
 %                   DataStoreWrites, Updates, GotoTagVisibilities, and 
-%                   DataStoreMemories (of signature).
+%                   DataStoreMemories.
 %
 %   Example:
 %       WeakSignature('SignatureDemo', 1, 1, 'All', 0)
