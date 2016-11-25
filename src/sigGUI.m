@@ -82,7 +82,7 @@ address = gcs;
 numChars = strfind(address, '/');
 
 if ~isempty(numChars)
-    address = address(1:numChars(1)-1);
+    address = address(1:numChars(1) - 1);
 end
 
 if get(handles.radio_strongsig, 'Value')
