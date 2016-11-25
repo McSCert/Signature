@@ -1,15 +1,15 @@
 function globalGotos = FindGlobals(address)
-% FIND GOTOS Recurse through all subsystems of a system, and return a list 
-% 	of the names of global Gotos.
+% GLOBALGOTOS Find names of global Gotos.
 %
 %   Inputs:
-%   	address The address of the system to execute findGlobals.
+%		address      The name and location of the system.
 %
 %   Outputs:
-%   	globalGotos A list of global Goto names to be passed out.
+%   	globalGotos	 List of global Goto names.
 
 	allBlocks = find_system(address, 'SearchDepth', 1);
 	allBlocks = setdiff(allBlocks, address);
+
 	globalGotos = {};
 	for z = 1:length(allBlocks)
 		Blocktype = get_param(allBlocks{z}, 'Blocktype');

@@ -1,4 +1,4 @@
-function yOffset = RepositionInportSig(address, inGo, inFrom, inports, gotoLength)
+function yOffsetFinal = RepositionInportSig(address, inGo, inFrom, inports, gotoLength)
 %  REPOSITIONINPORTSIG Reposition Inports and Inport Goto/Froms.
 %
 %   Inputs:
@@ -9,7 +9,7 @@ function yOffset = RepositionInportSig(address, inGo, inFrom, inports, gotoLengt
 %       gotoLength  Max length of the input signal names.
 %
 %   Outputs:
-%       yOffset     Point in the y-axis to start repositioning blocks next time.
+%       yOffsetFinal Point in the y-axis to start repositioning blocks next time.
 
     allBlocks = find_system(address, 'SearchDepth', 1);
     allBlocks = setdiff(allBlocks, address);
@@ -20,7 +20,7 @@ function yOffset = RepositionInportSig(address, inGo, inFrom, inports, gotoLengt
     offset = 300 + 20*gotoLength;
     yOffset = 34;
 
-    % Reposition inports
+    % Reposition Inports
     for zt = 1:length(inports)
         iPosition = get_param(inports{zt}, 'Position');
         iPosition(1) = 20;
@@ -31,17 +31,20 @@ function yOffset = RepositionInportSig(address, inGo, inFrom, inports, gotoLengt
         end
         iPosition(3) = 30 + 20;
         iPosition(4) = iPosition(2) + 14;
-        yOffset = iPosition(4);
         set_param(inports{zt}, 'Position', iPosition);
+
+        yOffsetFinal = iPosition(4);     % Update output
     end
 
-    % Reposition Gotos and Froms
+    % Reposition Gotos
     for y = 1:length(inGo)
         gPosition    = get_param(inports{y}, 'Position');
         gPosition(1) = gPosition(1) + 50;
         gPosition(3) = gPosition(3) + 50 + 10*gotoLength;
         set_param(inGo{y}, 'Position', gPosition);
     end
+
+    % Reposition Froms
     for x = 1:length(inFrom)
         fPosition    = get_param(inFrom{x}, 'Position');
         fPosition(1) = fPosition(1) + 250 + 10*gotoLength;
@@ -54,7 +57,7 @@ function yOffset = RepositionInportSig(address, inGo, inFrom, inports, gotoLengt
     mdlLinesTwo = [];
     add_block('built-in/Note', [address '/Main Simulink Block'], 'Position', [offset + 20*gotoLength 10], 'FontSize', 30)
 
-    % Reposition all lines and other blocks aside from inport, inport gotos and froms
+    % Reposition all lines and other blocks aside from inport, and inport gotos and froms
     mdlLines = find_system(address, 'Searchdepth', 1, 'FollowLinks', 'on', 'LookUnderMasks', 'All', 'FindAll', 'on', 'Type', 'line');
     for zy = 1:length(mdlLines)
         SrcBlock = get_param(mdlLines(zy), 'SrcBlock');

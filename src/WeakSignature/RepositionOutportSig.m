@@ -60,7 +60,9 @@ function yOffsetFinal = RepositionOutportSig(address,outGo, outFrom, outports, g
             delete_line(outFromLineHanles.Outport)
             add_line(address, srcport, destport, 'autorouting', 'on');
         catch
+            % Do nothing
         end
 	end
+    % Update offset output
 	yOffsetFinal = yOffset;
 end 

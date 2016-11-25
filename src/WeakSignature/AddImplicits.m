@@ -140,13 +140,17 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
         if ~isKey(mapObjU, scopeFromAddx{bz})
 		from = add_block('built-in/From', [address '/FromSigScopeAdd' num2str(num)]);
 		fromName = ['FromSigScopeAdd' num2str(num)];
+
 		Terminator = add_block('built-in/Terminator', [address '/TerminatorFromScopeAdd' num2str(termnum)]);
 		TermName = ['TerminatorFromScopeAdd' num2str(termnum)];
+
 		fromToRepo(end + 1) = from;
 		fromTermToRepo(end + 1) = Terminator;
+
 		set_param(from, 'GotoTag', scopeFromAddx{bz});
 		set_param(from, 'TagVisibility', 'scoped');
 		add_line(address, [fromName '/1'], [TermName '/1']);
+
 		num = num + 1;
 		termnum = termnum + 1;
         end
@@ -162,13 +166,17 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
         if ~isKey(mapObjU, scopeGotoAddx{bt})
             from = add_block('built-in/From', [address '/GotoSigScopeAdd' num2str(num)]);
             fromName = ['GotoSigScopeAdd' num2str(num)];
+
             Terminator = add_block('built-in/Terminator', [address '/TerminatorGotoScopeAdd' num2str(termnum)]);
             TermName = ['TerminatorGotoScopeAdd' num2str(termnum)];
+
             gotoToRepo(end + 1) = from;
             gotoTermToRepo(end + 1) = Terminator;
+
             set_param(from, 'GotoTag', scopeGotoAddx{bz});
             set_param(from, 'TagVisibility', 'scoped');
             add_line(address, [fromName '/1'], [TermName '/1']);
+
             num = num + 1;
             termnum = termnum + 1;
         end
@@ -184,12 +192,16 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
         if ~isKey(mapObjU, dataStoreWriteAddx{by})
             dataStore = add_block('built-in/dataStoreRead', [address '/DataStoreWriteAdd' num2str(num)]);
             dataStoreName = ['DataStoreWriteAdd' num2str(num)];
+
             Terminator = add_block('built-in/Terminator', [address '/TerminatorDataStoreWriteAdd' num2str(termnum)]);
             TermName = ['TerminatorDataStoreWriteAdd' num2str(termnum)];
+
             dSWriteToRepo(end + 1) = dataStore;
             dSWriteTermToRepo(end + 1) = Terminator;
+
             set_param(dataStore, 'DataStoreName', dataStoreWriteAddx{by});
             add_line(address, [dataStoreName '/1'], [TermName '/1']);
+
             num = num + 1;
             termnum = termnum + 1;
         end
@@ -205,12 +217,16 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
         if ~isKey(mapObjU, dataStoreReadAddx{bx})
             dataStore = add_block('built-in/dataStoreRead', [address '/DataStoreReadAdd' num2str(num)]);
             dataStoreName = ['DataStoreReadAdd' num2str(num)];
+
             Terminator = add_block('built-in/Terminator', [address '/TerminatorDataStoreReadAdd' num2str(termnum)]);
             TermName = ['TerminatorDataStoreReadAdd' num2str(termnum)];
+
             dSReadToRepo(end + 1) = dataStore;
             dSReadTermToRepo(end + 1) = Terminator;
+
             set_param(dataStore, 'DataStoreName', dataStoreReadAddx{bx});
             add_line(address, [dataStoreName '/1'], [TermName '/1']);
+
             num = num + 1;
             termnum = termnum + 1;
         end
@@ -225,24 +241,32 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
         if strcmp(updatesToAdd{bw}.Type, 'DataStoreRead')
             dataStore = add_block('built-in/DataStoreRead', [address '/DataStoreUpdate' num2str(num)]);
             dataStoreName = ['DataStoreUpdate' num2str(num)];
+
             Terminator = add_block('built-in/Terminator', [address '/TermDSUpdate' num2str(termnum)]);
             TermName = ['TermDSUpdate' num2str(termnum)];
+
             updateToRepo(end + 1) = dataStore;
             updateTermToRepo(end + 1) = Terminator;
+
             set_param(dataStore, 'DataStoreName', updatesToAdd{bw}.Name);
             add_line(address, [dataStoreName '/1'], [TermName '/1']);
+
             num = num + 1;
             termnum = termnum + 1;
         else
             from = add_block('built-in/From', [address '/FromUpdate' num2str(num)]);
             fromName = ['FromUpdate' num2str(num)];
+
             Terminator = add_block('built-in/Terminator', [address '/TermFromUpdate' num2str(termnum)]);
             TermName = ['TermFromUpdate' num2str(termnum)];
+
             updateToRepo(end + 1) = from;
             updateTermToRepo(end + 1) = Terminator;
+
             set_param(from, 'GotoTag', updatesToAdd{bw}.Name);
             set_param(from, 'TagVisibility', 'scoped');
             add_line(address, [fromName '/1'], [TermName '/1']);
+            
             num = num + 1;
             termnum = termnum + 1;
         end
