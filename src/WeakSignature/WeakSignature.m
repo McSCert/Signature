@@ -77,12 +77,14 @@ function [metrics signatures] = WeakSignature(address, exportType,...
     end
 
     % Check system argument
-    try
-        find_system(system, 'SearchDepth', 0, 'BlockType', 'SubSystem');
-    catch
-        disp(['Error using ' mfilename ':' char(10) ...
-                ' Invalid argument: system. Subsystem ' system ' is not found.'])
-        return
+    if ~strcmp(system, 'All')
+        try
+            find_system(system, 'SearchDepth', 0, 'BlockType', 'SubSystem');
+        catch
+            disp(['Error using ' mfilename ':' char(10) ...
+                    ' Invalid argument: system. Subsystem ' system ' is not found.'])
+            return
+        end
     end
 
     if exportType % If producing documentation
