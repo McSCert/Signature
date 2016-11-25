@@ -31,32 +31,38 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
 %                       One can use a specific system name, or use 'All' to 
 %                       get documentation of the entire hierarchy.
 %
-%       metrics         A list of structs that contain the names of systems
-%                       and the size of their respective signature. (fields
-%                       are Subsystem and Size)
+%       metrics         Cell array listing the system and its subsystems, with
+%                       the size of their signature (i.e. number of elements in 
+%                       the signature).
 %
-%       signatures      A list of structs that contain the names of systems
-%                       and the size of their respective signature as well
-%                       as all of the blocks in the signature. (fields are
-%                       Subsystem, Size, Inports, Outports, GlobalFroms,
-%                       GlobalGotos, ScopedFromTags, ScopedGotoTags,
-%                       DataStoreReads, DataStoreWrites, Updates,
-%                       GotoTagVisibilities, and DataStoreMemories)
+%       signatures      Cell array of signature data for the system and its 
+%                       subsystems. Signature data includes: Subsystem, Size, 
+%                       Inports, Outports, GlobalFroms, GlobalGotos, 
+%                       ScopedFromTags, ScopedGotoTags, DataStoreReads, 
+%                       DataStoreWrites, Updates, GotoTagVisibilities, and 
+%                       DataStoreMemories.
 %
 %       hasUpdates      Boolean indicating whether updates are included in 
 %                       the signature.
 %
-%	The function first calls inportSig and outportSig which add and 
-%	connect the appropriate blocks for the inport and outport,
-%	according to the Signature format. If in the appropriate level, it
-%	also calls FindGlobals which outputs the globalGotos in the model.
-%	addDataStoreGoto adds the appropriate scoped Gotos and dataStores
-%	to the level. repositionInportSig, 
+%   Outputs:
+%
+%       metrics         Cell array listing the system and its subsystems, with
+%                       the size of their signature (i.e. number of elements in 
+%                       the signature).
+%
+%       signatures      Cell array of signature data for the system and its 
+%                       subsystems. Signature data includes: Subsystem, Size, 
+%                       Inports, Outports, GlobalFroms, GlobalGotos, 
+%                       ScopedFromTags, ScopedGotoTags, DataStoreReads, 
+%                       DataStoreWrites, Updates, GotoTagVisibilities, and 
+%                       DataStoreMemories.
     
     % Get signature for Inports and Outports 
     [inaddress, Inports] = InportSigData(address);
     [outaddress, Outports] = OutportSigData(address);
     
+    % If at the appropriate level, add the global Gotos in the model
     if num == 0
         globalGotos = FindGlobals(address);
         globalGotos = unique(globalGotos);
@@ -71,14 +77,14 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
     for i = 1:length(removableGotos)
         removableGotosNames{end + 1} = get_param(removableGotos{i}, 'GotoTag');
     end
-    globalGotosx = setdiff(globalGotos, removableGotosNames);
-    scopedGotoTags = setdiff(setdiff(scopedGoto, removableTags),updates);
+    globalGotosx    = setdiff(globalGotos, removableGotosNames);
+    scopedGotoTags  = setdiff(setdiff(scopedGoto, removableTags),updates);
     dataStoreWrites = setdiff(setdiff(DataStoreW, updates), removableDS);
-    dataStoreReads = setdiff(setdiff(DataStoreR, updates), removableDS);
-    scopedFromTags = setdiff(setdiff(scopedFrom, removableTags), updates);
-    updates = setdiff(updates, removableDS);
+    dataStoreReads  = setdiff(setdiff(DataStoreR, updates), removableDS);
+    scopedFromTags  = setdiff(setdiff(scopedFrom, removableTags), updates);
+    updates         = setdiff(updates, removableDS);
 
-    % Get declarations for the signature
+    % Get Data Store declarations and Scoped Gotos for the signature
     [tagDex, dsDex] = ImposedData(address);
 
     % Make the documentation for the designated subsystem indicated in sys
@@ -88,30 +94,30 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
             globalFroms, tagDex, dsDex, hasUpdates, txt, dataTypeMap);
     end
 
-    % Get the metric
+    % Append this subsystem's metric data to the output
+    system = strrep(address,'_WEAK_SIGNATURE','');
     size = length(Inports) + length(Outports) + length(globalFroms) + ...
         length(globalGotosx) + length(scopedGotoTags) + length(scopedFromTags) + ...
         length(dataStoreReads) + length(dataStoreWrites) + 2*length(updates) + ...
         length(tagDex) + length(dsDex);
     size = num2str(size);
-    system = strrep(address,'_WEAK_SIGNATURE','');
     metrics{end + 1} = struct('Subsystem', system, 'Size', size);
     
-    % Get the signature
+    % Append this subsystem's signature data to the output
     signatures{end + 1} = struct(...
-        'Subsystem', system, ...
-        'Size', size, ...
-        'Inports', {Inports}, ...
-        'Outports', {Outports}, ...
-        'GlobalFroms', {globalFroms}, ...
-        'GlobalGotos', {globalGotosx}, ...
-        'ScopedFromTags', {scopedFromTags}, ...
-        'ScopedGotoTags', {scopedGotoTags}, ...
-        'DataStoreReads', {dataStoreReads}, ...
-        'DataStoreWrites',{dataStoreWrites}, ...
-        'Updates', {updates}, ...
-        'GotoTagVisibilities', {tagDex}, ...
-        'DataStoreMemories', {dsDex});
+        'Subsystem',            system, ...
+        'Size',                 size, ...
+        'Inports',              {Inports}, ...
+        'Outports',             {Outports}, ...
+        'GlobalFroms',          {globalFroms}, ...
+        'GlobalGotos',          {globalGotosx}, ...
+        'ScopedFromTags',       {scopedFromTags}, ...
+        'ScopedGotoTags',       {scopedGotoTags}, ...
+        'DataStoreReads',       {dataStoreReads}, ...
+        'DataStoreWrites',      {dataStoreWrites}, ...
+        'Updates',              {updates}, ...
+        'GotoTagVisibilities',  {tagDex}, ...
+        'DataStoreMemories',    {dsDex});
 
     % Get list of all blocks so it can search and find the subsystems
     allBlocks = find_system(address, 'SearchDepth', 1);
@@ -119,17 +125,18 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
     for z = 1:length(allBlocks)
         BlockType = get_param(allBlocks{z}, 'BlockType');
         if strcmp(BlockType, 'SubSystem')
-            isVirtual = get_param(allBlocks{z}, 'IsSubsystemVirtual'); % checks if subsystem is virtual
-            % recurse the file through subsystems
+            isVirtual = get_param(allBlocks{z}, 'IsSubsystemVirtual'); % Checks if subsystem is virtual
+            % Recurse the file through subsystems
             if strcmp(isVirtual, 'on')
                 [metrics signatures] = TieInData(allBlocks{z}, 1, ...
                     scopedGoto, scopedFrom, DataStoreW, DataStoreR, ...
                     globalGotosx, globalFroms, sys, metrics, signatures, ...
                     hasUpdates, txt, dataTypeMap);
             else
-               [metrics signatures] = TieInData(allBlocks{z}, 1, {}, {}, ...
-                   DataStoreW, DataStoreR, {}, {}, sys, metrics, signatures, ...
-                   hasUpdates, txt, dataTypeMap, signatures);
+               [metrics signatures] = TieInData(allBlocks{z}, 1, ...
+                    {}, {}, DataStoreW, DataStoreR, ...
+                    {}, {}, sys, metrics, signatures, ...
+                    hasUpdates, txt, dataTypeMap, signatures);
             end
         end
     end
