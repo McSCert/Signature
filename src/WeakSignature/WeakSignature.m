@@ -1,10 +1,10 @@
 function [metrics signatures] = WeakSignature(address, exportType,...
-    hasUpdates, system, docFormat)
+    hasUpdates, sys, docFormat)
 % WEAKSIGNATURE Generate documentation of a system's weak signature or
 % 	produce the model of the weak signature.
 %
 %   Function:
-%       WEAKSIGNATURE(address, exportType, hasUpdates, system, docFormat)
+%       WEAKSIGNATURE(address, exportType, hasUpdates, sys, docFormat)
 %
 %   Inputs:
 %       address     Simulink model name or path.
@@ -15,7 +15,7 @@ function [metrics signatures] = WeakSignature(address, exportType,...
 %       hasUpdates  Boolean indicating whether updates are to be 
 %                   included in the signature.
 %
-%       system      Name of the system to generate the documentation for. 
+%       sys         Name of the system to generate the documentation for. 
 %                   One can use a specific system name, or use 'All' to get 
 %                   documentation of the entire hierarchy.
 %
@@ -76,13 +76,13 @@ function [metrics signatures] = WeakSignature(address, exportType,...
         end
     end
 
-    % Check system argument
-    if ~strcmp(system, 'All')
+    % Check sys argument
+    if ~strcmp(sys, 'All')
         try
-            find_system(system, 'SearchDepth', 0, 'BlockType', 'SubSystem');
+            find_system(sys, 'SearchDepth', 0, 'BlockType', 'SubSystem');
         catch
             disp(['Error using ' mfilename ':' char(10) ...
-                    ' Invalid argument: system. Subsystem ' system ' is not found.'])
+                    ' Invalid argument: sys. Subsystem ' sys ' is not found.'])
             return
         end
     end
@@ -90,7 +90,7 @@ function [metrics signatures] = WeakSignature(address, exportType,...
     if exportType % If producing documentation
         dataTypeMap = mapDataTypes(address);
         [metrics, signatures] = ...
-            TieInData(address, 0, {}, {}, {}, {}, {}, {}, system, {}, ...
+            TieInData(address, 0, {}, {}, {}, {}, {}, {}, sys, {}, ...
                 {}, hasUpdates, docFormat, dataTypeMap);
     else % If producing model
         sigModel = strcat(address, '_WEAK_SIGNATURE');

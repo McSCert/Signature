@@ -1,10 +1,10 @@
 function [metrics signatures] = StrongSignature(address, exportType,...
-    hasUpdates, system, docFormat)
+    hasUpdates, sys, docFormat)
 % STRONGSIGNATURE Generate documentation of a system's strong signature or
 % 	produce the model of the strong signature.
 %
 %   Function:
-%       STRONGSIGNATURE(address, exportType, hasUpdates, system, docFormat)
+%       STRONGSIGNATURE(address, exportType, hasUpdates, sys, docFormat)
 %
 %   Inputs:
 %       address     Simulink model name or path.
@@ -15,7 +15,7 @@ function [metrics signatures] = StrongSignature(address, exportType,...
 %       hasUpdates  Boolean indicating whether updates are to be 
 %                   included in the signature.
 %
-%       system      Name of the system to generate the documentation for. 
+%       sys         Name of the system to generate the documentation for. 
 %                   One can use a specific system name, or use 'All' to get 
 %                   documentation of the entire hierarchy.
 %
@@ -76,13 +76,13 @@ function [metrics signatures] = StrongSignature(address, exportType,...
         end
     end
 
-    % Check system argument
-    if ~strcmp(system, 'All')
+    % Check sys argument
+    if ~strcmp(sys, 'All')
         try
-            find_system(system, 'SearchDepth', 0, 'BlockType', 'SubSystem');
+            find_system(sys, 'SearchDepth', 0, 'BlockType', 'SubSystem');
         catch
             disp(['Error using ' mfilename ':' char(10) ...
-                    ' Invalid argument: system. Subsystem ' system ' is not found.'])
+                    ' Invalid argument: sys. Subsystem ' sys ' is not found.'])
             return
         end
     end
@@ -92,7 +92,7 @@ function [metrics signatures] = StrongSignature(address, exportType,...
         [scopeGotoAddOut, DataStoreWriteAddOut, DataStoreReadAddOut, ...
             scopeFromAddOut, globalGotosAddOut, globalFromsAddOut, ...
             metrics, signatures] = ...
-            TieInStrongData(address, system, hasUpdates, docFormat, dataTypeMap);
+            TieInStrongData(address, sys, hasUpdates, docFormat, dataTypeMap);
     else % If producing model
         sigModel = strcat(address, '_STRONG_SIGNATURE');
         
@@ -110,7 +110,7 @@ function [metrics signatures] = StrongSignature(address, exportType,...
         set_param(address, 'Lock', 'off');
 
         % Generate signature
-        [carryOut] = TieInStrong(address, hasUpdates, system);
+        [carryOut] = TieInStrong(address, hasUpdates, sys);
         metrics = 0;
         signatures = {};
         

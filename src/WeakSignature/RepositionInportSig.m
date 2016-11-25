@@ -3,10 +3,10 @@ function yOffset = RepositionInportSig(address, inGo, inFrom, inports, gotoLengt
 %
 %   Inputs:
 %       address     The name and location in the model.
-%       inGo        The Inport Goto handles.
-%       inFrom      The Inport From handles.
-%       inports     The Inport handles.
-%       gotoLength  The max length of the input signal names.
+%       inGo        Inport Goto handles.
+%       inFrom      Inport From handles.
+%       inports     Inport handles.
+%       gotoLength  Max length of the input signal names.
 %
 %   Outputs:
 %       yOffset     Point in the y-axis to start repositioning blocks next time.

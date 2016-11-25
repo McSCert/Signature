@@ -3,11 +3,12 @@ function yOffsetFinal = RepositionOutportSig(address,outGo, outFrom, outports, g
 
 %	Inputs:
 %		address 	The name and location in the model.
-%		outGo	 	The Outport Goto handles.
-%		outFrom 	The Outport From handles.
-%		outports 	The Outport handles.
-%		gotoLength 	The max length of the output signal names.
+%		outGo	 	Outport Goto handles.
+%		outFrom 	Outport From handles.
+%		outports 	Outport handles.
+%		gotoLength 	Max length of the output signal names.
 %		yOffset 	Point in the y-axis to start positioning blocks.
+%
 %	Outputs:
 %		yOffsetFinal Point in the y-axis to start repositioning blocks next time.
 

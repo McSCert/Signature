@@ -3,9 +3,6 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     TieInStrong(address, hasUpdates, sys)
 % TIEINSTRONG Find the strong signature recursively and insert it into the model. 
 %
-%   Function:
-%       TIEINSTRONG(address, hasUpdates, sys)
-%
 %   Inputs:
 %       address     Simulink system path.
 %

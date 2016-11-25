@@ -1,11 +1,12 @@
 function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
     scopeFromAdd, dataStoreWriteAdd, dataStoreReadAdd, globalGotos, ...
-    globalFroms, sys, metrics, signatures, hasUpdates, txt, dataTypeMap)
-%  TIEINDATA Tie in all the files responsible for signature documentation.
+    globalFroms, sys, metrics, signatures, hasUpdates, docFormat, dataTypeMap)
+%  TIEINDATA Find the weak signature recursively and output as documentation.
 %  
 %   Inputs:
-%
 %       address         Simulink system path.
+%
+%       num             Zero if not to be recursed, one for recursed.
 %
 %		scopeGotoAdd    Scoped gotos that need to be added to the
 %                       list of scoped gotos in the signature.
@@ -18,8 +19,6 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
 %
 %		dataStoreReadAdd  Data store reads that need to be added to the
 %                         list of data store reads in the model.
-%
-%		num             Zero if not to be recursed, one for recursed.
 %
 %		globalGotos     Global gotos to be added to the list of global
 %                       gotos in the model.
@@ -45,8 +44,12 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
 %       hasUpdates      Boolean indicating whether updates are included in 
 %                       the signature.
 %
-%   Outputs:
+%       docFormat       Number indicating which docmentation type to 
+%                       generate: .txt(0) or .tex(1).
 %
+%       dataTypeMap     Map of blocks and their corresponding data type.
+%
+%   Outputs:
 %       metrics         Cell array listing the system and its subsystems, with
 %                       the size of their signature (i.e. number of elements in 
 %                       the signature).
@@ -68,6 +71,7 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
         globalGotos = unique(globalGotos);
         globalFroms = globalGotos;
     end
+    
     [address, scopedGoto, scopedFrom, DataStoreW, DataStoreR, removableDS,...
         removableTags, updates] = AddImplicitsData(address, scopeGotoAdd,...
         scopeFromAdd, dataStoreWriteAdd, dataStoreReadAdd, hasUpdates);
@@ -91,7 +95,7 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
     if strcmp(sys, address) || strcmp(sys, 'All')
         DataMaker(address, Inports, Outports, scopedGotoTags, scopedFromTags,...
             dataStoreWrites, dataStoreReads, updates, globalGotos, ...
-            globalFroms, tagDex, dsDex, hasUpdates, txt, dataTypeMap);
+            globalFroms, tagDex, dsDex, hasUpdates, docFormat, dataTypeMap);
     end
 
     % Append this subsystem's metric data to the output
@@ -119,9 +123,10 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
         'GotoTagVisibilities',  {tagDex}, ...
         'DataStoreMemories',    {dsDex});
 
-    % Get list of all blocks so it can search and find the subsystems
+    % Get all blocks, but remove the current address
     allBlocks = find_system(address, 'SearchDepth', 1);
     allBlocks = setdiff(allBlocks, address);
+    
     for z = 1:length(allBlocks)
         BlockType = get_param(allBlocks{z}, 'BlockType');
         if strcmp(BlockType, 'SubSystem')
@@ -131,14 +136,14 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
                 [metrics signatures] = TieInData(allBlocks{z}, 1, ...
                     scopedGoto, scopedFrom, DataStoreW, DataStoreR, ...
                     globalGotosx, globalFroms, sys, metrics, signatures, ...
-                    hasUpdates, txt, dataTypeMap);
+                    hasUpdates, docFormat, dataTypeMap);
             else 
                 % Atomic subsystems (i.e. non-virtual) are handled differently
                 % because Goto/Froms can't cross their boundaries
                [metrics signatures] = TieInData(allBlocks{z}, 1, ...
                     {}, {}, DataStoreW, DataStoreR, ...
                     {}, {}, sys, metrics, signatures, ...
-                    hasUpdates, txt, dataTypeMap);
+                    hasUpdates, docFormat, dataTypeMap);
             end
         end
     end

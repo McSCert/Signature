@@ -1,40 +1,27 @@
 function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
-    updateBlocks] = ...
-    AddImplicits(address, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd, ...
-    dataStoreReadAdd, hasUpdates)
+    updateBlocks] = AddImplicits(address, scopeGotoAdd, scopeFromAdd, ...
+    dataStoreWriteAdd, dataStoreReadAdd, hasUpdates)
 %   ADDIMPLICITS Add the implicit inputs and outputs (i.e., scoped Gotos
 %    and Data Store Memorys) for the signature of a subsystem.
 %  
 % 	Inputs:
-%       address         Simulink system path.
-%
-% 		scopeGotoAdd	additional scoped gotos to add to the address.
-%
-%       scopeFromAdd    ??
-%
-%       dataStoreWriteAdd additional data stores writes to add to the address.
-%
-% 		dataStoreReadAdd additional Data Stores reads to add to the address.
-%
-%       hasUpdates      Boolean indicating whether updates are included in 
-%                       the signature.
+%       address             Simulink system path.
+% 		scopeGotoAdd	    Additional scoped Gotos to add to the address.
+%       scopeFromAdd        Additional scoped Froms to add to the address.
+%       dataStoreWriteAdd   Additional Data Store Writes to add to the address.
+% 		dataStoreReadAdd    Additional Data Store Reads to add to the address.
+%       hasUpdates          Boolean indicating whether updates are included in 
+%                           the signature.
 %       
 % 	Outputs:
 %       carryup
-%
 %       fromBlocks
-%
 % 		dataStoreWrites
-% 
 % 		dataStoreReads
-%
 %       gotoBlocks
-%
 %       updateBlocks
 
     % Initialize sets, matrices, and maps
-    num = 0;
-    termnum = 0;
     fromToRepo = [];
 	fromTermToRepo = [];
     gotoToRepo = [];
@@ -115,7 +102,7 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
         for search = 1:length(dataStoreWriteAddx)
             for check = 1:length(dataStoreReadAddx)
                 readname = dataStoreReadAddx{check};
-                if strcmp(readname,dataStoreWriteAddx{search})
+                if strcmp(readname, dataStoreWriteAddx{search})
                     flag = true;
                 end
                 if flag && (~isKey(mapObjU, readname))
@@ -126,13 +113,13 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
             end
         end
         
-        % Check for updates in the scoped tags, i.e. that there is a read and
-        % write that correspond to eachother. If an update exists, it is marked
+        % Check for updates in the scoped tags, i.e. that there is a Goto and
+        % From that correspond to eachother. If an update exists, it is marked
         % in the map and an update is added to the update list
         for search = 1:length(scopeFromAddx)
             for check = 1:length(scopeGotoAddx)
                 readname = scopeGotoAddx{check};
-                if strcmp(readname,scopeFromAddx{search})
+                if strcmp(readname, scopeFromAddx{search})
                     flag = true;
                 end
                 if flag && (~isKey(mapObjU, readname))
@@ -143,6 +130,9 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
             end
         end
     end
+
+    num = 0;        % Goto/From number
+    termnum = 0;    % Terminator number
 
     % Add the scoped Froms on the temporary list to the model,
     % along with a terminator
@@ -162,6 +152,7 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
         end
     end
     
+    % Reset numbering of blocks
     num = 0;
     termnum = 0;
     
@@ -183,6 +174,7 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
         end
     end
     
+    % Reset numbering of blocks
     num = 0;
     termnum = 0;
     
@@ -202,7 +194,8 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
             termnum = termnum + 1;
         end
     end
-    
+ 
+    % Reset numbering of blocks   
     num = 0;
     termnum = 0;
     
@@ -222,7 +215,8 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
             termnum = termnum + 1;
         end
     end
-    
+ 
+    % Reset numbering of blocks   
     num = 0;
     termnum = 0;
     

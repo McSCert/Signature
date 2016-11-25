@@ -4,6 +4,9 @@ function yOffsetFinal = MoveDataStoreDex(address, yOffset)
 %   Inputs:
 %   	address 	The address of the current system.
 %   	yOffset 	Point in the y-axis to start positioning blocks.
+%
+%	Outputs:
+%	  yOffsetFinal    Point in the y-axis to start repositioning blocks next time.
 
 	allBlocks = find_system(address, 'SearchDepth', 1);
 	allBlocks = setdiff(allBlocks, address);

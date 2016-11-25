@@ -4,31 +4,31 @@ function [address, scopedGoto, scopedFrom, dataStoreW, dataStoreR, removableDS, 
 % ADDIMPLICITSDATA Add the scoped Goto and Data Store signature.
 %  
 %	Inputs:
-%		address      The name and location of the system
+%		address      The name and location of the system.
 %
-%		scopeGotoAdd Additional scoped gotos to add to the address
+%		scopeGotoAdd Additional scoped gotos to add to the address.
 %
-%       scopeFromAdd Additional scoped froms to add to the address
+%       scopeFromAdd Additional scoped froms to add to the address.
 %
-%		dataStoreReadAdd Additional data store reads to add to the address
+%		dataStoreReadAdd Additional data store reads to add to the address.
 %
-%       dataStoreWriteAdd Additional data store writes to add to the address
+%       dataStoreWriteAdd Additional data store writes to add to the address.
 %       
 %	Outputs:
 %		scopedGoto   The scoped goto tags that are part of the signature
 %		             and are listed for documentation.
 %
 %		scopedFrom   The scoped from tags that are part of the signature
-%		             and are listed for documentation
+%		             and are listed for documentation.
 %
 %       dataStoreW   The data store writes that are part of the signature
-%		and are listed for documentation.
+%		             and are listed for documentation.
 %
 %       dataStoreR   The data store reads that are part of the signature
 %		             and are listed for documentation
 %
 %       removableDS  The data stores that can be removed at a certain
-%                     subsystem level.
+%                    subsystem level.
 %
 %       removableTags The removable scoped tags that can be removed at
 %                     a certain subsystem level.

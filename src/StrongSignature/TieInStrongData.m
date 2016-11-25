@@ -16,7 +16,7 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
 %       docFormat       Boolean indicating which docmentation type to 
 %                       generate: .txt(0) or .tex(1).
 %
-%       dataTypeMap     ???
+%       dataTypeMap     Map of blocks and their corresponding data type.
 %
 %   Outputs:
 %       scopeGotoAddout      List of scoped gotos that the function will pass out.
