@@ -4,14 +4,14 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
 % TIEINSTRONG Find the strong signature recursively and insert it into the model. 
 %
 %   Inputs:
-%       address     Simulink system path.
+%       address     Simulink model name/path.
 %
 %       hasUpdates  Boolean indicating whether updates are included in the 
 %                   signature.
 %
 %       sys         Name of the system to generate the documentation for. 
-%                   One can use a specific system name, or use 'All' to get 
-%                   documentation of the entire hierarchy.
+%                   Can be a specific system name, or 'All' to document the 
+%                   entire hierarchy.
 %
 %   Outputs:
 %       scopedGotoAddOut        List of scoped gotos that the function will pass out.

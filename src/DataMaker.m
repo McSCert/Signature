@@ -14,10 +14,11 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
 %       updates         List of all updates in the signature.
 %       globalGotos     List of all global Gotos in the signature.
 %       globalFroms     List of all global Froms in the signature.
-%       tagDex
-%       dsDex
+%       tagDex          Names of Gotos in scope in scope of the system.
+%       dsDex           Names of Data Store Memorys in scope of the system.
 %       hasUpdates      Boolean indicating whether updates are included in the signature.
-%       docFormat
+%       docFormat       Boolean indicating which docmentation type to 
+%                       generate: .txt(0), .tex(1) or .docx(2).
 %       dataTypeMap
 %       signatures      Struct array of the signatures of each subsystem.
 %

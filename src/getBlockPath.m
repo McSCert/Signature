@@ -9,8 +9,8 @@ function [blockPath, isTag] = getBlockPath(sys, blockID, blockType)
 %       blockType   The block type.
 %
 %   Outputs:
-%       isTag       True if the block had a tag parameter, such as GotoTag 
-%                   or DataStoreName.
+%       isTag       Boolean indicating if the block had a tag parameter,
+%                   such as GotoTag or DataStoreName.
 
 isTag = true;
 switch blockType
