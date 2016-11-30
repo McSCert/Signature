@@ -30,22 +30,29 @@ function TestHarness(system)
     num = 0;
     for i = 1:length(froms)
         if ~isempty(fromscheck{i}) && (fromscheck{i}(1) == (length(system) + 2))
+            % Inport
             inport = add_block('built-in/Inport', [system '/HarnessGotoInport' num2str(num)]);
             addedBlocks{end + 1} = inport;
-            GotoTag = get_param(froms{i}, 'GotoTag');
+ 
+            % Goto
             goto = add_block('built-in/Goto', [system  '/HarnessGoto' num2str(num)]);
             addedBlocks{end + 1} = goto;
+            set_param(goto, 'GotoTag', get_param(froms{i}, 'GotoTag'));
+ 
+            % Type info
             dtype = typeMap(froms{i});
             if strcmp(dtype, 'No type')
                 dtype = 'Inherit: auto';
             end
             dataTypes{end + 1} = dtype;
-            set_param(goto, 'GotoTag', GotoTag);
+ 
+            % Connect
             inportPort = get_param(inport, 'PortHandles');
             inportPort = inportPort.Outport;
             gotoPort = get_param(goto, 'PortHandles');
             gotoPort = gotoPort.Inport;
             add_line(system, inportPort, gotoPort);
+            
             num = num + 1;
         end
     end
@@ -57,53 +64,67 @@ function TestHarness(system)
     num = 0;
     for i = 1:length(reads)
         if ~isempty(readscheck{i}) && (readscheck{i}(1) == (length(system) + 2))
+            % Inport
             inport = add_block('built-in/Inport', [system '/HarnessWriteInport' num2str(num)]);
-            addedBlocks{end + 1} = inport;
-            DataStoreName = get_param(reads{i}, 'DataStoreName');
+            addedBlocks{end + 1} = inport;            
+
+            % Write
             dataStore = add_block('built-in/dataStoreWrite', [system '/HarnessWriter' num2str(num)]);
             addedBlocks{end + 1} = dataStore;
-            set_param(dataStore, 'DataStoreName', DataStoreName);
+            set_param(dataStore, 'DataStoreName', get_param(reads{i}, 'DataStoreName'));
+ 
+            % Type info
             dtype = typeMap(reads{i});
-
             if strcmp(dtype, 'No type')
                 dtype = 'Inherit: auto';
             end
-
             dataTypes{end + 1} = dtype;
+            
             try 
                 set_param(inport, 'OutDataTypeStr', dtype);
-            catch 
+            catch
+                % Do nothing
             end
+            
+            % Connect
             inportPort = get_param(inport, 'PortHandles');
             inportPort = inportPort.Outport;
             writePort = get_param(dataStore, 'PortHandles');
             writePort = writePort.Inport;
             add_line(system, inportPort, writePort);
+            
             num = num + 1;
         end
         if ~isempty(readscheck2{i}) && (readscheck2{i}(1) == (length(system) + 2))
+            % Inport
             inport = add_block('built-in/Inport', [system '/HarnessWriteInport' num2str(num)]);
             addedBlocks{end + 1} = inport;
-            DataStoreName = get_param(reads{i}, 'DataStoreName');
+            
+            % Write
             dataStore = add_block('built-in/dataStoreWrite', [system '/HarnessWriter' num2str(num)]);
             addedBlocks{end + 1} = dataStore;
-            set_param(dataStore, 'DataStoreName', DataStoreName);
-            dtype = typeMap(reads{i});
+            set_param(dataStore, 'DataStoreName', get_param(reads{i}, 'DataStoreName'));
             
+            % Type info
+            dtype = typeMap(reads{i});
             if strcmp(dtype, 'No type')
                 dtype = 'Inherit: auto';
             end
-            
             dataTypes{end + 1} = dtype;
+            
             try
                 set_param(inport, 'OutDataTypeStr', dtype);
             catch
+                % Do nothing
             end
+            
+            % Connect
             inportPort = get_param(inport, 'PortHandles');
             inportPort = inportPort.Outport;
             writePort = get_param(dataStore, 'PortHandles');
             writePort = writePort.Inport;
             add_line(system, inportPort, writePort);
+            
             num = num + 1;
         end
     end
@@ -120,17 +141,22 @@ function TestHarness(system)
     num = 0;
     for i = 1:length(froms)
         if ~isempty(gotoscheck{i}) && (gotoscheck{i}(1) == (length(system) + 2))
-            GotoTag = get_param(gotos{i}, 'GotoTag');
+            % From
             from = add_block('built-in/Goto', [system '/HarnessFrom' num2str(num)]);
             addedBlocks{end + 1} = goto;
+            set_param(from, 'GotoTag', get_param(gotos{i}, 'GotoTag'));
+ 
+            % Outport
             outport = add_block('built-in/Outport', [system '/HarnessFromOutport' num2str(num)]);
             addedBlocks{end + 1} = inport;
-            set_param(from, 'GotoTag', GotoTag);
-            outportPort = get_param(outport, 'PortHandles');
-            outportPort = outportPort.Inport;
+            
+            % Connect
             fromPort = get_param(from, 'PortHandles');
             fromPort = fromPort.Outport;
-            add_line(system, inportPort, fromPort);
+            outportPort = get_param(outport, 'PortHandles');
+            outportPort = outportPort.Inport;
+            add_line(system, fromPort, outportPort);
+            
             num = num + 1;
         end
     end
@@ -142,31 +168,41 @@ function TestHarness(system)
     num = 0;
     for i = 1:length(writes)
         if ~isempty(writescheck{i}) && (writescheck{i}(1) == (length(system) + 2))
-            DataStoreName = get_param(writes{i}, 'DataStoreName');
-            dataStore = add_block('built-in/dataStoreRead', [system '/HarnessReader' num2str(num)]);
+            % Read
+            dataStore = add_block('built-in/dataStoreRead', [system '/HarnessRead' num2str(num)]);
             addedBlocks{end + 1} = dataStore;
+            set_param(dataStore, 'DataStoreName', get_param(writes{i}, 'DataStoreName'));
+            
+            % Outport
             outport = add_block('built-in/Outport', [system '/HarnessReadOutport' num2str(num)]);
             addedBlocks{end + 1} = outport;
-            set_param(dataStore, 'DataStoreName', DataStoreName);
-            outportPort = get_param(outport, 'PortHandles');
-            outportPort = outportPort.Inport;
+            
+            % Connect
             readPort = get_param(dataStore, 'PortHandles');
             readPort = readPort.Outport;
+            outportPort = get_param(outport, 'PortHandles');
+            outportPort = outportPort.Inport;
             add_line(system, readPort, outportPort);
+            
             num = num + 1;
         end
         if ~isempty(writescheck2{i}) && (writescheck2{i}(1) == (length(system) + 2))
-            DataStoreName = get_param(writes{i}, 'DataStoreName');
+            % Read
             dataStore = add_block('built-in/dataStoreRead', [system '/HarnessWriter' num2str(num)]);
             addedBlocks{end + 1} = dataStore;
+            set_param(dataStore, 'DataStoreName', get_param(writes{i}, 'DataStoreName'));
+            
+            % Outport
             outport = add_block('built-in/Outport', [system '/HarnessWriteOutport' num2str(num)]);
             addedBlocks{end + 1} = outport;
-            set_param(dataStore, 'DataStoreName', DataStoreName);
-            outportPort = get_param(outport, 'PortHandles');
-            outportPort = outportPort.Inport;
+            
+            % Connect
             readPort = get_param(dataStore, 'PortHandles');
             readPort = readPort.Outport;
+            outportPort = get_param(outport, 'PortHandles');
+            outportPort = outportPort.Inport;
             add_line(system, readPort, outportPort);
+            
             num = num + 1;
         end
     end
@@ -177,11 +213,7 @@ function TestHarness(system)
     %% Reposition all elements in the model
     numBlock = length(addedBlocks);
     if numBlock > 0
-    
-        start = 30;
-        top = 30;
         rowNum = ceil(numBlock/2);
-        colNum = 10;
 
         % Get model info
         mdlLines    = find_system(system, 'Searchdepth', 1, 'FollowLinks', 'on', 'LookUnderMasks', 'All', 'FindAll', 'on', 'Type', 'line');
@@ -217,35 +249,50 @@ function TestHarness(system)
         end
        
         % Resposition new test harness blocks
+        top = 30;
+        startLeft = 30;
+        spaceBetweenBlocks = 30;
+        
+        PORT_BLOCK_W = 30;
+        
         for j = 1:length(addedBlocks)
             if(ceil(j/2) > 1)
                 top = 30 + 50*(ceil(j/2) - 1);
-                if(mod(j,2) == 1)
-                    start = 30;
+                if(mod(j,2) == 1) % First block
+                    startLeft = 30;
                 end
             end
             blockpos = get_param(addedBlocks{j}, 'Position');
-            newPos(1) = start;
-            newPos(2) = top;
-            newPos(3) = start + (blockpos(3) - blockpos(1))*5;
-            newPos(4) = top + (blockpos(4) - blockpos(2));
-            start = newPos(3) + 20;
+            newPos(1) = startLeft;
+            if strcmp(get_param(addedBlocks{j}, 'BlockType'), 'Inport')...
+                    || strcmp(get_param(addedBlocks{j}, 'BlockType'), 'Outport')
+                newPos(2) = top + 3;
+                newPos(3) = startLeft + PORT_BLOCK_W;
+                newPos(4) = top + ((blockpos(4) - blockpos(2)) - 3);
+            else
+                newPos(2) = top;
+                newPos(3) = startLeft + ((blockpos(3) - blockpos(1)) * 5);
+                newPos(4) = top + (blockpos(4) - blockpos(2));
+            end
             set_param(addedBlocks{j}, 'Position', newPos);
+            
+            startLeft = newPos(3) + spaceBetweenBlocks;
             newPos = [];
         end
     end
 
     % Add heading for test harness specific blocks
     if numBlock > 0
-        add_block('built-in/Note', [system '/Inputs for Harness'], 'Position', [100 5], 'FontSize', FONT_SIZE)
+        add_block('built-in/Note', [system '/Inputs for Harness'], ...
+            'Position', [100 5], 'FontSize', FONT_SIZE)
     end
 
     %% Add Inport/Outport blocks to all higher levels
     sysSplit = strsplit(system, '/');
     sysName = strjoin(sysSplit, '/');
-    iterations = length(sysSplit) - 1;
+    subsystemLevels = length(sysSplit) - 1;
     
-    for i = 1:iterations
+    for i = 1:subsystemLevels
         ins = find_system(sysName, 'SearchDepth', 1, 'BlockType', 'Inport');
         outs = find_system(sysName, 'SearchDepth', 1, 'BlockType', 'Outport');
         sysIns = length(ins) - numIns;
@@ -258,11 +305,15 @@ function TestHarness(system)
         % Add Inports
         num = 0;
         for j = 1:numIns
+            % Add
             inport = add_block('built-in/Inport', [nextSys '/HarnessInport' num2str(num)]);
             try
                 set_param(inport, 'OutDataTypeStr', dataTypes{j});
             catch
+                % Do nothing
             end
+            
+            % Connect
             inportPort = get_param(inport, 'PortHandles');
             inportPort = inportPort.Outport;
             subInports = ports.Inport;
@@ -273,7 +324,10 @@ function TestHarness(system)
         % Add Outports
         num = 0;
         for j = 1:numOuts
+            % Add
             outport = add_block('built-in/Outport', [nextSys '/HarnessOutport' num2str(num)]);
+            
+            % Connect
             outportPort = get_param(outport, 'PortHandles');
             outportPort = outportPort.Inport;
             subOutports = ports.Outport;
