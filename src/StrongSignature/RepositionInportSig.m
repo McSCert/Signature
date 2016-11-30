@@ -57,14 +57,15 @@ function yOffset = RepositionInportSig(address, inGo, inFrom, inports, gotoLengt
     
     mdlLinesTwo = [];
 
-    add_block('built-in/Note',[address '/Main Simulink Block'], 'Position', [offset + 20*gotoLength 10], 'FontSize', 30)
-	% Reposition blocks aside from inport, inport gotos and froms, as well
+    %add_block('built-in/Note',[address '/Main Simulink Block'], 'Position', [offset + 20*gotoLength 10], 'FontSize', 30)
+	
+    % Reposition blocks aside from inport, inport gotos and froms, as well
 	% as lines
-    mdlLines = find_system(address,'Searchdepth',1, 'FollowLinks', 'on', 'LookUnderMasks', 'All', 'FindAll', 'on', 'Type', 'line');
+    mdlLines = find_system(address, 'Searchdepth', 1, 'FollowLinks', 'on', 'LookUnderMasks', 'All', 'FindAll', 'on', 'Type', 'line');
     for zy = 1:length(mdlLines)
     	SrcBlock = get_param(mdlLines(zy), 'SrcBlock');
         if ~strcmp(SrcBlock, '')
-        	SrcBlock = strrep(SrcBlock,'/','//');
+        	SrcBlock = strrep(SrcBlock, '/', '//');
             SrcBlockType = get_param([address '/' SrcBlock], 'BlockType');
             if strcmp(SrcBlockType, 'Inport')
             else
