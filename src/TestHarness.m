@@ -8,13 +8,17 @@ function TestHarness(system)
 %   Outputs:
 %       N/A
 
-    % Extract signature of the subsystem
+    % Constants:
+    FONT_SIZE = 14; % Heading font size
+    
     addedBlocks = {};
     dataTypes = {};
     
     sysSplit = strsplit(system, '/');
     topLevelSys = sysSplit{1};
     typeMap = mapDataTypes(topLevelSys);
+    
+    % Extract signature of the subsystem
 %     StrongSignature(topLevelSys, 0, 0, sys);
 %     topLevelSys = [topLevelSys '_STRONG_SIGNATURE'];
 %     sysSplit{1} = topLevelSys;
@@ -233,7 +237,7 @@ function TestHarness(system)
 
     % Add heading for test harness specific blocks
     if numBlock > 0
-        add_block('built-in/Note', [system '/Inputs for Harness'], 'Position', [100 10], 'FontSize', 12)
+        add_block('built-in/Note', [system '/Inputs for Harness'], 'Position', [100 5], 'FontSize', FONT_SIZE)
     end
 
     %% Add Inport/Outport blocks to all higher levels
