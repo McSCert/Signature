@@ -278,5 +278,4 @@ function TestHarness(system)
         end
         sysSplit = strsplit(nextSys, '/');
         sysName = nextSys; 
-    end 
-end
+    end
