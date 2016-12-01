@@ -27,11 +27,13 @@ function TestHarness(system)
             % Inport
             inport = add_block('built-in/Inport', [system '/HarnessGotoInport' num2str(num)]);
             addedBlocks{end + 1} = inport;
+            resizeInOutPort(inport);
  
             % Goto
             goto = add_block('built-in/Goto', [system  '/HarnessGoto' num2str(num)]);
             addedBlocks{end + 1} = goto;
             set_param(goto, 'GotoTag', get_param(froms{i}, 'GotoTag'));
+            resizeGotoFrom(goto);
  
             % Type info
             dtype = typeMap(froms{i});
@@ -60,13 +62,15 @@ function TestHarness(system)
         if ~isempty(readscheck{i}) && (readscheck{i}(1) == (length(system) + 2))
             % Inport
             inport = add_block('built-in/Inport', [system '/HarnessWriteInport' num2str(num)]);
-            addedBlocks{end + 1} = inport;            
+            addedBlocks{end + 1} = inport;
+            resizeInOutPort(inport);
 
             % Write
-            dataStore = add_block('built-in/dataStoreWrite', [system '/HarnessWriter' num2str(num)]);
+            dataStore = add_block('built-in/dataStoreWrite', [system '/HarnessWrite' num2str(num)]);
             addedBlocks{end + 1} = dataStore;
             set_param(dataStore, 'DataStoreName', get_param(reads{i}, 'DataStoreName'));
- 
+            resizeDataStore(dataStore);
+
             % Type info
             dtype = typeMap(reads{i});
             if strcmp(dtype, 'No type')
@@ -93,12 +97,14 @@ function TestHarness(system)
             % Inport
             inport = add_block('built-in/Inport', [system '/HarnessWriteInport' num2str(num)]);
             addedBlocks{end + 1} = inport;
+            resizeInOutPort(inport);
             
             % Write
-            dataStore = add_block('built-in/dataStoreWrite', [system '/HarnessWriter' num2str(num)]);
+            dataStore = add_block('built-in/dataStoreWrite', [system '/HarnessWrite' num2str(num)]);
             addedBlocks{end + 1} = dataStore;
             set_param(dataStore, 'DataStoreName', get_param(reads{i}, 'DataStoreName'));
-            
+            resizeDataStore(dataStore);
+
             % Type info
             dtype = typeMap(reads{i});
             if strcmp(dtype, 'No type')
@@ -139,10 +145,12 @@ function TestHarness(system)
             from = add_block('built-in/Goto', [system '/HarnessFrom' num2str(num)]);
             addedBlocks{end + 1} = goto;
             set_param(from, 'GotoTag', get_param(gotos{i}, 'GotoTag'));
- 
+            resizeGotoFrom(from);
+
             % Outport
             outport = add_block('built-in/Outport', [system '/HarnessFromOutport' num2str(num)]);
-            addedBlocks{end + 1} = inport;
+            addedBlocks{end + 1} = outport;
+            resizeInOutPort(outport);
             
             % Connect
             fromPort = get_param(from, 'PortHandles');
@@ -166,10 +174,12 @@ function TestHarness(system)
             dataStore = add_block('built-in/dataStoreRead', [system '/HarnessRead' num2str(num)]);
             addedBlocks{end + 1} = dataStore;
             set_param(dataStore, 'DataStoreName', get_param(writes{i}, 'DataStoreName'));
-            
+            resizeDataStore(dataStore);
+
             % Outport
             outport = add_block('built-in/Outport', [system '/HarnessReadOutport' num2str(num)]);
             addedBlocks{end + 1} = outport;
+            resizeInOutPort(outport);
             
             % Connect
             readPort = get_param(dataStore, 'PortHandles');
@@ -182,13 +192,15 @@ function TestHarness(system)
         end
         if ~isempty(writescheck2{i}) && (writescheck2{i}(1) == (length(system) + 2))
             % Read
-            dataStore = add_block('built-in/dataStoreRead', [system '/HarnessWriter' num2str(num)]);
+            dataStore = add_block('built-in/dataStoreRead', [system '/HarnessWrite' num2str(num)]);
             addedBlocks{end + 1} = dataStore;
             set_param(dataStore, 'DataStoreName', get_param(writes{i}, 'DataStoreName'));
+            resizeDataStore(dataStore);
             
             % Outport
             outport = add_block('built-in/Outport', [system '/HarnessWriteOutport' num2str(num)]);
             addedBlocks{end + 1} = outport;
+            resizeInOutPort(outport);
             
             % Connect
             readPort = get_param(dataStore, 'PortHandles');
@@ -215,63 +227,56 @@ function TestHarness(system)
         annotations = find_system(system, 'FindAll', 'on', 'SearchDepth', 1, 'type', 'annotation');
         
         % Shift all lines downward
-        for zm = 1:length(mdlLines)
-            lPint = get_param(mdlLines(zm), 'Points');
+        for i = 1:length(mdlLines)
+            lPint = get_param(mdlLines(i), 'Points');
             xPint = lPint(:, 1); % First position integer
             yPint = lPint(:, 2); % Second position integer
-            yPint = yPint + 50*rowNum + 30;
+            yPint = yPint + 40*rowNum + 30;
             newPoint = [xPint yPint];
-            set_param(mdlLines(zm), 'Points', newPoint);
+            set_param(mdlLines(i), 'Points', newPoint);
         end
         
         % Shift all blocks downward
-        for z = 2:length(allBlocks) % Starts at 2 in order to skip the root block diagram
-                bPosition = get_param(allBlocks{z}, 'Position');
+        for i = 2:length(allBlocks) % Starts at 2 in order to skip the root block diagram
+                bPosition = get_param(allBlocks{i}, 'Position');
                 bPosition(1) = bPosition(1);
-                bPosition(2) = bPosition(2) + 50*rowNum + 30;
+                bPosition(2) = bPosition(2) + 40*rowNum + 30;
                 bPosition(3) = bPosition(3);
-                bPosition(4) = bPosition(4) + 50*rowNum + 30;
-                set_param(allBlocks{z}, 'Position', bPosition);
+                bPosition(4) = bPosition(4) + 40*rowNum + 30;
+                set_param(allBlocks{i}, 'Position', bPosition);
         end
         
         % Shift all annotations downward
-        for gg = 1:length(annotations)
-            bPosition = get_param(annotations(gg), 'Position');
+        for i = 1:length(annotations)
+            bPosition = get_param(annotations(i), 'Position');
             bPosition(1) = bPosition(1);
-            bPosition(2) = bPosition(2) + 50*rowNum + 30;
-            set_param(annotations(gg), 'Position', bPosition);
+            bPosition(2) = bPosition(2) + 40*rowNum + 30;
+            set_param(annotations(i), 'Position', bPosition);
         end
        
         % Resposition new test harness blocks
-        top = 30;
-        startLeft = 30;
-        spaceBetweenBlocks = 30;
-        
-        PORT_BLOCK_W = 30;
+        MARGIN = 30;
+        startTop = MARGIN;
+        startLeft = MARGIN;
         
         for j = 1:length(addedBlocks)
-            if(ceil(j/2) > 1)
-                top = 30 + 50*(ceil(j/2) - 1);
-                if(mod(j,2) == 1) % First block
-                    startLeft = 30;
-                end
+            if(ceil(j/2) > 1) % Not first row
+                startTop = 30 + 40*(ceil(j/2) - 1); % Compute next row placement
             end
-            blockpos = get_param(addedBlocks{j}, 'Position');
-            newPos(1) = startLeft;
-            if strcmp(get_param(addedBlocks{j}, 'BlockType'), 'Inport')...
-                    || strcmp(get_param(addedBlocks{j}, 'BlockType'), 'Outport')
-                newPos(2) = top + 3;
-                newPos(3) = startLeft + PORT_BLOCK_W;
-                newPos(4) = top + ((blockpos(4) - blockpos(2)) - 3);
+            if(mod(j,2) == 1) % First block in the row
+                blockpos = get_param(addedBlocks{j}, 'Position');
+                newPos(1) = startLeft;
+                newPos(2) = startTop;
+                newPos(3) = startLeft + (blockpos(3) - blockpos(1));
+                newPos(4) = startTop + (blockpos(4) - blockpos(2));
+                set_param(addedBlocks{j}, 'Position', newPos);
+                
+                newPos = [];
             else
-                newPos(2) = top;
-                newPos(3) = startLeft + ((blockpos(3) - blockpos(1)) * 5);
-                newPos(4) = top + (blockpos(4) - blockpos(2));
+                % Position it w.r.t. the last one added
+                ports = get_param(addedBlocks{j-1}, 'PortHandles');
+                moveToPort(addedBlocks{j}, ports.Outport, 0);
             end
-            set_param(addedBlocks{j}, 'Position', newPos);
-            
-            startLeft = newPos(3) + spaceBetweenBlocks;
-            newPos = [];
         end
     end
 
@@ -359,21 +364,21 @@ function moveToPort(block, port, onLeft)
     portPosition = get_param(port, 'Position');
 
     % Compute block dimensions which need to be maintained during the move
-    blockWidth = blockPosition(4) - blockPosition(2);
+    blockHeight = blockPosition(4) - blockPosition(2);
     blockLength = blockPosition(3) - blockPosition(1);
 
     % Compute x dimensions   
     if ~onLeft 
-        newBlockPosition(1) = portPosition(1) + BLOCK_OFFSET;  % Left
-        newBlockPosition(3) = portPosition(1) + blockLength + BLOCK_OFFSET;    % Right 
+        newBlockPosition(1) = portPosition(1) + BLOCK_OFFSET; % Left
+        newBlockPosition(3) = portPosition(1) + blockLength + BLOCK_OFFSET; % Right 
     else
-        newBlockPosition(1) = portPosition(1) - blockLength - BLOCK_OFFSET;    % Left
-        newBlockPosition(3) = portPosition(1) - BLOCK_OFFSET;  % Right
+        newBlockPosition(1) = portPosition(1) - blockLength - BLOCK_OFFSET; % Left
+        newBlockPosition(3) = portPosition(1) - BLOCK_OFFSET; % Right
     end
 
     % Compute y dimensions
-    newBlockPosition(2) = portPosition(2) - (blockWidth/2);    % Top
-    newBlockPosition(4) = portPosition(2) + blockWidth - (blockWidth/2);   % Bottom
+    newBlockPosition(2) = portPosition(2) - (blockHeight/2); % Top
+    newBlockPosition(4) = portPosition(2) + (blockHeight/2); % Bottom
 
     set_param(block, 'Position', newBlockPosition);
 end
@@ -413,9 +418,31 @@ function resizeInOutPort(block)
 %% resizeInOutPort Resize an Inport or Outport block to their default values.
 %
 %   Inputs:
-%       block   Handle of the Inport or Ouport block to be resized.
+%       block   Handle of the block to be resized.
 %
 %   Outputs:
 %       N/A
     resizeBlock(block, 30, 14);
+end
+
+function resizeDataStore(block)
+%% resizeDataStore Resize a Data Store Memory/Read/Write block to their default values.
+%
+%   Inputs:
+%       block   Handle of the block to be resized.
+%
+%   Outputs:
+%       N/A
+    resizeBlock(block, 90, 14);
+end
+
+function resizeGotoFrom(block)
+%% resizeDataStore Resize a Goto/From block to their default values.
+%
+%   Inputs:
+%       block   Handle of the block to be resized.
+%
+%   Outputs:
+%       N/A
+    resizeBlock(block, 90, 14);
 end
