@@ -274,8 +274,8 @@ function TestHarness(system)
                 newPos = [];
             else
                 % Position it w.r.t. the last one added
-                ports = get_param(addedBlocks{j-1}, 'PortHandles');
-                moveToPort(addedBlocks{j}, ports.Outport, 0);
+               % ports = get_param(addedBlocks{j-1}, 'PortHandles');
+                moveToBlock(addedBlocks{j}, addedBlocks{j-1}, 0);
             end
         end
     end
@@ -283,7 +283,7 @@ function TestHarness(system)
     % Add heading for test harness specific blocks
     if numBlock > 0
         add_block('built-in/Note', [system '/Inputs for Harness'], ...
-            'Position', [100 5], 'FontSize', FONT_SIZE)
+            'Position', [90 5], 'FontSize', FONT_SIZE)
     end
 
     %% Add Inport/Outport blocks to all higher levels
@@ -343,75 +343,15 @@ function TestHarness(system)
     end
 end
 
-function moveToPort(block, port, onLeft)
-%% moveToPort Move a block to the right/left of a block port
-%
-%   Inputs:
-%       block   Handle of the block to be moved.
-%       port    Handle of the port to align the block with.
-%       onLeft  Boolean indicating if the block is to be on the right(0) or
-%               left(1) of the port.
-%
-%   Outputs:
-%       N/A
-
-    BLOCK_OFFSET = 50;
-
-    % Get block's current position
-    blockPosition = get_param(block, 'Position');
-
-    % Get port position
-    portPosition = get_param(port, 'Position');
-
-    % Compute block dimensions which need to be maintained during the move
-    blockHeight = blockPosition(4) - blockPosition(2);
-    blockLength = blockPosition(3) - blockPosition(1);
-
-    % Compute x dimensions   
-    if ~onLeft 
-        newBlockPosition(1) = portPosition(1) + BLOCK_OFFSET; % Left
-        newBlockPosition(3) = portPosition(1) + blockLength + BLOCK_OFFSET; % Right 
-    else
-        newBlockPosition(1) = portPosition(1) - blockLength - BLOCK_OFFSET; % Left
-        newBlockPosition(3) = portPosition(1) - BLOCK_OFFSET; % Right
-    end
-
-    % Compute y dimensions
-    newBlockPosition(2) = portPosition(2) - (blockHeight/2); % Top
-    newBlockPosition(4) = portPosition(2) + (blockHeight/2); % Bottom
-
-    set_param(block, 'Position', newBlockPosition);
-end
-
-function resizeBlock(block, width, height)
-%% resizeBlock Resize a block to a specific width and height. 
-%   Resizing is done w.r.t. the center of the block.
+function resizeGotoFrom(block)
+%% resizeDataStore Resize a Goto/From block to their default values.
 %
 %   Inputs:
 %       block   Handle of the block to be resized.
-%       width   New width in pixels.
-%       height  New height in pixels.
 %
 %   Outputs:
 %       N/A
-
-    % Get the old block size info
-    origBlockPosition = get_param(block, 'Position');
-    origWidth = (origBlockPosition(3) - origBlockPosition(1)) / 2;
-    origHeight = (origBlockPosition(4) - origBlockPosition(2)) / 2;
-
-    % Compute new block size info
-    newBlockPosition = origBlockPosition;
-    newWidth = width/2;
-    newHeight = height/2;
-
-    % Reset each coordinate to the block center, then change it to the new size
-    newBlockPosition(1) = (origBlockPosition(1) + origWidth) - newWidth; % Left
-    newBlockPosition(2) = (origBlockPosition(2) + origHeight) - newHeight; % Top  
-    newBlockPosition(3) = (origBlockPosition(3) - origWidth) + newWidth; % Right
-    newBlockPosition(4) = (origBlockPosition(4) - origHeight) + newHeight; % Bottom 
-     
-    set_param(block, 'Position', newBlockPosition);
+    resizeBlock(block, 90, 14);
 end
 
 function resizeInOutPort(block)
@@ -427,17 +367,6 @@ end
 
 function resizeDataStore(block)
 %% resizeDataStore Resize a Data Store Memory/Read/Write block to their default values.
-%
-%   Inputs:
-%       block   Handle of the block to be resized.
-%
-%   Outputs:
-%       N/A
-    resizeBlock(block, 90, 14);
-end
-
-function resizeGotoFrom(block)
-%% resizeDataStore Resize a Goto/From block to their default values.
 %
 %   Inputs:
 %       block   Handle of the block to be resized.

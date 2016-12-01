@@ -3,7 +3,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
 %  TIEIN Find the weak signature recursively and insert it into the model. 
 %  
 %	Inputs:
-%       address             Simulink model name/path.
+%       address             Simulink system path.
 %
 %       num                 Zero if not be recursed, one for recursed.
 %

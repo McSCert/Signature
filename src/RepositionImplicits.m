@@ -1,6 +1,6 @@
 function yOffsetFinal = RepositionImplicits(yOffset, blocksToRepo, blockLength, blockOnLeft)
-% REPOSITIONIMPLICITS Reposition added Gotos/Froms that represent globals
-% in the signature.
+% REPOSITIONIMPLICITS Reposition Gotos/Froms and Data Store Read/Writes added 
+%   to the signature, representing global data.
 %
 %   Inputs:
 %       yOffset         Point in the y-axis to start positioning blocks.
@@ -17,51 +17,60 @@ function yOffsetFinal = RepositionImplicits(yOffset, blocksToRepo, blockLength, 
 %   Outputs:
 %       yOffsetFinal    Point in the y-axis to start repositioning blocks next time.
 
+    % For starting the signature
+    XMARGIN = 30;
+    
+    % Block sizes
+    termLength = 30; % The size of Terminators blocks 
+    termHeight = 16;
+    
+    blkLength = 10*blockLength;
+    blkHeight = 14;
+    
     if blockOnLeft
-        for z = 1:length(blocksToRepo{1})
-            % Reposition Goto/From block
-            fPoints = get_param(blocksToRepo{1}(z), 'Position');
-            fPoints(1) = 20;
-            fPoints(2) = yOffset + 20;
-            fPoints(3) = 10*blockLength + 20;
-            fPoints(4) = fPoints(2) + 14;
-            set_param(blocksToRepo{1}(z), 'Position', fPoints);
+        for i = 1:length(blocksToRepo{1})
+            % Reposition Goto or Data Store Read block
+            iPos = get_param(blocksToRepo{1}(i), 'Position');
+            iPos(1) = XMARGIN;
+            iPos(2) = yOffset + 20;
+            iPos(3) = iPos(1) + blkLength;
+            iPos(4) = iPos(2) + blkHeight;
+            set_param(blocksToRepo{1}(i), 'Position', iPos);
             
             % Reposition terminator
-            tPoints = get_param(blocksToRepo{2}(z), 'Position');
-            tPoints(1) = 10*blockLength + 20 + 50;
-            tPoints(2) = yOffset + 20;
-            tPoints(3) = tPoints(1) + 30;
-            tPoints(4) = tPoints(2) + 14;
-            set_param(blocksToRepo{2}(z), 'Position', tPoints)
+            resizeBlock(blocksToRepo{2}(i), termLength, termHeight);
+            moveToBlock(blocksToRepo{2}(i), blocksToRepo{1}, 0);
             
             % Update for next blocks
-            yOffset = fPoints(4);
+            yOffset = iPos(4);
         end
     else
-        for x = 1:length(blocksToRepo{1})
+        for j = 1:length(blocksToRepo{1})
             % Reorient
-            set_param(blocksToRepo{1}(x), 'Orientation', 'left');
-            set_param(blocksToRepo{2}(x), 'Orientation', 'left');
+            set_param(blocksToRepo{1}(j), 'Orientation', 'left');
+            set_param(blocksToRepo{2}(j), 'Orientation', 'left');
             
             % Reposition terminator
-            fPoints = get_param(blocksToRepo{2}(x), 'Position');
-            fPoints(1) = 20;
-            fPoints(2) = yOffset + 20;
-            fPoints(3) = 20 + 30;
-            fPoints(4) = fPoints(2) + 14;
-            set_param(blocksToRepo{2}(x), 'Position', fPoints);
+            jPos = get_param(blocksToRepo{2}(j), 'Position');
+            jPos(1) = XMARGIN;
+            jPos(2) = yOffset + 20;
+            jPos(3) = jPos(1) + termLength;
+            jPos(4) = jPos(2) + termHeight;
+            set_param(blocksToRepo{2}(j), 'Position', jPos);
             
-            % Reposition Goto/From block
-            tPoints = get_param(blocksToRepo{1}(x), 'Position');
-            tPoints(1) = fPoints(3) + 50;
-            tPoints(2) = fPoints(2);
-            tPoints(3) = tPoints(1) + 10*blockLength + 20;
-            tPoints(4) = tPoints(2) + 14;
-            set_param(blocksToRepo{1}(x), 'Position', tPoints)
+            % Reposition From or Data Store Write block
+            resizeBlock(blocksToRepo{1}(j), blkLength, blkHeight);
+            moveToBlock(blocksToRepo{1}(j), blocksToRepo{2}(j), 0);
+
+%             tPos = get_param(blocksToRepo{1}(x), 'Position');
+%             tPos(1) = gfPos(3) + 50;
+%             tPos(2) = gfPos(2);
+%             tPos(3) = tPos(1) + 10*blockLength + 20;
+%             tPos(4) = tPos(2) + 14;
+%             set_param(blocksToRepo{1}(x), 'Position', tPos)
             
             % Update for next blocks
-            yOffset = tPoints(4);
+            yOffset = jPos(4);
         end
     end
     % Update offset output

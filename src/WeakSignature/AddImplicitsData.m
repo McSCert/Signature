@@ -33,7 +33,7 @@ function [address, scopedGoto, scopedFrom, dataStoreW, dataStoreR, removableDS, 
 %       removableTags The removable scoped tags that can be removed at
 %                     a certain subsystem level.
 %
-%       updates       The block names that are part of the signature and are
+%       updates       The blocknames that are part of the signature and are
 %                     considered updates.
 
 	mapObjU = containers.Map(); % Map for updates

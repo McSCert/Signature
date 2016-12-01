@@ -4,14 +4,14 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
 % TIEINSTRONG Find the strong signature recursively and insert it into the model. 
 %
 %   Inputs:
-%       address     Simulink model name/path.
+%       address     Simulink system path.
 %
 %       hasUpdates  Boolean indicating whether updates are included in the 
 %                   signature.
 %
 %       sys         Name of the system to generate the documentation for. 
-%                   Can be a specific system name, or 'All' to document the 
-%                   entire hierarchy.
+%                   One can use a specific system name, or use 'All' to get 
+%                   documentation of the entire hierarchy.
 %
 %   Outputs:
 %       scopedGotoAddOut        List of scoped gotos that the function will pass out.
@@ -23,7 +23,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     
     % Constants: 
     FONT_SIZE = 14; % Heading font size
-    Y_OFFSET = 25;  % Vertical offset in pixels for spacing signature elements
+    Y_OFFSET = 25;  % Vertical spacing between signature sections
     
     % Elements in the signature being carried up from the signatures of lower levels
 	sGa     = {};   % Scoped Gotos
@@ -46,7 +46,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
 
     % 1b) Move/format Inport blocks
     verticalOffset = RepositionInportSig(inAddress, InportGoto, InportFrom, Inports, gotoLength); 
-    add_block('built-in/Note', [address '/Inputs'], 'Position', [90 30], 'FontSize', FONT_SIZE);
+    add_block('built-in/Note', [address '/Inputs'], 'Position', [90 15], 'FontSize', FONT_SIZE);
     
     % Get all blocks, but remove the current address
     allBlocks = find_system(address, 'SearchDepth', 1); 

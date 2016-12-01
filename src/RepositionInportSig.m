@@ -18,44 +18,55 @@ function yOffsetFinal = RepositionInportSig(address, inGo, inFrom, inports, goto
     nonInportGo = setdiff(nonInport, inGo);
     nonInportGoFrom = setdiff(nonInportGo, inFrom);
     
-    tagLength = 10 * gotoLength;
-    offsetLeft = 250 + 20*gotoLength;   % Distance between From and block its connected to
-    yOffsetFinal = 34;
-
-    inportLegth = 30;
-    inportHeight = 14;
+    % For starting the signature
+    XMARGIN = 30; 
+    yoffset = 30;
+    
+    % For moving the model to accmodate the signature
+    XSHIFT = 200 + (20 * gotoLength);
+    YSHIFT = 0;
+    
+    % To make appropriately sized Goto/Froms
+    tagLength = 11 * gotoLength;
     
     % Reposition Inports
+    inportLength = 30;  % The size of Inport blocks, because 
+    inportHeight = 14;  % 2011b automatically makes them 10 x 10
     for i = 1:length(inports)
-        iPosition = get_param(inports{i}, 'Position');
-        iPosition(1) = 20;
-        if i == 1
-            iPosition(2) = 60;
-        else
-            iPosition(2) = yOffsetFinal + 20;
-        end
-        iPosition(3) = 20 + inportLegth;
-        iPosition(4) = iPosition(2) + inportHeight;
-        yOffsetFinal = iPosition(4);
-        set_param(inports{i}, 'Position', iPosition);
+        pos = get_param(inports{i}, 'Position');
+		pos(1) = XMARGIN;
+		if i == 1
+			pos(2) = 40;
+		else
+			pos(2) = yoffset + 20;
+		end
+		pos(3) = XMARGIN + inportLength;
+		pos(4) = pos(2) + inportHeight;
+		set_param(inports{i}, 'Position', pos);
+        
+        yoffset = pos(4); % So we know where to add the next Inport
     end
-
-    % Reposition Gotos
+    yOffsetFinal = yoffset;
+    
+    % Reposition new Gotos to be beside the Inports
     for i = 1:length(inGo)
-        gPosition = get_param(inports{i}, 'Position');
-        gPosition(1) = gPosition(1) + 50;
-        gPosition(3) = gPosition(3) + 50 + tagLength;
-        set_param(inGo{i}, 'Position', gPosition);
+        gotoHandle = get_param(inGo{i}, 'Handle');
+        inHandle = get_param(inports{i}, 'Handle');
+        
+        resizeBlock(gotoHandle, tagLength, 14);
+        moveToBlock(gotoHandle, inHandle, 0);
+        redrawLine(address, inHandle, gotoHandle);
     end
 
-    % Reposition Froms
+    % Reposition and resize new Froms (that connect the Signature)
     for i = 1:length(inFrom)
-        fPosition    = get_param(inFrom{i}, 'Position');
-        fPosition(1) = fPosition(1) + 250 + tagLength;
-        fPosition(2) = fPosition(2) + 200;
-        fPosition(3) = fPosition(3) + offsetLeft;
-        fPosition(4) = fPosition(4) + 200;
+        fPosition = get_param(inFrom{i}, 'Position');
+        fPosition(1) = fPosition(1) + XSHIFT;
+		fPosition(2) = fPosition(2) + YSHIFT;
+        fPosition(3) = fPosition(3) + XSHIFT;
+		fPosition(4) = fPosition(4) + YSHIFT;
         set_param(inFrom{i}, 'Position', fPosition);
+        resizeBlock(inFrom{i}, tagLength, blockHeight(inFrom{i}));
     end
 
     % Reposition all lines and other blocks aside from inport, and inport gotos and froms
@@ -75,28 +86,30 @@ function yOffsetFinal = RepositionInportSig(address, inGo, inFrom, inports, goto
         end
     end
 
-    for zm = 1:length(mdlLinesTwo)
-        lPint = get_param(mdlLinesTwo(zm), 'Points');
+    for i = 1:length(mdlLinesTwo)
+        lPint = get_param(mdlLinesTwo(i), 'Points');
         xPint = lPint(:, 1);
         yPint = lPint(:, 2);
-        xPint = xPint + offsetLeft;
-        yPint = yPint + 200;
+        xPint = xPint + XSHIFT;
+        yPint = yPint + YSHIFT;
         newPoint = [xPint yPint];
-        set_param(mdlLinesTwo(zm), 'Points', newPoint);
+        set_param(mdlLinesTwo(i), 'Points', newPoint);
     end
 
-    for z = 1:length(nonInportGoFrom)
-        bPosition = get_param(nonInportGoFrom{z}, 'Position');
-        bPosition(1) = bPosition(1) + offsetLeft;
-        bPosition(2) = bPosition(2) + 200;
-        bPosition(3) = bPosition(3) + offsetLeft;
-        bPosition(4) = bPosition(4) + 200;
-        set_param(nonInportGoFrom{z}, 'Position', bPosition);
+    % Reposition all blocks not in the signature
+    for i = 1:length(nonInportGoFrom)
+        allPos = get_param(nonInportGoFrom{i}, 'Position');
+        allPos(1) = allPos(1) + XSHIFT;
+        allPos(2) = allPos(2) + YSHIFT;
+        allPos(3) = allPos(3) + XSHIFT;
+        allPos(4) = allPos(4) + YSHIFT;
+        set_param(nonInportGoFrom{i}, 'Position', allPos);
     end
 
-    for gg = 1:length(annotations)
-        bPosition = get_param(annotations(gg), 'Position');
-        bPosition(1) = bPosition(1) + offsetLeft;
-        bPosition(2) = bPosition(2) + 200;
-        set_param(annotations(gg), 'Position', bPosition);
+    % Reposition annotations
+    for i = 1:length(annotations)
+        allPos = get_param(annotations(i), 'Position');
+        allPos(1) = allPos(1) + XSHIFT;
+		allPos(2) = allPos(2) + YSHIFT;
+        set_param(annotations(i), 'Position', allPos);
     end

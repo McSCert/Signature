@@ -4,7 +4,7 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
 %  TIEINDATA Find the weak signature recursively and output as documentation.
 %  
 %   Inputs:
-%       address         Simulink model name/path.
+%       address         Simulink system path.
 %
 %       num             Zero if not to be recursed, one for recursed.
 %
@@ -27,14 +27,15 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
 %                       froms in the model.
 %
 %       sys             Name of the system to generate the documentation for. 
-%                       Can be a specific system name, or 'All' to document the 
-%                       entire hierarchy.
+%                       One can use a specific system name, or use 'All' to 
+%                       get documentation of the entire hierarchy.
 %
-%       metrics         Cell array listing subsystems and the sizes of their 
-%                       signatures (i.e. number of elements in the signature).
+%       metrics         Cell array listing the system and its subsystems, with
+%                       the size of their signature (i.e. number of elements in 
+%                       the signature).
 %
-%       signatures      Cell array of signature data for each subsystem.
-%                       Signature data includes: Subsystem, Size, 
+%       signatures      Cell array of signature data for the system and its 
+%                       subsystems. Signature data includes: Subsystem, Size, 
 %                       Inports, Outports, GlobalFroms, GlobalGotos, 
 %                       ScopedFromTags, ScopedGotoTags, DataStoreReads, 
 %                       DataStoreWrites, Updates, GotoTagVisibilities, and 
