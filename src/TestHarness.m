@@ -311,7 +311,9 @@ function TestHarness(system)
             inportPort = get_param(inport, 'PortHandles');
             inportPort = inportPort.Outport;
             subInports = ports.Inport;
+            
             moveToPort(inport, subInports(sysIns + j), 1);
+            resizeInOutPort(inport);
             add_line(nextSys, inportPort, subInports(sysIns + j));
             num = num + 1;
         end
@@ -327,6 +329,7 @@ function TestHarness(system)
             outportPort = outportPort.Inport;
             subOutports = ports.Outport;
             moveToPort(outport, subOutports(sysOuts + j), 0)
+            resizeInOutPort(outport);
             add_line(nextSys, subOutports(sysOuts + j), outportPort);
             num = num + 1;
         end
@@ -373,4 +376,46 @@ function moveToPort(block, port, onLeft)
     newBlockPosition(4) = portPosition(2) + blockWidth - (blockWidth/2);   % Bottom
 
     set_param(block, 'Position', newBlockPosition);
+end
+
+function resizeBlock(block, width, height)
+%% resizeBlock Resize a block to a specific width and height. 
+%   Resizing is done w.r.t. the center of the block.
+%
+%   Inputs:
+%       block   Handle of the block to be resized.
+%       width   New width in pixels.
+%       height  New height in pixels.
+%
+%   Outputs:
+%       N/A
+
+    % Get the old block size info
+    origBlockPosition = get_param(block, 'Position');
+    origWidth = (origBlockPosition(3) - origBlockPosition(1)) / 2;
+    origHeight = (origBlockPosition(4) - origBlockPosition(2)) / 2;
+
+    % Compute new block size info
+    newBlockPosition = origBlockPosition;
+    newWidth = width/2;
+    newHeight = height/2;
+
+    % Reset each coordinate to the block center, then change it to the new size
+    newBlockPosition(1) = (origBlockPosition(1) + origWidth) - newWidth; % Left
+    newBlockPosition(2) = (origBlockPosition(2) + origHeight) - newHeight; % Top  
+    newBlockPosition(3) = (origBlockPosition(3) - origWidth) + newWidth; % Right
+    newBlockPosition(4) = (origBlockPosition(4) - origHeight) + newHeight; % Bottom 
+     
+    set_param(block, 'Position', newBlockPosition);
+end
+
+function resizeInOutPort(block)
+%% resizeInOutPort Resize an Inport or Outport block to their default values.
+%
+%   Inputs:
+%       block   Handle of the Inport or Ouport block to be resized.
+%
+%   Outputs:
+%       N/A
+    resizeBlock(block, 30, 14);
 end
