@@ -18,12 +18,6 @@ function TestHarness(system)
     topLevelSys = sysSplit{1};
     typeMap = mapDataTypes(topLevelSys);
     
-    % Extract signature of the subsystem
-%     StrongSignature(topLevelSys, 0, 0, sys);
-%     topLevelSys = [topLevelSys '_STRONG_SIGNATURE'];
-%     sysSplit{1} = topLevelSys;
-%     sys = strjoin(sysSplit, '/');
-    
     % Add Inport and Goto to supply test info to Froms
     froms = find_system(system, 'SearchDepth', 1, 'BlockType', 'From');
     fromscheck = strfind(froms, 'FromSigScope');
@@ -317,6 +311,7 @@ function TestHarness(system)
             inportPort = get_param(inport, 'PortHandles');
             inportPort = inportPort.Outport;
             subInports = ports.Inport;
+            moveToPort(inport, subInports(sysIns + j), 1);
             add_line(nextSys, inportPort, subInports(sysIns + j));
             num = num + 1;
         end
@@ -331,9 +326,51 @@ function TestHarness(system)
             outportPort = get_param(outport, 'PortHandles');
             outportPort = outportPort.Inport;
             subOutports = ports.Outport;
+            moveToPort(outport, subOutports(sysOuts + j), 0)
             add_line(nextSys, subOutports(sysOuts + j), outportPort);
             num = num + 1;
         end
         sysSplit = strsplit(nextSys, '/');
         sysName = nextSys; 
     end
+end
+
+function moveToPort(block, port, onLeft)
+%% moveToPort Move a block to the right/left of a block port
+%
+%   Inputs:
+%       block   Handle of the block to be moved.
+%       port    Handle of the port to align the block with.
+%       onLeft  Boolean indicating if the block is to be on the right(0) or
+%               left(1) of the port.
+%
+%   Outputs:
+%       N/A
+
+    BLOCK_OFFSET = 50;
+
+    % Get block's current position
+    blockPosition = get_param(block, 'Position');
+
+    % Get port position
+    portPosition = get_param(port, 'Position');
+
+    % Compute block dimensions which need to be maintained during the move
+    blockWidth = blockPosition(4) - blockPosition(2);
+    blockLength = blockPosition(3) - blockPosition(1);
+
+    % Compute x dimensions   
+    if ~onLeft 
+        newBlockPosition(1) = portPosition(1) + BLOCK_OFFSET;  % Left
+        newBlockPosition(3) = portPosition(1) + blockLength + BLOCK_OFFSET;    % Right 
+    else
+        newBlockPosition(1) = portPosition(1) - blockLength - BLOCK_OFFSET;    % Left
+        newBlockPosition(3) = portPosition(1) - BLOCK_OFFSET;  % Right
+    end
+
+    % Compute y dimensions
+    newBlockPosition(2) = portPosition(2) - (blockWidth/2);    % Top
+    newBlockPosition(4) = portPosition(2) + blockWidth - (blockWidth/2);   % Bottom
+
+    set_param(block, 'Position', newBlockPosition);
+end
