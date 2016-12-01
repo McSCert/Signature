@@ -17,47 +17,49 @@ function yOffsetFinal = RepositionInportSig(address, inGo, inFrom, inports, goto
     nonInport = setdiff(allBlocks, inports);
     nonInportGo = setdiff(nonInport, inGo);
     nonInportGoFrom = setdiff(nonInportGo, inFrom);
-    offset = 300 + 20*gotoLength;
+    
+    tagLength = 10 * gotoLength;
+    offsetLeft = 250 + 20*gotoLength;   % Distance between From and block its connected to
     yOffsetFinal = 34;
 
+    inportLegth = 30;
+    inportHeight = 14;
+    
     % Reposition Inports
-    for zt = 1:length(inports)
-        iPosition = get_param(inports{zt}, 'Position');
+    for i = 1:length(inports)
+        iPosition = get_param(inports{i}, 'Position');
         iPosition(1) = 20;
-        if zt == 1
+        if i == 1
             iPosition(2) = 60;
         else
             iPosition(2) = yOffsetFinal + 20;
         end
-        iPosition(3) = 30 + 20;
-        iPosition(4) = iPosition(2) + 14;
+        iPosition(3) = 20 + inportLegth;
+        iPosition(4) = iPosition(2) + inportHeight;
         yOffsetFinal = iPosition(4);
-        set_param(inports{zt}, 'Position', iPosition);
+        set_param(inports{i}, 'Position', iPosition);
     end
 
     % Reposition Gotos
-    for y = 1:length(inGo)
-        gPosition    = get_param(inports{y}, 'Position');
+    for i = 1:length(inGo)
+        gPosition = get_param(inports{i}, 'Position');
         gPosition(1) = gPosition(1) + 50;
-        gPosition(3) = gPosition(3) + 50 + 10*gotoLength;
-        set_param(inGo{y}, 'Position', gPosition);
+        gPosition(3) = gPosition(3) + 50 + tagLength;
+        set_param(inGo{i}, 'Position', gPosition);
     end
 
     % Reposition Froms
-    for x = 1:length(inFrom)
-        fPosition    = get_param(inFrom{x}, 'Position');
-        fPosition(1) = fPosition(1) + 250 + 10*gotoLength;
+    for i = 1:length(inFrom)
+        fPosition    = get_param(inFrom{i}, 'Position');
+        fPosition(1) = fPosition(1) + 250 + tagLength;
         fPosition(2) = fPosition(2) + 200;
-        fPosition(3) = fPosition(3) + 250 + 20*gotoLength;
+        fPosition(3) = fPosition(3) + offsetLeft;
         fPosition(4) = fPosition(4) + 200;
-        set_param(inFrom{x}, 'Position', fPosition);
+        set_param(inFrom{i}, 'Position', fPosition);
     end
-    
-    mdlLinesTwo = [];
-
-    %add_block('built-in/Note', [address '/Main Simulink Block'], 'Position', [offset + 20*gotoLength 10], 'FontSize', 30)
 
     % Reposition all lines and other blocks aside from inport, and inport gotos and froms
+    mdlLinesTwo = [];
     mdlLines = find_system(address, 'Searchdepth', 1, 'FollowLinks', 'on', 'LookUnderMasks', 'All', 'FindAll', 'on', 'Type', 'line');
     for zy = 1:length(mdlLines)
         SrcBlock = get_param(mdlLines(zy), 'SrcBlock');
@@ -75,26 +77,26 @@ function yOffsetFinal = RepositionInportSig(address, inGo, inFrom, inports, goto
 
     for zm = 1:length(mdlLinesTwo)
         lPint = get_param(mdlLinesTwo(zm), 'Points');
-        xPint = lPint(:,1);
-        yPint = lPint(:,2);
-        xPint = xPint + offset;
+        xPint = lPint(:, 1);
+        yPint = lPint(:, 2);
+        xPint = xPint + offsetLeft;
         yPint = yPint + 200;
         newPoint = [xPint yPint];
         set_param(mdlLinesTwo(zm), 'Points', newPoint);
     end
 
     for z = 1:length(nonInportGoFrom)
-        bPosition    = get_param(nonInportGoFrom{z}, 'Position');
-        bPosition(1) = bPosition(1) + offset;
+        bPosition = get_param(nonInportGoFrom{z}, 'Position');
+        bPosition(1) = bPosition(1) + offsetLeft;
         bPosition(2) = bPosition(2) + 200;
-        bPosition(3) = bPosition(3) + offset;
+        bPosition(3) = bPosition(3) + offsetLeft;
         bPosition(4) = bPosition(4) + 200;
         set_param(nonInportGoFrom{z}, 'Position', bPosition);
     end
 
     for gg = 1:length(annotations)
-        bPosition    = get_param(annotations(gg), 'Position');
-        bPosition(1) = bPosition(1) + offset;
+        bPosition = get_param(annotations(gg), 'Position');
+        bPosition(1) = bPosition(1) + offsetLeft;
         bPosition(2) = bPosition(2) + 200;
         set_param(annotations(gg), 'Position', bPosition);
     end
