@@ -1,6 +1,8 @@
 function TestHarness(system)
-% TESTHARNESS Augment a system with a test harness which accounts for
-%   hidden data flow of data stores.
+% TESTHARNESS Augment a subsystem with Inports for hidden data flow
+%   (Data Stores Reads and Froms) so that testing will generate test
+%   inputs and exercise them. Also augments the subsystem with Outports for 
+%   Data Store Writes and Gotos so that testing can record this data.
 %
 %   Inputs:
 %       system      Simulink subsystem path to generate the harness for.
@@ -9,7 +11,7 @@ function TestHarness(system)
 %       N/A
 
     % Constants:
-    FONT_SIZE = 14; % Heading font size
+    FONT_SIZE = getSignatureConfig('heading_size', 14); % Heading font size
     
     addedBlocks = {};
     dataTypes = {};
@@ -30,9 +32,9 @@ function TestHarness(system)
             resizeInOutPort(inport);
  
             % Goto
-            goto = add_block('built-in/Goto', [system  '/HarnessGoto' num2str(num)]);
+            goto = add_block('built-in/Goto', [system  '/HarnessGoto' num2str(num)], ...
+                'GotoTag', get_param(froms{i}, 'GotoTag'));
             addedBlocks{end + 1} = goto;
-            set_param(goto, 'GotoTag', get_param(froms{i}, 'GotoTag'));
             resizeGotoFrom(goto);
  
             % Type info
@@ -66,9 +68,9 @@ function TestHarness(system)
             resizeInOutPort(inport);
 
             % Write
-            dataStore = add_block('built-in/dataStoreWrite', [system '/HarnessWrite' num2str(num)]);
+            dataStore = add_block('built-in/dataStoreWrite', [system '/HarnessWrite' num2str(num)], ...
+                'DataStoreName', get_param(reads{i}, 'DataStoreName'));
             addedBlocks{end + 1} = dataStore;
-            set_param(dataStore, 'DataStoreName', get_param(reads{i}, 'DataStoreName'));
             resizeDataStore(dataStore);
 
             % Type info
@@ -100,9 +102,9 @@ function TestHarness(system)
             resizeInOutPort(inport);
             
             % Write
-            dataStore = add_block('built-in/dataStoreWrite', [system '/HarnessWrite' num2str(num)]);
+            dataStore = add_block('built-in/dataStoreWrite', [system '/HarnessWrite' num2str(num)], ...
+                'DataStoreName', get_param(reads{i}, 'DataStoreName'));
             addedBlocks{end + 1} = dataStore;
-            set_param(dataStore, 'DataStoreName', get_param(reads{i}, 'DataStoreName'));
             resizeDataStore(dataStore);
 
             % Type info
@@ -130,7 +132,7 @@ function TestHarness(system)
     end
     
     % Save the number of Inports that were added
-    % Divided by 2 beause for every Inport added, a Goto or Write was also added
+    % Divided by 2 because for every Inport added, a Goto or Write was also added
     numIns = length(addedBlocks)/2;
     
     % Add Outport and Goto
@@ -142,9 +144,9 @@ function TestHarness(system)
     for i = 1:length(froms)
         if ~isempty(gotoscheck{i}) && (gotoscheck{i}(1) == (length(system) + 2))
             % From
-            from = add_block('built-in/Goto', [system '/HarnessFrom' num2str(num)]);
+            from = add_block('built-in/Goto', [system '/HarnessFrom' num2str(num)], ...
+                'GotoTag', get_param(gotos{i}, 'GotoTag'));
             addedBlocks{end + 1} = goto;
-            set_param(from, 'GotoTag', get_param(gotos{i}, 'GotoTag'));
             resizeGotoFrom(from);
 
             % Outport
@@ -171,9 +173,9 @@ function TestHarness(system)
     for i = 1:length(writes)
         if ~isempty(writescheck{i}) && (writescheck{i}(1) == (length(system) + 2))
             % Read
-            dataStore = add_block('built-in/dataStoreRead', [system '/HarnessRead' num2str(num)]);
+            dataStore = add_block('built-in/dataStoreRead', [system '/HarnessRead' num2str(num)], ...
+                 'DataStoreName', get_param(writes{i}, 'DataStoreName'));
             addedBlocks{end + 1} = dataStore;
-            set_param(dataStore, 'DataStoreName', get_param(writes{i}, 'DataStoreName'));
             resizeDataStore(dataStore);
 
             % Outport
@@ -192,9 +194,9 @@ function TestHarness(system)
         end
         if ~isempty(writescheck2{i}) && (writescheck2{i}(1) == (length(system) + 2))
             % Read
-            dataStore = add_block('built-in/dataStoreRead', [system '/HarnessWrite' num2str(num)]);
+            dataStore = add_block('built-in/dataStoreRead', [system '/HarnessWrite' num2str(num)], ...
+                'DataStoreName', get_param(writes{i}, 'DataStoreName'));
             addedBlocks{end + 1} = dataStore;
-            set_param(dataStore, 'DataStoreName', get_param(writes{i}, 'DataStoreName'));
             resizeDataStore(dataStore);
             
             % Outport
@@ -222,7 +224,8 @@ function TestHarness(system)
         rowNum = ceil(numBlock/2);
 
         % Get model info
-        mdlLines    = find_system(system, 'Searchdepth', 1, 'FollowLinks', 'on', 'LookUnderMasks', 'All', 'FindAll', 'on', 'Type', 'line');
+        mdlLines    = find_system(system, 'Searchdepth', 1, 'FollowLinks', ...
+            'on', 'LookUnderMasks', 'All', 'FindAll', 'on', 'Type', 'line');
         allBlocks   = find_system(system, 'SearchDepth', 1);
         annotations = find_system(system, 'FindAll', 'on', 'SearchDepth', 1, 'type', 'annotation');
         
@@ -253,15 +256,20 @@ function TestHarness(system)
             bPosition(2) = bPosition(2) + 40*rowNum + 30;
             set_param(annotations(i), 'Position', bPosition);
         end
-       
+ 
         % Resposition new test harness blocks
-        MARGIN = 30;
-        startTop = MARGIN;
-        startLeft = MARGIN;
+        startTop = 10;
+        startLeft = 30;
+        
+        % Add heading for test harness specific blocks
+        add_block('built-in/Note', [system '/Inputs for Harness'], ...
+            'Position', [90 startTop], 'FontSize', FONT_SIZE)
+
+        startTop = startTop + 30;
         
         for j = 1:length(addedBlocks)
             if(ceil(j/2) > 1) % Not first row
-                startTop = 30 + 40*(ceil(j/2) - 1); % Compute next row placement
+                startTop = 40 + 40*(ceil(j/2) - 1); % Compute next row placement
             end
             if(mod(j,2) == 1) % First block in the row
                 blockpos = get_param(addedBlocks{j}, 'Position');
@@ -274,16 +282,9 @@ function TestHarness(system)
                 newPos = [];
             else
                 % Position it w.r.t. the last one added
-               % ports = get_param(addedBlocks{j-1}, 'PortHandles');
                 moveToBlock(addedBlocks{j}, addedBlocks{j-1}, 0);
             end
         end
-    end
-
-    % Add heading for test harness specific blocks
-    if numBlock > 0
-        add_block('built-in/Note', [system '/Inputs for Harness'], ...
-            'Position', [90 5], 'FontSize', FONT_SIZE)
     end
 
     %% Add Inport/Outport blocks to all higher levels

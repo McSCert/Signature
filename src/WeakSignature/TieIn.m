@@ -29,8 +29,8 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
 %       N/A
 
     % Constants: 
-    FONT_SIZE = 14; % Heading font size
-    Y_OFFSET = 25;  % Vertical offset in pixels for spacing signature elements
+    FONT_SIZE = getSignatureConfig('heading_size', 14); % Heading font size
+    Y_OFFSET = 25;  % Vertical spacing between signature sections
     
     % Get signature for Inports and Outports 
     [inAddress, InportGoto, InportFrom, Inports, inGotoLength] = InportSig(address);

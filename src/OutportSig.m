@@ -15,7 +15,7 @@ function [address, outportGoto, outportFrom, outports, gotoLength] = OutportSig(
 %		gotoLength   Max length of Outport Goto/From tags.
 
     % Constant: Colour of signature Goto/Froms
-    GOTOFROM_COLOR = 'green';
+    GOTOFROM_BGCOLOR = getSignatureConfig('gotofrom_bgcolor', 'white'); % Background color of signature Goto/Froms
 
     % Initialize outputs
 	outportGoto = {};
@@ -44,21 +44,21 @@ function [address, outportGoto, outportFrom, outports, gotoLength] = OutportSig(
         end
 
         % Add Goto block
-        Goto = add_block('built-in/Goto', [address '/GotoOut' pSID]);
+        Goto = add_block('built-in/Goto', [address '/GotoOut' pSID], ...
+            'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
         GotoName = ['GotoOut' pSID];
-        set_param(Goto, 'GotoTag', GotoTag);
-        set_param(Goto, 'BackgroundColor', GOTOFROM_COLOR);
-        set_param(Goto, 'Position', get_param(outports{z}, 'Position'));
+        set_param(Goto, 'Position', get_param(outports{z}, 'Position')); % Move to same position as Outport it is replacing
         outportGoto{end + 1} = getfullname(Goto);
 
         % Add From block
-        From = add_block('built-in/From', [address '/FromOut' pSID]);
+        From = add_block('built-in/From', [address '/FromOut' pSID], ...
+            'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
         FromName = ['FromOut' pSID];
-        set_param(From, 'GotoTag', GotoTag);
-        set_param(From, 'BackgroundColor', GOTOFROM_COLOR);
-        set_param(From, 'Position', get_param(outports{z}, 'Position'));
         outportFrom{end + 1} = getfullname(From);
-
+        % No need to move now, becuase the repositioning functions take
+        % care of moving the signature blocks:
+        % set_param(From, 'Position', get_param(outports{z}, 'Position'));
+        
         % Connect new Goto/Froms with signal lines
         SrcBlocks = pConnect.SrcBlock;
         SrcPorts  = pConnect.SrcPort;

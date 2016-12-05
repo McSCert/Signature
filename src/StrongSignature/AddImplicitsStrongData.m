@@ -3,11 +3,6 @@ function [address, scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
     scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd, dataStoreReadAdd, ...
     globalGotosAdd, globalFromsAdd, hasUpdates)
 % ADDIMPLICITSSTRONGDATA Find implicit inputs/outputs for the signature.
-% 
-%   Function:
-%       ADDIMPLICITSSTRONGDATA(address, scopeGotoAdd, scopeFromAdd, 
-%           dataStoreWriteAdd, dataStoreReadAdd, globalGotosAdd, 
-%           globalFromsAdd, hasUpdates)
 %
 %   Inputs:
 %       address         Simulink system path.

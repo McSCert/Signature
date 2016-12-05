@@ -22,7 +22,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
 %       globalFromsAddOut       List of global froms being passed out.
     
     % Constants: 
-    FONT_SIZE = 14; % Heading font size
+    FONT_SIZE = getSignatureConfig('heading_size', 14); % Heading font size
     Y_OFFSET = 25;  % Vertical spacing between signature sections
     
     % Elements in the signature being carried up from the signatures of lower levels

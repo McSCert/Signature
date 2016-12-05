@@ -15,7 +15,7 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
 %		gotoLength  Max length of Inport Goto/From tags.
 
     % Constants: 
-    GOTOFROM_COLOR = 'green'; % Colour of signature Goto/Froms
+    GOTOFROM_BGCOLOR = getSignatureConfig('gotofrom_bgcolor', 'white'); % Background color of signature Goto/Froms
     
     % Initialize outputs
     inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');
@@ -39,20 +39,20 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
         end
 
         % Add Goto block
-        Goto = add_block('built-in/Goto', [address '/GotoIn' pSID]);
+        Goto = add_block('built-in/Goto', [address '/GotoIn' pSID], ...
+            'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
         GotoName = GotoTag;
         inportGoto{end + 1} = getfullname(Goto);
-        set_param(Goto, 'GotoTag', GotoTag);
-        set_param(Goto, 'BackgroundColor', GOTOFROM_COLOR);
-        set_param(Goto, 'Position', get_param(inports{z}, 'Position'));
+        % No need to move now, becuase the repositioning functions take
+        % care of moving the signature blocks:
+        % set_param(Goto, 'Position', get_param(inports{z}, 'Position'));
 
         % Add From block
-        From = add_block('built-in/From', [address '/FromIn' pSID]);
+        From = add_block('built-in/From', [address '/FromIn' pSID], ...
+            'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
         FromName = ['FromIn' pSID];
         inportFrom{end + 1} = getfullname(From);
-        set_param(From, 'GotoTag', GotoTag);
-        set_param(From, 'BackgroundColor', GOTOFROM_COLOR);
-        set_param(From, 'Position', get_param(inports{z}, 'Position')); 
+        set_param(From, 'Position', get_param(inports{z}, 'Position')); % Move to same position as Inport it is replacing 
 
         % Connect new Goto/Froms with signal lines
         DstBlocks = pConnect.DstBlock;
