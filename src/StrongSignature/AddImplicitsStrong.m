@@ -37,12 +37,12 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks,...
 %                       From blocks, and that of the scoped From blocks' 
 %                       corresponding terminators.
 %
-%       dataStoreReads  Set containing two matrices: that of the Data
-%                       Store Read blocks, and that of their corresponding 
-%                       terminators.
-%
 %       dataStoreWrites	Set containing two matrices: that of the Data
 %                       Store Write blocks, and that of their corresponding 
+%                       terminators.
+%
+%       dataStoreReads  Set containing two matrices: that of the Data
+%                       Store Read blocks, and that of their corresponding 
 %                       terminators.
 %
 %       gotoBlocks      Set containing two matrices: that of the scoped
@@ -596,18 +596,20 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks,...
 				end	
 		end
     end
-    
-    % Remove duplicates
-	scopedGoto      = unique(scopedGotoAdd);
+
+    % -- Prepare outputs --
+    % Group implicit signature data in order to minimize the number of outputs
 	scopedFrom      = unique(scopedFromAdd);
     dataStoreR      = unique(dataStoreReadAdd);
 	dataStoreW      = unique(dataStoreWriteAdd);
-    globalGotosOut  = unique(globalGotosAdd);
+    scopedGoto      = unique(scopedGotoAdd);
     globalFromsOut  = unique(globalFromsAdd);
+    globalGotosOut  = unique(globalGotosAdd);
+    carryUp = {scopedFrom, dataStoreR, dataStoreW, scopedGoto, globalFromsOut,...
+        globalGotosOut, updatesToAdd};
     
     % Blocks that need to be repositioned and their corresponding terminator
-    % are grouped together, for legibility and to minimize inputs to the
-    % reposition function
+    % are grouped together
     fromBlocks      = {fromToRepo, fromTermToRepo};
     dataStoreWrites = {dSWriteToRepo, dSWriteTermToRepo};
     dataStoreReads  = {dSReadToRepo, dSReadTermToRepo};
@@ -615,8 +617,3 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks,...
     globalFroms     = {globalFromToRepo, globalFromTermToRepo};
     globalGotos     = {globalGotoToRepo, globalGotoTermToRepo};
     updateBlocks    = {updateToRepo, updateTermToRepo};
-    
-    % Block names being carried out are grouped together in order to miimize
-    % the number of function outputs
-    carryUp = {scopedFrom, dataStoreR, dataStoreW, scopedGoto, globalFromsOut,...
-        globalGotosOut, updatesToAdd};

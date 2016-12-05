@@ -14,12 +14,31 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
 %                           the signature.
 %       
 % 	Outputs:
-%       carryup
-%       fromBlocks
-% 		dataStoreWrites
-% 		dataStoreReads
-%       gotoBlocks
-%       updateBlocks
+%       carryUp         List of 6 lists that are carried up to the subsystem
+%                       above: scoped Froms, scoped Gotos, Data Store
+%                       Reads, Data Store Writes, global Froms and global
+%                       Gotos.                   
+%
+%       fromBlocks      Set containing two matrices: that of the scoped
+%                       From blocks, and that of the scoped From blocks' 
+%                       corresponding terminators.
+%
+%
+%       dataStoreWrites	Set containing two matrices: that of the Data
+%                       Store Write blocks, and that of their corresponding 
+%                       terminators.
+%
+%       dataStoreReads  Set containing two matrices: that of the Data
+%                       Store Read blocks, and that of their corresponding 
+%                       terminators.
+%
+%       gotoBlocks      Set containing two matrices: that of the scoped
+%                       Goto blocks, and that of the scoped From blocks' 
+%                       corresponding terminators.
+%
+%       updateBlocks    Set containing two matrices: that of the update
+%                       blocks (represented by reads), and their corresponding
+%                       terminators.
 
     % Initialize sets, matrices, and maps
     fromToRepo = [];
@@ -138,21 +157,20 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
     % along with a terminator
     for bz = 1:length(scopeFromAddx)
         if ~isKey(mapObjU, scopeFromAddx{bz})
-		from = add_block('built-in/From', [address '/FromSigScopeAdd' num2str(num)]);
-		fromName = ['FromSigScopeAdd' num2str(num)];
+            from = add_block('built-in/From', [address '/FromSigScopeAdd' num2str(num)], ...
+                'GotoTag', scopeFromAddx{bz}, 'TagVisibility', 'scoped');
+            fromName = ['FromSigScopeAdd' num2str(num)];
 
-		Terminator = add_block('built-in/Terminator', [address '/TerminatorFromScopeAdd' num2str(termnum)]);
-		TermName = ['TerminatorFromScopeAdd' num2str(termnum)];
+            Terminator = add_block('built-in/Terminator', [address '/TerminatorFromScopeAdd' num2str(termnum)]);
+            TermName = ['TerminatorFromScopeAdd' num2str(termnum)];
 
-		fromToRepo(end + 1) = from;
-		fromTermToRepo(end + 1) = Terminator;
+            fromToRepo(end + 1) = from;
+            fromTermToRepo(end + 1) = Terminator;
 
-		set_param(from, 'GotoTag', scopeFromAddx{bz});
-		set_param(from, 'TagVisibility', 'scoped');
-		add_line(address, [fromName '/1'], [TermName '/1']);
+            add_line(address, [fromName '/1'], [TermName '/1']);
 
-		num = num + 1;
-		termnum = termnum + 1;
+            num = num + 1;
+            termnum = termnum + 1;
         end
     end
     
@@ -164,7 +182,8 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
     % along with a terminator
     for bt = 1:length(scopeGotoAddx)
         if ~isKey(mapObjU, scopeGotoAddx{bt})
-            from = add_block('built-in/From', [address '/GotoSigScopeAdd' num2str(num)]);
+            from = add_block('built-in/From', [address '/GotoSigScopeAdd' num2str(num)] , ...
+                'GotoTag', scopeGotoAddx{bz}, 'TagVisibility', 'scoped');
             fromName = ['GotoSigScopeAdd' num2str(num)];
 
             Terminator = add_block('built-in/Terminator', [address '/TerminatorGotoScopeAdd' num2str(termnum)]);
@@ -173,8 +192,6 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
             gotoToRepo(end + 1) = from;
             gotoTermToRepo(end + 1) = Terminator;
 
-            set_param(from, 'GotoTag', scopeGotoAddx{bz});
-            set_param(from, 'TagVisibility', 'scoped');
             add_line(address, [fromName '/1'], [TermName '/1']);
 
             num = num + 1;
@@ -190,7 +207,8 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
     % along with a terminator
 	for by = 1:length(dataStoreWriteAddx)
         if ~isKey(mapObjU, dataStoreWriteAddx{by})
-            dataStore = add_block('built-in/dataStoreRead', [address '/DataStoreWriteAdd' num2str(num)]);
+            dataStore = add_block('built-in/dataStoreRead', [address '/DataStoreWriteAdd' num2str(num)], ...
+                'DataStoreName', dataStoreWriteAddx{by});
             dataStoreName = ['DataStoreWriteAdd' num2str(num)];
 
             Terminator = add_block('built-in/Terminator', [address '/TerminatorDataStoreWriteAdd' num2str(termnum)]);
@@ -199,7 +217,6 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
             dSWriteToRepo(end + 1) = dataStore;
             dSWriteTermToRepo(end + 1) = Terminator;
 
-            set_param(dataStore, 'DataStoreName', dataStoreWriteAddx{by});
             add_line(address, [dataStoreName '/1'], [TermName '/1']);
 
             num = num + 1;
@@ -215,16 +232,16 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
     % along with a terminator
     for bx = 1:length(dataStoreReadAddx)
         if ~isKey(mapObjU, dataStoreReadAddx{bx})
-            dataStore = add_block('built-in/dataStoreRead', [address '/DataStoreReadAdd' num2str(num)]);
-            dataStoreName = ['DataStoreReadAdd' num2str(num)];
-
+            dataStore = add_block('built-in/dataStoreRead', [address '/DataStoreReadAdd' num2str(num)], ...
+                'DataStoreName', dataStoreReadAddx{bx});
             Terminator = add_block('built-in/Terminator', [address '/TerminatorDataStoreReadAdd' num2str(termnum)]);
+            
+            dataStoreName = ['DataStoreReadAdd' num2str(num)];
             TermName = ['TerminatorDataStoreReadAdd' num2str(termnum)];
 
             dSReadToRepo(end + 1) = dataStore;
             dSReadTermToRepo(end + 1) = Terminator;
 
-            set_param(dataStore, 'DataStoreName', dataStoreReadAddx{bx});
             add_line(address, [dataStoreName '/1'], [TermName '/1']);
 
             num = num + 1;
@@ -239,32 +256,31 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
     % Add the updates on the list to the model, along with a terminator
     for bw = 1:length(updatesToAdd)
         if strcmp(updatesToAdd{bw}.Type, 'DataStoreRead')
-            dataStore = add_block('built-in/DataStoreRead', [address '/DataStoreUpdate' num2str(num)]);
-            dataStoreName = ['DataStoreUpdate' num2str(num)];
-
+            dataStore = add_block('built-in/DataStoreRead', [address '/DataStoreUpdate' num2str(num)], ...
+                 'DataStoreName', updatesToAdd{bw}.Name);
             Terminator = add_block('built-in/Terminator', [address '/TermDSUpdate' num2str(termnum)]);
+            
+            dataStoreName = ['DataStoreUpdate' num2str(num)];
             TermName = ['TermDSUpdate' num2str(termnum)];
 
             updateToRepo(end + 1) = dataStore;
             updateTermToRepo(end + 1) = Terminator;
 
-            set_param(dataStore, 'DataStoreName', updatesToAdd{bw}.Name);
             add_line(address, [dataStoreName '/1'], [TermName '/1']);
 
             num = num + 1;
             termnum = termnum + 1;
         else
-            from = add_block('built-in/From', [address '/FromUpdate' num2str(num)]);
-            fromName = ['FromUpdate' num2str(num)];
-
+            from = add_block('built-in/From', [address '/FromUpdate' num2str(num)], ...
+                'GotoTag', updatesToAdd{bw}.Name, 'TagVisibility', 'scoped');
             Terminator = add_block('built-in/Terminator', [address '/TermFromUpdate' num2str(termnum)]);
+            
+            fromName = ['FromUpdate' num2str(num)];
             TermName = ['TermFromUpdate' num2str(termnum)];
 
             updateToRepo(end + 1) = from;
             updateTermToRepo(end + 1) = Terminator;
 
-            set_param(from, 'GotoTag', updatesToAdd{bw}.Name);
-            set_param(from, 'TagVisibility', 'scoped');
             add_line(address, [fromName '/1'], [TermName '/1']);
             
             num = num + 1;
@@ -276,15 +292,18 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
         updatesToAdd{i} = updatesToAdd{i}.Name;
     end
 
-	scopedGoto = scopeGotoAdd;
+    % -- Prepare outputs --
+    % Group implicit signature data in order to minimize the number of outputs
+    scopedGoto = scopeGotoAdd;
     scopedFrom = scopeFromAdd;
 	dataStoreW = dataStoreWriteAdd;
     dataStoreR = dataStoreReadAdd;
-    
-    fromBlocks = {fromToRepo, fromTermToRepo};
-    dataStoreWrites = {dSWriteToRepo, dSWriteTermToRepo};
-    dataStoreReads = {dSReadToRepo, dSReadTermToRepo};
-    gotoBlocks = {gotoToRepo, gotoTermToRepo};
-    updateBlocks = {updateToRepo, updateTermToRepo};
-    
     carryUp = {scopedFrom, scopedGoto, dataStoreR, dataStoreW};
+
+    % Blocks that need to be repositioned and their corresponding terminator
+    % are grouped together
+    fromBlocks      = {fromToRepo, fromTermToRepo};
+    dataStoreWrites = {dSWriteToRepo, dSWriteTermToRepo};
+    dataStoreReads  = {dSReadToRepo, dSReadTermToRepo};
+    gotoBlocks      = {gotoToRepo, gotoTermToRepo};
+    updateBlocks    = {updateToRepo, updateTermToRepo};

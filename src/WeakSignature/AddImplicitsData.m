@@ -87,7 +87,7 @@ function [address, scopedGoto, scopedFrom, dataStoreW, dataStoreR, removableDS, 
         removableScopedTagsNames{end + 1} = get_param(removableScopedTags{rsi}, 'GotoTag');
     end
     
-    % gets rid of repeated names
+    % Remove duplicates
     scopeFromAdd = unique(scopeFromAdd);
     scopeGotoAdd = unique(scopeGotoAdd);
     dataStoreReadAdd = unique(dataStoreReadAdd);
@@ -123,11 +123,11 @@ function [address, scopedGoto, scopedFrom, dataStoreW, dataStoreR, removableDS, 
         end
     end
 
-    % Assign the output variables
-    updates = updatesToAdd;
-    scopedFrom = scopeFromAdd;
-    scopedGoto = scopeGotoAdd;
-	dataStoreW = dataStoreWriteAdd;
-    dataStoreR = dataStoreReadAdd;
-    removableDS = removableDataStoresNames;
-    removableTags = removableScopedTagsNames;
+    % Assign outputs
+    updates         = updatesToAdd;
+    scopedFrom      = scopeFromAdd;
+    scopedGoto      = scopeGotoAdd;
+	dataStoreW      = dataStoreWriteAdd;
+    dataStoreR      = dataStoreReadAdd;
+    removableDS     = removableDataStoresNames;
+    removableTags   = removableScopedTagsNames;
