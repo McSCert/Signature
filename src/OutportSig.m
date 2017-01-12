@@ -8,7 +8,7 @@ function [address, outportGoto, outportFrom, outports, gotoLength] = OutportSig(
 %       address      Simulink system path.
 %
 %   Outports:
-%       address      Simulink system path.
+%   address      Simulink system path.
 %		outportGoto  Handles of Outport Gotos.
 %		outportFrom  Handles of Outport Froms.
 %		outports     Handles of Outport.
@@ -39,7 +39,7 @@ function [address, outportGoto, outportFrom, outports, gotoLength] = OutportSig(
         end
 
         % Save longest tag
-        if length(GotoTag) > gotoLength 
+        if length(GotoTag) > gotoLength
             gotoLength = length(GotoTag);
         end
 
@@ -58,7 +58,7 @@ function [address, outportGoto, outportFrom, outports, gotoLength] = OutportSig(
         % No need to move now, becuase the repositioning functions take
         % care of moving the signature blocks:
         % set_param(From, 'Position', get_param(outports{z}, 'Position'));
-        
+
         % Connect new Goto/Froms with signal lines
         SrcBlocks = pConnect.SrcBlock;
         SrcPorts  = pConnect.SrcPort;
@@ -73,7 +73,7 @@ function [address, outportGoto, outportFrom, outports, gotoLength] = OutportSig(
                 % Do nothing
             end
         end
-        
+
          % 2) Connect From to Outport
         try
             add_line(address, [FromName '/1'], [pName '/1'], 'autorouting', 'on');

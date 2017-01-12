@@ -1,6 +1,7 @@
 # GOTOFROM_BGCOLOR The color for the Goto/From blocks in the signature, and 
-# their corresponding Goto/From blocks in the original model. The use of a 
-# color is beneficial to easily see these connections. Default is green.
+# their corresponding Goto/From blocks connecting the signature to the original 
+# model. The use of a color is beneficial to easily see these connections.
+# Default is green.
 # 
 # Acceptable parameter values are:
 #	black, white, red, green, blue, cyan, magenta, yellow, gray, lightBlue
