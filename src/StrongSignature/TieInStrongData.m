@@ -6,14 +6,14 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
 %   Inputs:
 %       address         Simulink system path.
 %
-%       sys             Name of the system to generate the documentation for. 
-%                       One can use a specific system name, or use 'All' to 
+%       sys             Name of the system to generate the documentation for.
+%                       One can use a specific system name, or use 'All' to
 %                       get documentation of the entire hierarchy.
 %
-%       hasUpdates      Boolean indicating whether updates are included in 
+%       hasUpdates      Boolean indicating whether updates are included in
 %                       the signature.
 %
-%       docFormat       Boolean indicating which docmentation type to 
+%       docFormat       Boolean indicating which docmentation type to
 %                       generate: .txt(0) or .tex(1).
 %
 %       dataTypeMap     Map of blocks and their corresponding data type.
@@ -25,15 +25,16 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
 %       scopeFromAddOut      List of scoped froms that the function will pass out.
 %       globalGotosAddOut    List of global gotos being passed out.
 %       globalFromsAddOut    List of global froms being passed out.
+%
 %       metrics              Cell array listing the system and its subsystems, with
-%                            the size of their signature (i.e. number of elements in 
+%                            the size of their signature (i.e. number of elements in
 %                            the signature).
 %
-%       signatures           Cell array of signature data for the system and its 
-%                            subsystems. Signature data includes: Subsystem, Size, 
-%                            Inports, Outports, GlobalFroms, GlobalGotos, 
-%                            ScopedFromTags, ScopedGotoTags, DataStoreReads, 
-%                            DataStoreWrites, Updates, GotoTagVisibilities, and 
+%       signatures           Cell array of signature data for the system and its
+%                            subsystems. Signature data includes: Subsystem, Size,
+%                            Inports, Outports, GlobalFroms, GlobalGotos,
+%                            ScopedFromTags, ScopedGotoTags, DataStoreReads,
+%                            DataStoreWrites, Updates, GotoTagVisibilities, and
 %                            DataStoreMemories.
 
     % Initialize output sets
@@ -46,44 +47,44 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
     id                      = {};
     metrics                 = {};
     signatures              = {};
-    
+
     % Elements in the signature being carried up from the signatures of lower levels
 	sGa     = {};   % Scoped Gotos
 	sFa     = {};   % Scoped Froms
 	dSWa    = {};   % Data Store Writes
     dSRa    = {};   % Data Store Reads
     gGa     = {};   % Global Gotos
-    gFa     = {};   % Global Froms   
+    gFa     = {};   % Global Froms
 
 	BlockName = get_param(address,'Name');
 
-    % Get signature for Inports and Outports    
+    % Get signature for Inports and Outports
     [inaddress, Inports] = InportSigData(address);
     [outaddress, Outports] = OutportSigData(address);
-    
+
     % Get all blocks, but remove the current address
-    allBlocks = find_system(address, 'SearchDepth', 1); 
+    allBlocks = find_system(address, 'SearchDepth', 1);
     allBlocks = setdiff(allBlocks, address);
-    
+
     % For every block
     for z = 1:length(allBlocks)
         BlockType = get_param(allBlocks{z}, 'BlockType');
         if strcmp(BlockType, 'SubSystem') % If it is a subsystem
-            
+
             % Recurse into the subsystem
             [scopeGotoAddoutx, dataStoreWriteAddoutx, dataStoreReadAddoutx, ...
                 scopeFromAddoutx, globalGotosAddoutx, globalFromsAddoutx, ...
                 metricsx, signaturesx] = TieInStrongData(allBlocks{z}, sys, ...
-                hasUpdates, docFormat, dataTypeMap); 
-           
+                hasUpdates, docFormat, dataTypeMap);
+
             % Append blocks found in subsystems
-            sGa     = [sGa scopeGotoAddoutx]; 
+            sGa     = [sGa scopeGotoAddoutx];
             sFa     = [sFa scopeFromAddoutx];
             dSWa    = [dSWa dataStoreWriteAddoutx];
             dSRa    = [dSRa dataStoreReadAddoutx];
             gGa     = [gGa globalGotosAddoutx];
             gFa     = [gFa globalFromsAddoutx];
-            
+
             % Append subsystem metric and signature info to the outputs
             metrics = [metrics metricsx];
             signatures = [signatures signaturesx];
@@ -101,7 +102,7 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
     % Find all Data Store Reads, Writes, scoped Gotos/Froms, and updates
     [address, scopedGoto, scopedFrom, DataStoreW, DataStoreR, Updates, ...
         GlobalGotos, GlobalFroms] = AddImplicitsStrongData(address, sGa, ...
-        sFa, dSWa, dSRa,gGa,gFa, hasUpdates); 
+        sFa, dSWa, dSRa,gGa,gFa, hasUpdates);
 
     % Ensure block names in the updates list aren't repeated in the
     % inputs and outputs, and that those filtered lists are separate
@@ -122,14 +123,14 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
 
     % Append this subsystem's metric data to the output
     system = strrep(address, '_STRONG_SIGNATURE', '');
-    size = length(Inports) + length(Outports) + length(globalGotosAddout) ... 
+    size = length(Inports) + length(Outports) + length(globalGotosAddout) ...
         + length(globalFromsAddout) + length(scopedGotoTags) ...
         + length(scopedFromTags) + length(DataStoreReads) ...
         + length(DataStoreWrites) + 2*length(Updates) + length(tagDex) ...
         + length(dsDex);
     size = num2str(size);
     metrics{end + 1} = struct('Subsystem', system, 'Size', size);
-    
+
     % Append this subsystem's signature data to the output
     signatures{end + 1} = struct(...
         'Subsystem',            system, ...
@@ -145,7 +146,7 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
         'Updates',              {Updates}, ...
         'GotoTagVisibilities',  {tagDex}, ...
         'DataStoreMemories',    {dsDex});
-        
+
    % Make the documentation file for this system
     if strcmp(sys, address) || strcmp(sys, 'All')
         DataMaker(address, Inports, Outports, scopedGotoTags, ...

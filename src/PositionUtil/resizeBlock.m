@@ -1,5 +1,5 @@
 function resizeBlock(block, length, height)
-%% resizeBlock Resize a block to a specific length and height. 
+%% RESIZEBLOCK Resize a block to a specific length and height.
 %   Resizing is done w.r.t. the center of the block.
 %
 %   Inputs:
@@ -22,9 +22,9 @@ function resizeBlock(block, length, height)
 
     % Reset each coordinate to the block center, then change it to the new size
     newBlockPosition(1) = (origBlockPosition(1) + origWidth) - newWidth; % Left
-    newBlockPosition(2) = (origBlockPosition(2) + origHeight) - newHeight; % Top  
+    newBlockPosition(2) = (origBlockPosition(2) + origHeight) - newHeight; % Top
     newBlockPosition(3) = (origBlockPosition(3) - origWidth) + newWidth; % Right
-    newBlockPosition(4) = (origBlockPosition(4) - origHeight) + newHeight; % Bottom 
-     
+    newBlockPosition(4) = (origBlockPosition(4) - origHeight) + newHeight; % Bottom
+
     set_param(block, 'Position', newBlockPosition);
 end

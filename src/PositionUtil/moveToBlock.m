@@ -1,5 +1,5 @@
 function moveToBlock(block1, block2, onLeft)
-%% moveToPort Move a block to the right/left of another block. 
+%% MOVETOBLOCK Move a block to the right/left of another block.
 %   block1 is aligned with the center of block2. This function works best
 %   when block 2 has one inport when aligning on the left, or outport when
 %   aligning on the right.
@@ -29,10 +29,10 @@ function moveToBlock(block1, block2, onLeft)
     block2CenterY = block2Position(2) + ((block2Position(4) - block2Position(2)) / 2);
 
     block1Position = get_param(block2, 'Position');
-    % Compute x dimensions   
-    if ~onLeft 
+    % Compute x dimensions
+    if ~onLeft
         block1Position(1) = block2Position(3) + BLOCK_OFFSET; % Left
-        block1Position(3) = block1Position(1) + blockLength; % Right 
+        block1Position(3) = block1Position(1) + blockLength; % Right
     else
         block1Position(3) = block2Position(1) - BLOCK_OFFSET; % Right
         block1Position(1) = block1Position(3) - blockLength;  % Left
