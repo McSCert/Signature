@@ -18,6 +18,5 @@ function redrawLine(address, block1, block2)
     block2Port = get_param(block2, 'PortHandles');
     block2Port = block2Port.Inport;
 
-
     delete_line(address, block1Port, block2Port);
     add_line(address, block1Port, block2Port);
