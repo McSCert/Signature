@@ -39,7 +39,7 @@ function yOffsetFinal = RepositionImplicits(yOffset, blocksToRepo, blockLength, 
 
             % Reposition terminator
             resizeBlock(blocksToRepo{2}(i), termLength, termHeight);
-            moveToBlock(blocksToRepo{2}(i), blocksToRepo{1}(j), 0);
+            moveToBlock(blocksToRepo{2}(i), blocksToRepo{1}(i), 0);
 
             % Update for next blocks
             yOffset = iPos(4);
