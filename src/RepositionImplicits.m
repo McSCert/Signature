@@ -1,5 +1,5 @@
 function yOffsetFinal = RepositionImplicits(yOffset, blocksToRepo, blockLength, blockOnLeft)
-% REPOSITIONIMPLICITS Reposition Gotos/Froms and Data Store Read/Writes added 
+% REPOSITIONIMPLICITS Reposition Gotos/Froms and Data Store Read/Writes added
 %   to the signature, representing global data.
 %
 %   Inputs:
@@ -10,8 +10,8 @@ function yOffsetFinal = RepositionImplicits(yOffset, blocksToRepo, blockLength, 
 %
 %   	blockLength     Desired size of the block.
 %
-%       blockOnLeft     Boolean indicating the orientation of the block 
-%                       and terminator: block is on the left of the terminator (1), 
+%       blockOnLeft     Boolean indicating the orientation of the block
+%                       and terminator: block is on the left of the terminator (1),
 %                       block is on the right of the terminator (0).
 %
 %   Outputs:
@@ -19,14 +19,14 @@ function yOffsetFinal = RepositionImplicits(yOffset, blocksToRepo, blockLength, 
 
     % For starting the signature
     XMARGIN = 30;
-    
+
     % Block sizes
-    termLength = 30; % The size of Terminators blocks 
+    termLength = 30; % The size of Terminators blocks
     termHeight = 16;
-    
+
     blkLength = 10*blockLength;
     blkHeight = 14;
-    
+
     if blockOnLeft
         for i = 1:length(blocksToRepo{1})
             % Reposition Goto or Data Store Read block
@@ -36,11 +36,11 @@ function yOffsetFinal = RepositionImplicits(yOffset, blocksToRepo, blockLength, 
             iPos(3) = iPos(1) + blkLength;
             iPos(4) = iPos(2) + blkHeight;
             set_param(blocksToRepo{1}(i), 'Position', iPos);
-            
+
             % Reposition terminator
             resizeBlock(blocksToRepo{2}(i), termLength, termHeight);
             moveToBlock(blocksToRepo{2}(i), blocksToRepo{1}(j), 0);
-            
+
             % Update for next blocks
             yOffset = iPos(4);
         end
@@ -49,7 +49,7 @@ function yOffsetFinal = RepositionImplicits(yOffset, blocksToRepo, blockLength, 
             % Reorient
             set_param(blocksToRepo{1}(j), 'Orientation', 'left');
             set_param(blocksToRepo{2}(j), 'Orientation', 'left');
-            
+
             % Reposition terminator
             jPos = get_param(blocksToRepo{2}(j), 'Position');
             jPos(1) = XMARGIN;
@@ -57,18 +57,11 @@ function yOffsetFinal = RepositionImplicits(yOffset, blocksToRepo, blockLength, 
             jPos(3) = jPos(1) + termLength;
             jPos(4) = jPos(2) + termHeight;
             set_param(blocksToRepo{2}(j), 'Position', jPos);
-            
+
             % Reposition From or Data Store Write block
             resizeBlock(blocksToRepo{1}(j), blkLength, blkHeight);
             moveToBlock(blocksToRepo{1}(j), blocksToRepo{2}(j), 0);
 
-%             tPos = get_param(blocksToRepo{1}(x), 'Position');
-%             tPos(1) = gfPos(3) + 50;
-%             tPos(2) = gfPos(2);
-%             tPos(3) = tPos(1) + 10*blockLength + 20;
-%             tPos(4) = tPos(2) + 14;
-%             set_param(blocksToRepo{1}(x), 'Position', tPos)
-            
             % Update for next blocks
             yOffset = jPos(4);
         end

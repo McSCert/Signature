@@ -1,9 +1,6 @@
 function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(address)
 %  INPORTSIG Add Inports to the signature in the model by adding Goto/Froms for Inports.
 %
-%   Function:
-%		INPORTSIG(address)
-%  
 %	Inputs:
 %		address     Simulink system path.
 %
@@ -14,9 +11,9 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
 %		inports 	Handles of Inport.
 %		gotoLength  Max length of Inport Goto/From tags.
 
-    % Constants: 
+    % Constants:
     GOTOFROM_BGCOLOR = getSignatureConfig('gotofrom_bgcolor', 'white'); % Background color of signature Goto/Froms
-    
+
     % Initialize outputs
     inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');
     inportGoto = {};
@@ -34,7 +31,7 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
         GotoTag = strrep(GotoTag, ':', '');
 
         % Save longest tag
-        if length(GotoTag) > gotoLength 
+        if length(GotoTag) > gotoLength
             gotoLength = length(GotoTag);
         end
 
@@ -52,7 +49,7 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
             'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
         FromName = ['FromIn' pSID];
         inportFrom{end + 1} = getfullname(From);
-        set_param(From, 'Position', get_param(inports{z}, 'Position')); % Move to same position as Inport it is replacing 
+        set_param(From, 'Position', get_param(inports{z}, 'Position')); % Move to same position as Inport it is replacing
 
         % Connect new Goto/Froms with signal lines
         DstBlocks = pConnect.DstBlock;
@@ -61,7 +58,7 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
         for y = 1:length(DstBlocks)
             DstBlockName = get_param(DstBlocks(y), 'Name');
             pName = strrep(pName, '/', '//');
-            
+
             % 1a) Inport connected to Enable port
             try
             	delete_line(address, [pName '/1'], [DstBlockName '/' 'Enable']);
@@ -71,7 +68,7 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
                     % Do nothing
                 end
             end
-            
+
             % 1b) Inport connected to Trigger port
             try
                 delete_line(address, [pName '/1'], [DstBlockName '/' 'Trigger']);
@@ -81,7 +78,7 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
                     % Do nothing
                 end
             end
-            
+
             % 1c) Inport connected to regular block port
             try
                 delete_line(address ,[pName '/1'], [DstBlockName '/' num2str(DstPorts(y) + 1)]);
@@ -94,7 +91,7 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
         end
 
         % 2) Connect Inport to Goto
-       	try 
+       	try
             add_line(address, [pName '/1'], [GotoName '/1'], 'autorouting', 'on')
         catch
             % Do nothing

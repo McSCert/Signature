@@ -1,5 +1,5 @@
 function val = getSignatureConfig(parameter, default)
-%% getSignatureConfig Get a parameter from the tool configuration file.
+%% GETSIGNATURECONFIG Get a parameter from the tool configuration file.
 %
 %   Inputs:
 %       parameter   Configuration parameter to retrieve value for.
@@ -15,7 +15,7 @@ function val = getSignatureConfig(parameter, default)
     fileName = [filePath 'config.txt'];
     file = fopen(fileName);
     line = fgetl(file);
-   
+
     paramPattern = ['^' parameter  ':.*'];
 
     while ischar(line)

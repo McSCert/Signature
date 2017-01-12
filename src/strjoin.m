@@ -1,5 +1,5 @@
 function output = strjoin(input, separator)
-%STRJOIN Concatenate an array into a single string.
+% STRJOIN Concatenate an array into a single string.
 %
 %     S = strjoin(C)
 %     S = strjoin(C, separator)
@@ -25,7 +25,6 @@ function output = strjoin(input, separator)
 %     >> str = strjoin({1,2,2,'string'},'\t')
 %     str =
 %     1 2 2 string
-%
 
   if nargin < 2, separator = ','; end
   assert(ischar(separator), 'Invalid separator input: %s', class(separator));
@@ -56,11 +55,11 @@ end
 
 % Copyright (c) 2011 Kota Yamaguchi
 % All rights reserved.
-% 
+%
 % Redistribution and use in source and binary forms, with or without
 % modification, are permitted provided that the following conditions
 % are met:
-% 
+%
 % 1. Redistributions of source code must retain the above copyright
 %    notice, this list of conditions and the following disclaimer.
 % 2. Redistributions in binary form must reproduce the above copyright
@@ -68,7 +67,7 @@ end
 %    documentation and/or other materials provided with the distribution.
 % 3. The name of the author may not be used to endorse or promote products
 %    derived from this software without specific prior written permission.
-% 
+%
 % THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 % IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 % OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.

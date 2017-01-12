@@ -1,9 +1,6 @@
 function [address, inports] = InportSigData(address)
 %  INPORTSIGDATA List Imports for a system.
 %
-%   Function:
-%       INPORTSIGDATA(address)
-%  
 %	Inputs:
 %		address     Simulink system path.
 %

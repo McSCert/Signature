@@ -1,7 +1,7 @@
 function TestHarness(system)
 % TESTHARNESS Augment a subsystem with Inports for hidden data flow
 %   (Data Stores Reads and Froms) so that testing will generate test
-%   inputs and exercise them. Also augments the subsystem with Outports for 
+%   inputs and exercise them. Also augments the subsystem with Outports for
 %   Data Store Writes and Gotos so that testing can record this data.
 %
 %   Inputs:
@@ -12,14 +12,14 @@ function TestHarness(system)
 
     % Constants:
     FONT_SIZE = getSignatureConfig('heading_size', 14); % Heading font size
-    
+
     addedBlocks = {};
     dataTypes = {};
-    
+
     sysSplit = strsplit(system, '/');
     topLevelSys = sysSplit{1};
     typeMap = mapDataTypes(topLevelSys);
-    
+
     % Add Inport and Goto to supply test info to Froms
     froms = find_system(system, 'SearchDepth', 1, 'BlockType', 'From');
     fromscheck = strfind(froms, 'FromSigScope');
@@ -30,31 +30,31 @@ function TestHarness(system)
             inport = add_block('built-in/Inport', [system '/HarnessGotoInport' num2str(num)]);
             addedBlocks{end + 1} = inport;
             resizeInOutPort(inport);
- 
+
             % Goto
             goto = add_block('built-in/Goto', [system  '/HarnessGoto' num2str(num)], ...
                 'GotoTag', get_param(froms{i}, 'GotoTag'));
             addedBlocks{end + 1} = goto;
             resizeGotoFrom(goto);
- 
+
             % Type info
             dtype = typeMap(froms{i});
             if strcmp(dtype, 'No type')
                 dtype = 'Inherit: auto';
             end
             dataTypes{end + 1} = dtype;
- 
+
             % Connect
             inportPort = get_param(inport, 'PortHandles');
             inportPort = inportPort.Outport;
             gotoPort = get_param(goto, 'PortHandles');
             gotoPort = gotoPort.Inport;
             add_line(system, inportPort, gotoPort);
-            
+
             num = num + 1;
         end
     end
-    
+
     % Add Inport and Data Store Write to supply test info to Data Store Reads
     reads = find_system(system, 'SearchDepth', 1, 'BlockType', 'DataStoreRead');
     readscheck = strfind(reads, 'DataReadSig');
@@ -79,20 +79,20 @@ function TestHarness(system)
                 dtype = 'Inherit: auto';
             end
             dataTypes{end + 1} = dtype;
-            
-            try 
+
+            try
                 set_param(inport, 'OutDataTypeStr', dtype);
             catch
                 % Do nothing
             end
-            
+
             % Connect
             inportPort = get_param(inport, 'PortHandles');
             inportPort = inportPort.Outport;
             writePort = get_param(dataStore, 'PortHandles');
             writePort = writePort.Inport;
             add_line(system, inportPort, writePort);
-            
+
             num = num + 1;
         end
         if ~isempty(readscheck2{i}) && (readscheck2{i}(1) == (length(system) + 2))
@@ -100,7 +100,7 @@ function TestHarness(system)
             inport = add_block('built-in/Inport', [system '/HarnessWriteInport' num2str(num)]);
             addedBlocks{end + 1} = inport;
             resizeInOutPort(inport);
-            
+
             % Write
             dataStore = add_block('built-in/dataStoreWrite', [system '/HarnessWrite' num2str(num)], ...
                 'DataStoreName', get_param(reads{i}, 'DataStoreName'));
@@ -113,30 +113,30 @@ function TestHarness(system)
                 dtype = 'Inherit: auto';
             end
             dataTypes{end + 1} = dtype;
-            
+
             try
                 set_param(inport, 'OutDataTypeStr', dtype);
             catch
                 % Do nothing
             end
-            
+
             % Connect
             inportPort = get_param(inport, 'PortHandles');
             inportPort = inportPort.Outport;
             writePort = get_param(dataStore, 'PortHandles');
             writePort = writePort.Inport;
             add_line(system, inportPort, writePort);
-            
+
             num = num + 1;
         end
     end
-    
+
     % Save the number of Inports that were added
     % Divided by 2 because for every Inport added, a Goto or Write was also added
     numIns = length(addedBlocks)/2;
-    
+
     % Add Outport and Goto
-    % Note: For Reactis, if the scoped Goto stays in the model after 
+    % Note: For Reactis, if the scoped Goto stays in the model after
     % subsystem ectraction, this may not work
     gotos = find_system(system, 'SearchDepth', 1, 'BlockType', 'Goto');
     gotoscheck = strfind(froms, 'GotoSigScope');
@@ -153,18 +153,18 @@ function TestHarness(system)
             outport = add_block('built-in/Outport', [system '/HarnessFromOutport' num2str(num)]);
             addedBlocks{end + 1} = outport;
             resizeInOutPort(outport);
-            
+
             % Connect
             fromPort = get_param(from, 'PortHandles');
             fromPort = fromPort.Outport;
             outportPort = get_param(outport, 'PortHandles');
             outportPort = outportPort.Inport;
             add_line(system, fromPort, outportPort);
-            
+
             num = num + 1;
         end
     end
-    
+
     % Add Outport and Data Store Read to output Data Store Write info
     writes = find_system(system, 'SearchDepth', 1, 'BlockType', 'DataStoreRead');
     writescheck = strfind(writes, 'DataWriteSig');
@@ -182,14 +182,14 @@ function TestHarness(system)
             outport = add_block('built-in/Outport', [system '/HarnessReadOutport' num2str(num)]);
             addedBlocks{end + 1} = outport;
             resizeInOutPort(outport);
-            
+
             % Connect
             readPort = get_param(dataStore, 'PortHandles');
             readPort = readPort.Outport;
             outportPort = get_param(outport, 'PortHandles');
             outportPort = outportPort.Inport;
             add_line(system, readPort, outportPort);
-            
+
             num = num + 1;
         end
         if ~isempty(writescheck2{i}) && (writescheck2{i}(1) == (length(system) + 2))
@@ -198,19 +198,19 @@ function TestHarness(system)
                 'DataStoreName', get_param(writes{i}, 'DataStoreName'));
             addedBlocks{end + 1} = dataStore;
             resizeDataStore(dataStore);
-            
+
             % Outport
             outport = add_block('built-in/Outport', [system '/HarnessWriteOutport' num2str(num)]);
             addedBlocks{end + 1} = outport;
             resizeInOutPort(outport);
-            
+
             % Connect
             readPort = get_param(dataStore, 'PortHandles');
             readPort = readPort.Outport;
             outportPort = get_param(outport, 'PortHandles');
             outportPort = outportPort.Inport;
             add_line(system, readPort, outportPort);
-            
+
             num = num + 1;
         end
     end
@@ -228,7 +228,7 @@ function TestHarness(system)
             'on', 'LookUnderMasks', 'All', 'FindAll', 'on', 'Type', 'line');
         allBlocks   = find_system(system, 'SearchDepth', 1);
         annotations = find_system(system, 'FindAll', 'on', 'SearchDepth', 1, 'type', 'annotation');
-        
+
         % Shift all lines downward
         for i = 1:length(mdlLines)
             lPint = get_param(mdlLines(i), 'Points');
@@ -238,7 +238,7 @@ function TestHarness(system)
             newPoint = [xPint yPint];
             set_param(mdlLines(i), 'Points', newPoint);
         end
-        
+
         % Shift all blocks downward
         for i = 2:length(allBlocks) % Starts at 2 in order to skip the root block diagram
                 bPosition = get_param(allBlocks{i}, 'Position');
@@ -248,7 +248,7 @@ function TestHarness(system)
                 bPosition(4) = bPosition(4) + 40*rowNum + 30;
                 set_param(allBlocks{i}, 'Position', bPosition);
         end
-        
+
         % Shift all annotations downward
         for i = 1:length(annotations)
             bPosition = get_param(annotations(i), 'Position');
@@ -256,17 +256,17 @@ function TestHarness(system)
             bPosition(2) = bPosition(2) + 40*rowNum + 30;
             set_param(annotations(i), 'Position', bPosition);
         end
- 
+
         % Resposition new test harness blocks
         startTop = 10;
         startLeft = 30;
-        
+
         % Add heading for test harness specific blocks
         add_block('built-in/Note', [system '/Inputs for Harness'], ...
             'Position', [90 startTop], 'FontSize', FONT_SIZE)
 
         startTop = startTop + 30;
-        
+
         for j = 1:length(addedBlocks)
             if(ceil(j/2) > 1) % Not first row
                 startTop = 40 + 40*(ceil(j/2) - 1); % Compute next row placement
@@ -278,7 +278,7 @@ function TestHarness(system)
                 newPos(3) = startLeft + (blockpos(3) - blockpos(1));
                 newPos(4) = startTop + (blockpos(4) - blockpos(2));
                 set_param(addedBlocks{j}, 'Position', newPos);
-                
+
                 newPos = [];
             else
                 % Position it w.r.t. the last one added
@@ -291,7 +291,7 @@ function TestHarness(system)
     sysSplit = strsplit(system, '/');
     sysName = strjoin(sysSplit, '/');
     subsystemLevels = length(sysSplit) - 1;
-    
+
     for i = 1:subsystemLevels
         ins = find_system(sysName, 'SearchDepth', 1, 'BlockType', 'Inport');
         outs = find_system(sysName, 'SearchDepth', 1, 'BlockType', 'Outport');
@@ -312,12 +312,12 @@ function TestHarness(system)
             catch
                 % Do nothing
             end
-            
+
             % Connect
             inportPort = get_param(inport, 'PortHandles');
             inportPort = inportPort.Outport;
             subInports = ports.Inport;
-            
+
             moveToPort(inport, subInports(sysIns + j), 1);
             resizeInOutPort(inport);
             add_line(nextSys, inportPort, subInports(sysIns + j));
@@ -329,7 +329,7 @@ function TestHarness(system)
         for j = 1:numOuts
             % Add
             outport = add_block('built-in/Outport', [nextSys '/HarnessOutport' num2str(num)]);
-            
+
             % Connect
             outportPort = get_param(outport, 'PortHandles');
             outportPort = outportPort.Inport;
@@ -340,7 +340,7 @@ function TestHarness(system)
             num = num + 1;
         end
         sysSplit = strsplit(nextSys, '/');
-        sysName = nextSys; 
+        sysName = nextSys;
     end
 end
 

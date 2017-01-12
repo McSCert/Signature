@@ -1,5 +1,5 @@
 function terms = strsplit(s, delimiter)
-%STRSPLIT Splits a string into multiple terms
+% STRSPLIT Split a string into multiple terms.
 %
 %   terms = strsplit(s)
 %       splits the string s into multiple terms that are separated by
@@ -10,8 +10,8 @@ function terms = strsplit(s, delimiter)
 %
 %   terms = strsplit(s, delimiter)
 %       splits the string s into multiple terms that are separated by
-%       the specified delimiter. 
-%   
+%       the specified delimiter.
+%
 %   Remarks
 %   -------
 %       - Note that the spaces surrounding the delimiter are considered
@@ -19,7 +19,7 @@ function terms = strsplit(s, delimiter)
 %         terms.
 %
 %       - If there are two consecutive non-whitespace delimiters, it is
-%         regarded that there is an empty-string term between them.         
+%         regarded that there is an empty-string term between them.
 %
 %   Examples
 %   --------
@@ -63,37 +63,37 @@ else
     assert(ischar(d) && ndims(d) == 2 && size(d,1) == 1 && ~isempty(d), ...
         'strsplit:invalidarg', ...
         'The delimiter should be a non-empty char string.');
-    
+
     d = strtrim(d);
     by_space = isempty(d);
 end
-    
+
 %% main
 
 s = strtrim(s);
 
 if by_space
-    w = isspace(s);            
+    w = isspace(s);
     if any(w)
-        % decide the positions of terms        
+        % decide the positions of terms
         dw = diff(w);
         sp = [1, find(dw == -1) + 1];     % start positions of terms
         ep = [find(dw == 1), length(s)];  % end positions of terms
-        
-        % extract the terms        
+
+        % extract the terms
         nt = numel(sp);
         terms = cell(1, nt);
         for i = 1 : nt
             terms{i} = s(sp(i):ep(i));
-        end                
+        end
     else
         terms = {s};
     end
-    
-else    
+
+else
     p = strfind(s, d);
-    if ~isempty(p)        
-        % extract the terms        
+    if ~isempty(p)
+        % extract the terms
         nt = numel(p) + 1;
         terms = cell(1, nt);
         sp = 1;
@@ -101,9 +101,9 @@ else
         for i = 1 : nt-1
             terms{i} = strtrim(s(sp:p(i)-1));
             sp = p(i) + dl;
-        end         
+        end
         terms{nt} = strtrim(s(sp:end));
     else
         terms = {s};
-    end        
+    end
 end
