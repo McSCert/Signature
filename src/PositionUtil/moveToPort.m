@@ -1,5 +1,5 @@
 function moveToPort(block, port, onLeft)
-%% moveToPort Move a block to the right/left of a block port
+%% MOVETOPORT Move a block to the right/left of a block port.
 %
 %   Inputs:
 %       block   Handle of the block to be moved.
@@ -22,10 +22,10 @@ function moveToPort(block, port, onLeft)
     blockHeight = blockPosition(4) - blockPosition(2);
     blockLength = blockPosition(3) - blockPosition(1);
 
-    % Compute x dimensions   
-    if ~onLeft 
+    % Compute x dimensions
+    if ~onLeft
         newBlockPosition(1) = portPosition(1) + BLOCK_OFFSET; % Left
-        newBlockPosition(3) = newBlockPosition(1) + blockLength; % Right 
+        newBlockPosition(3) = newBlockPosition(1) + blockLength; % Right
     else
         newBlockPosition(3) = portPosition(1) - BLOCK_OFFSET; % Right
         newBlockPosition(1) = newBlockPosition(3) - blockLength; % Left

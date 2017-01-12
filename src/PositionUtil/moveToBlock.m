@@ -1,7 +1,7 @@
 function moveToBlock(block1, block2, onLeft)
 %% MOVETOBLOCK Move a block to the right/left of another block.
 %   block1 is aligned with the center of block2. This function works best
-%   when block 2 has one inport when aligning on the left, or outport when
+%   when block2 has one inport when aligning on the left, or outport when
 %   aligning on the right.
 %
 %   Inputs:
