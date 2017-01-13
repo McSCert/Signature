@@ -14,14 +14,15 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
 %       updates         List of all updates in the signature.
 %       globalGotos     List of all global Gotos in the signature.
 %       globalFroms     List of all global Froms in the signature.
-%       tagDex
-%       dsDex
+%       tagDex		    Names of Gotos in scope in scope of the system.
+%       dsDex           Names of Data Store Memorys in scope of the system.
 %       hasUpdates      Boolean indicating whether updates are included in the signature.
-%       docFormat
-%       dataTypeMap
+%       docFormat       Number indicating which docmentation type to
+%                       generate: .txt(0), .tex(1), or .doc(2).
+%       dataTypeMap     Map of blocks and their corresponding data type.
 %       signatures      Struct array of the signatures of each subsystem.
 %
-%   Outputs: 
+%   Outputs:
 %       N/A
 
     if docFormat == 0 % .txt
@@ -31,7 +32,7 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         filename = filename(1:end);
         filename = strrep(filename, sprintf('\n'), '');
         filename = strrep(filename, sprintf('\r'), '');
-        
+
         % Open the file, then print a header
         % Fill with blocks names and their type
         file = fopen(filename, 'wt');
@@ -70,7 +71,7 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         filename = filename(1:end);
         filename = strrep(filename, sprintf('\n'), '');
         filename = strrep(filename, sprintf('\r'), '');
-        
+
         % Open the file, then print a header
         % Fill with blocks names and their type
         file = fopen(filename, 'wt');
@@ -156,7 +157,7 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
 
         chapter = [get_param(address, 'Name'), ' ', 'Signature'];
 
-        % Save workspace variables because using the 'report' function 
+        % Save workspace variables because using the 'report' function
         % later on will overwrite them
         varsForReport = {'filename', 'dataTypeMap', 'address', 'signatures', ...
             'chapter', 'getUnit', 'k', 'includeTableDefaults', 'removeInterfaceCols', ...

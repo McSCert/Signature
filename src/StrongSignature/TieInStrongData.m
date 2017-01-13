@@ -13,8 +13,8 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
 %       hasUpdates      Boolean indicating whether updates are included in
 %                       the signature.
 %
-%       docFormat       Boolean indicating which docmentation type to
-%                       generate: .txt(0) or .tex(1).
+%       docFormat       Number indicating which docmentation type to
+%                       generate: .txt(0), .tex(1), or .doc(2).
 %
 %       dataTypeMap     Map of blocks and their corresponding data type.
 %

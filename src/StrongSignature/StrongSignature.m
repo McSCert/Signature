@@ -17,7 +17,7 @@ function [metrics signatures] = StrongSignature(address, exportType,...
 %                   documentation of the entire hierarchy.
 %
 %       docFormat   Number indicating which docmentation type to
-%                   generate: .txt(0) or .tex(1).
+%                   generate: .txt(0), .tex(1), or .doc(2).
 %
 %   Outputs:
 %       metrics     Cell array listing the system and its subsystems, with
