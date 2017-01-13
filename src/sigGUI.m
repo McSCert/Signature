@@ -22,7 +22,7 @@ function varargout = sigGUI(varargin)
 
 % Edit the above text to modify the response to help sigGUI
 
-% Last Modified by GUIDE v2.5 10-Nov-2016 11:45:53
+% Last Modified by GUIDE v2.5 13-Jan-2017 13:09:07
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -85,10 +85,16 @@ if ~isempty(numChars)
     address = address(1:numChars(1) - 1);
 end
 
+% Get all the group's children. Get their values and put into a matrix.
+% Flip it so that it matches the GUI order. Find the index of the radio
+% button that is selected (value is nonzero. Minus 1 becuase the function 
+% takes 0,1,2 instead of 1,2,3.
+docType = find(flipud(cell2mat(get(get(handles.group_DocType, 'Children'), 'Value')))) - 1;
+
 if get(handles.radio_strongsig, 'Value')
-    StrongSignature(address, ~get(handles.radio_model, 'Value'), get(handles.radio_enableupdate, 'Value'), 'All', get(handles.radio_tex, 'Value'));
+    StrongSignature(address, ~get(handles.radio_model, 'Value'), get(handles.radio_enableupdate, 'Value'), 'All', docType);
 else
-    WeakSignature(address, ~get(handles.radio_model, 'Value'), get(handles.radio_enableupdate, 'Value'), 'All', get(handles.radio_tex, 'Value'));
+    WeakSignature(address, ~get(handles.radio_model, 'Value'), get(handles.radio_enableupdate, 'Value'), 'All', docType);
 end
 
 close(handles.signaturegui);
@@ -113,7 +119,9 @@ function uipanel2_SelectionChangeFcn(hObject, eventdata, handles)
 if get(handles.radio_model, 'Value')
     set(handles.radio_txt, 'Enable', 'off');
     set(handles.radio_tex, 'Enable', 'off');
+    set(handles.radio_doc, 'Enable', 'off');
 else
     set(handles.radio_txt, 'Enable', 'on');
     set(handles.radio_tex, 'Enable', 'on');
+    set(handles.radio_doc, 'Enable', 'on');
 end
