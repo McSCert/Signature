@@ -148,13 +148,15 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         fprintf(file, '%s\n', table);
         fclose(file);
 
-    elseif docFormat == 2 % .doc, RTF
+    elseif docFormat == 2 % .doc
+        % Create a valid file name based on the current subsystem name
         filename = address;
         filename = strrep(filename, '/', '_');
         filename = filename(1:end);
         filename = strrep(filename, sprintf('\n'), '');
         filename = strrep(filename, sprintf('\r'), '');
 
+        % Make chapter title. Each chapter corresponds to a subsystem.
         chapter = [get_param(address, 'Name'), ' ', 'Signature'];
 
         % Save workspace variables because using the 'report' function
@@ -165,8 +167,8 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         tempVarsFromBase = SaveBaseVars(varsForReport);
         OverwriteBaseVars(varsForReport); % Replace values in base workspace with values from this workspace
 
-        % Generate the Word document
-        report('Signature', '-fdoc'); % Default generation produces .docx, the formatting style is a bit different with .doc
+        % Generate the report as a .doc file, using the Signature.rpt template
+        report('Signature', '-fdoc');
 
         % Restore the workspace
         LoadBaseVars(varsForReport, tempVarsFromBase);
