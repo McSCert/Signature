@@ -37,7 +37,7 @@ function [metrics signatures] = StrongSignature(address, exportType,...
 %           the model 'SignatureDemo' and all its subsystems.
 %
 %   Example 2:
-%       StrongSignature('SignatureDemo', 1, 1, 'SignatureDemo/Subsystem1/Subsystem', 0)
+%       StrongSignature('SignatureDemo', 1, 1, 'SignatureDemo/Subsystem', 0)
 %           Generates strong signature documentation, that includes updates,
 %           for a specific subsystem of 'SignatureDemo', as a .txt file.
 
