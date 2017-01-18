@@ -40,7 +40,7 @@ function [metrics signatures] = WeakSignature(address, exportType,...
 %           the model 'SignatureDemo' and all its subsystems.
 %
 %   Example 2:
-%       WealSignature('SignatureDemo', 1, 1, 'SignatureDemo/Subsystem/Subsystem0', 0)
+%       WealSignature('SignatureDemo', 1, 1, 'SignatureDemo/Subsystem1/Subsystem', 0)
 %           Generates weak signature documentation, that includes updates,
 %           for a specific subsystem of 'SignatureDemo', as a .txt file.
 
