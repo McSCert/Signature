@@ -32,14 +32,22 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
     FONT_SIZE = getSignatureConfig('heading_size', 14); % Heading font size
     Y_OFFSET = 25;  % Vertical spacing between signature sections
     
-    % Get signature for Inports and Outports 
-    [inAddress, InportGoto, InportFrom, Inports, inGotoLength] = InportSig(address);
-    [outAddress, OutportGoto, OutportFrom, Outports, outGotoLength] = OutportSig(address);
+    % Get signature for Inports
+    Inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');
+    % Get signature for Outports
+    Outports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Outport');
+    
+    % Move all blocks to make room for the Signature
+    moveAll(address, 300, 0);
+    
+    % Add blocks to model
+     add_block('built-in/Note', [address '/Inputs'], 'Position', [90 10], 'FontSize', FONT_SIZE);
+    [InportGoto, InportFrom, inGotoLength] = InportSig(address, Inports);
+    [OutportGoto, OutportFrom, outGotoLength] = OutportSig(address, Outports);
 
-    % If at the appropriate level, add the global Gotos in the model
+    % If at the appropriate level, include the global Gotos
     if num == 0
-        globalGotos = FindGlobals(address);
-        globalGotos = unique(globalGotos);
+        globalGotos = unique(FindGlobals(address));
         globalFroms = globalGotos;
     end
     
@@ -54,11 +62,12 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
     end
     globalGotosx = setdiff(globalGotos, removableGotosNames);
 
-    gotoLength = 10;
-
-    % Add Inports
-    verticalOffset = RepositionInportSig(inAddress, InportGoto, InportFrom, Inports, gotoLength);
-    add_block('built-in/Note', [address '/Inputs'], 'Position', [90 10], 'FontSize', FONT_SIZE);
+    % Organize blocks
+    gotoLength = max([inGotoLength outGotoLength]);
+    if gotoLength == 0
+        gotoLength = 15;
+    end
+    verticalOffset = RepositionInportSig(address, InportGoto, InportFrom, Inports, gotoLength);
     verticalOffset = verticalOffset + Y_OFFSET;
 
     % Add Data Store Reads
@@ -97,7 +106,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
     if ~isempty(Outports(~cellfun('isempty', Outports)))
         add_block('built-in/Note', [address '/Outputs'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
         verticalOffset = verticalOffset + Y_OFFSET;
-        verticalOffset = RepositionOutportSig(outAddress, OutportGoto, OutportFrom, Outports, gotoLength, verticalOffset);
+        verticalOffset = RepositionOutportSig(address, OutportGoto, OutportFrom, Outports, gotoLength, verticalOffset);
         verticalOffset = verticalOffset + Y_OFFSET;
     end
 

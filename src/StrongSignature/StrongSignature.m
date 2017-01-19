@@ -103,8 +103,11 @@ function [metrics signatures] = StrongSignature(address, exportType,...
         end
         save_system(address, sigModel, 'BreakAllLinks', true);
         open_system(sigModel);
+        set_param(sigModel, 'Lock', 'off');
+
+        % Update to new model name
+        sys = strrep(sys, address, sigModel);
         address = sigModel;
-        set_param(address, 'Lock', 'off');
 
         % Generate signature
         [carryOut] = TieInStrong(address, hasUpdates, sys);

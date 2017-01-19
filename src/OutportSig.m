@@ -1,4 +1,4 @@
-function [address, outportGoto, outportFrom, outports, gotoLength] = OutportSig(address)
+function [outportGoto, outportFrom, gotoLength] = OutportSig(address, outports)
 %  OUTPORTSIG Add Outports to the signature in the model by adding Goto/Froms for Outports.
 %
 %   Inputs:
@@ -18,8 +18,7 @@ function [address, outportGoto, outportFrom, outports, gotoLength] = OutportSig(
 	outportGoto = {};
 	outportFrom = {};
 	gotoLength  = 0;
-	outports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Outport');
-
+    
 	for z = 1:length(outports)
         % Get Outport info
         pConnect = get_param(outports{z}, 'portConnectivity');

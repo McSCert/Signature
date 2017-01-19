@@ -1,4 +1,4 @@
-function yOffsetFinal = RepositionOutportSig(address,outGo, outFrom, outports, gotoLength, yOffset)
+function yOffsetFinal = RepositionOutportSig(address, outGo, outFrom, outports, gotoLength, yOffset)
 %  REPOSITIONOUTPORTSIG Reposition Outports and Outport Goto/Froms
 
 %	Inputs:

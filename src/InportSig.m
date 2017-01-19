@@ -1,4 +1,4 @@
-function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(address)
+function [inportGoto, inportFrom, gotoLength] = InportSig(address, inports)
 %  INPORTSIG Add Inports to the signature in the model by adding Goto/Froms for Inports.
 %
 %	Inputs:
@@ -13,9 +13,8 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
 
     % Constants:
     GOTOFROM_BGCOLOR = getSignatureConfig('gotofrom_bgcolor', 'white'); % Background color of signature Goto/Froms
-
+        
     % Initialize outputs
-    inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');
     inportGoto = {};
     inportFrom = {};
     gotoLength = 0;
@@ -40,9 +39,9 @@ function [address, inportGoto, inportFrom, inports, gotoLength] = InportSig(addr
             'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
         GotoName = GotoTag;
         inportGoto{end + 1} = getfullname(Goto);
-        % No need to move now, becuase the repositioning functions take
+        % No need to move now, because the repositioning functions take
         % care of moving the signature blocks:
-        % set_param(Goto, 'Position', get_param(inports{z}, 'Position'));
+        %set_param(Goto, 'Position', get_param(inports{z}, 'Position'));
 
         % Add From block
         From = add_block('built-in/From', [address '/FromIn' pSID], ...

@@ -1,7 +1,7 @@
 function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     scopedFromAddOut, globalGotosAddOut, globalFromsAddOut] = ...
     TieInStrong(address, hasUpdates, sys)
-% TIEINSTRONG Find the strong signature recursively and insert it into the model.
+% TIEINSTRONG Find the strong signature recursively and insert it into the model. 
 %
 %   Inputs:
 %       address     Simulink system path.
@@ -9,9 +9,9 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
 %       hasUpdates  Boolean indicating whether updates are included in the 
 %                   signature.
 %
-%       sys         Name of the system to generate the signature for.
-%                   One can use a specific system name, or use 'All' to get
-%                   documentation of the entire hierarchy.
+%       sys         Name of the system to generate the signature for. 
+%                   One can use a specific system name, or use 'All' to get 
+%                   signatures of the entire hierarchy.
 %
 %   Outputs:
 %       scopedGotoAddOut        List of scoped gotos that the function will pass out.
@@ -20,11 +20,11 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
 %       scopedFromAddOut        List of scoped froms that the function will pass out.
 %       globalGotosAddOut       List of global gotos being passed out.
 %       globalFromsAddOut       List of global froms being passed out.
-
-    % Constants:
+    
+    % Constants: 
     FONT_SIZE = getSignatureConfig('heading_size', 14); % Heading font size
     Y_OFFSET = 25;  % Vertical spacing between signature sections
-
+    
     % Elements in the signature being carried up from the signatures of lower levels
 	sGa     = {};   % Scoped Gotos
 	sFa     = {};   % Scoped Froms
@@ -33,41 +33,47 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     gGa     = {};   % Global Gotos
     gFa     = {};   % Global Froms
 
-    % 1a) Add Inports
-    [inAddress, InportGoto, InportFrom, Inports, inGotoLength] = InportSig(address);
-
-    % Add Outports now, to get gotoLength. Resposition Outport blocks later
-    % because they come later in the signature model format
-    [outAddress, OutportGoto, OutportFrom, Outports, outGotoLength] = OutportSig(address);
-    gotoLength = max([inGotoLength outGotoLength]);
-    if gotoLength == 0
-        gotoLength = 15;
-    end
-
-    % 1b) Move/format Inport blocks
-    verticalOffset = RepositionInportSig(inAddress, InportGoto, InportFrom, Inports, gotoLength);
-    add_block('built-in/Note', [address '/Inputs'], 'Position', [90 15], 'FontSize', FONT_SIZE);
-
-    % Get all blocks, but remove the current address
-    allBlocks = find_system(address, 'SearchDepth', 1);
-    allBlocks = setdiff(allBlocks, address);
-
-    % For every block
-    for z = 1:length(allBlocks)
+    % Get signature for Inports
+    Inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');
+    % Get signature for Outports
+    Outports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Outport');
+    
+    %verticalOffset = 30;
+    %if strcmp(sys, address) || strcmp(sys, 'All')
+        
+        % Move all blocks to make room for the Signature
+        moveAll(address, 300, 0);
+        
+        % Add blocks to model
+        add_block('built-in/Note', [address '/Inputs'], 'Position', [90 15], 'FontSize', FONT_SIZE);
+        [InportGoto, InportFrom, inGotoLength] = InportSig(address, Inports);
+        [OutportGoto, OutportFrom, outGotoLength] = OutportSig(address, Outports);
+        
+        % Organize blocks
+        gotoLength = max([inGotoLength outGotoLength]);
+        if gotoLength == 0
+            gotoLength = 15;
+        end
+        verticalOffset = RepositionInportSig(address, InportGoto, InportFrom, Inports, gotoLength);
+        verticalOffset = verticalOffset + Y_OFFSET;
+    %end
+    
+    allBlocks = find_system(address, 'SearchDepth', 1); % 2 to omit the current system
+    for z = 2:length(allBlocks)
         % If it is a subsystem
         if strcmp(get_param(allBlocks{z}, 'BlockType'), 'SubSystem')
-
+            
             % Disable link
             if strcmp(get_param(allBlocks{z}, 'LinkStatus'), 'resolved')
                 set_param(allBlocks{z}, 'LinkStatus', 'inactive');
             end
-
-            % Recurse into the subsystem
+            
+            % Recurse into the Subsystem
             [scopedGotoAddOutx, dataStoreWriteAddOutx, dataStoreReadAddOutx, ...
                 scopedFromAddOutx, globalGotosAddOutx, globalFromsAddOutx] = ...
-                TieInStrong(allBlocks{z}, hasUpdates, sys);
-
-            % Append blocks found in subsystem
+                TieInStrong(allBlocks{z}, hasUpdates, sys); 
+            
+            % Append blocks found in Subsystem
             sGa     = [sGa scopedGotoAddOutx];
             sFa     = [sFa scopedFromAddOutx];
             dSWa    = [dSWa dataStoreWriteAddOutx];
@@ -76,7 +82,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
             gFa     = [gFa globalFromsAddOutx];
         end
     end
-
+    
     % Remove duplicates
     sGa     = unique(sGa);
     sFa     = unique(sFa);
@@ -85,7 +91,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     gGa     = unique(gGa);
     gFa     = unique(gFa);
 
-    % Get ports and names
+    % Get ports and their Goto/From tags
     inputPorts      = {};
     outputPorts     = {};
     inputPortsTags  = {};
@@ -98,7 +104,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     for l = 1:length(Outports)
         outputPorts{end + 1} = get_param(Outports{l}, 'Name');
     end
-
+    
     for i = 1:length(InportGoto)
         inputPortsTags{end + 1} = get_param(InportGoto{i}, 'GotoTag');
     end
@@ -106,15 +112,13 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     for j = 1:length(OutportGoto)
         outputPortsTags{end + 1} = get_param(OutportGoto{j}, 'GotoTag');
     end
-
+    
     portTags = [inputPortsTags outputPortsTags];
 
     % Find implicit interface
     [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
         updateBlocks, globalFroms, globalGotos] = ...
         AddImplicitsStrong(address, sGa, sFa, dSWa, dSRa, gGa, gFa, portTags, hasUpdates);
-
-    verticalOffset = verticalOffset + Y_OFFSET;
 
     % Add Data Store Reads
     if ~isempty(dataStoreReads(~cellfun('isempty', dataStoreReads)))
@@ -152,7 +156,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     if ~isempty(Outports(~cellfun('isempty', Outports)))
         add_block('built-in/Note', [address '/Outputs'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
         verticalOffset = verticalOffset + Y_OFFSET;
-        verticalOffset = RepositionOutportSig(outAddress, OutportGoto, OutportFrom, Outports, gotoLength, verticalOffset);
+        verticalOffset = RepositionOutportSig(address, OutportGoto, OutportFrom, Outports, gotoLength, verticalOffset);
         verticalOffset = verticalOffset + Y_OFFSET;
     end
 
