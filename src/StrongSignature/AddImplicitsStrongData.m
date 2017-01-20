@@ -25,16 +25,16 @@ function [address, scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
 %       address     Simulink system path.
 %
 %       scopedGoto  List of all scoped Gotos that will be included in the
-%                   signature(unless they are part of an update).
+%                   signature (unless they are part of an update).
 %
 %       scopedFrom  List of all scoped Froms that will be included in the
-%                   signature(unless they are part of an update).
+%                   signature (unless they are part of an update).
 %
 %       dataStoreW  List of all Data Store Writes that will be included
 %                   in the signature (unless they are part of an update).
 %
 %       dataStoreR  List of all Data Store Reads that will be included in
-%                   the signature(unless they are part of an update).
+%                   the signature (unless they are part of an update).
 %
 %       updates     List of all updates to pass out for this subsystem that
 %                   will be included in the signature.
@@ -47,11 +47,11 @@ function [address, scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
 
     % Hash maps keeping track of if a block of a certain name has already
     % been counted towards one or more of the lists
-	mapObjDR = containers.Map();
-    mapObjDW = containers.Map();
-	mapObjF = containers.Map();
-    mapObjG = containers.Map();
-    mapObjU = containers.Map();
+	mapObjDR = containers.Map(); % Data Store Reads
+    mapObjDW = containers.Map(); % Data Store Writes
+	mapObjF = containers.Map();  % Froms
+    mapObjG = containers.Map();  % Gotos
+    mapObjU = containers.Map();  % Updates
     updatesToAdd = {};
     removableDataStoresNames = {};
     removableScopedTagsNames = {};

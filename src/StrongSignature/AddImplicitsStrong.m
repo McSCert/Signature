@@ -50,7 +50,7 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks,...
 %                       corresponding terminators.
 %
 %       updateBlocks    Set containing two matrices: that of the update
-%                       blocks (represented by reads), and their corresponding
+%                       blocks (represented by Reads), and their corresponding
 %                       terminators.
 %
 %       globalFroms     Set containing two matrices: that of the global
@@ -76,15 +76,17 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks,...
     globalFromTermToRepo = [];
     globalGotoToRepo = [];
     globalGotoTermToRepo = [];
-	mapObjDR = containers.Map();
-    mapObjDW = containers.Map();
-	mapObjF = containers.Map();
-    mapObjG = containers.Map();
-    mapObjDU = containers.Map();
-    mapObjTU = containers.Map();
+
+    % Hash maps keeping track of if a block of a certain name has already
+    % been counted towards one or more of the lists
+	mapObjDR = containers.Map(); % Data Store Reads
+    mapObjDW = containers.Map(); % Data Store Writes
+	mapObjF = containers.Map();  % Froms
+    mapObjG = containers.Map();  % Gotos
+    mapObjDU = containers.Map(); % Data Store Updates
+    mapObjTU = containers.Map(); % Goto/From Tag Updates
     mapObjAddedBlock = containers.Map();
     updatesToAdd = {};
-
     removableDataStoresNames = {};
     removableScopedTagsNames = {};
     removableScopedFromsNames = {};

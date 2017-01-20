@@ -1,16 +1,16 @@
 function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     scopedFromAddOut, globalGotosAddOut, globalFromsAddOut] = ...
     TieInStrong(address, hasUpdates, sys)
-% TIEINSTRONG Find the strong signature recursively and insert it into the model. 
+% TIEINSTRONG Find the strong signature recursively and insert it into the model.
 %
 %   Inputs:
 %       address     Simulink system path.
 %
-%       hasUpdates  Boolean indicating whether updates are included in the 
+%       hasUpdates  Boolean indicating whether updates are included in the
 %                   signature.
 %
-%       sys         Name of the system to generate the signature for. 
-%                   One can use a specific system name, or use 'All' to get 
+%       sys         Name of the system to generate the signature for.
+%                   One can use a specific system name, or use 'All' to get
 %                   signatures of the entire hierarchy.
 %
 %   Outputs:
@@ -20,11 +20,11 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
 %       scopedFromAddOut        List of scoped froms that the function will pass out.
 %       globalGotosAddOut       List of global gotos being passed out.
 %       globalFromsAddOut       List of global froms being passed out.
-    
-    % Constants: 
+
+    % Constants:
     FONT_SIZE = getSignatureConfig('heading_size', 14); % Heading font size
     Y_OFFSET = 25;  % Vertical spacing between signature sections
-    
+
     % Elements in the signature being carried up from the signatures of lower levels
 	sGa     = {};   % Scoped Gotos
 	sFa     = {};   % Scoped Froms
@@ -37,18 +37,18 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     Inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');
     % Get signature for Outports
     Outports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Outport');
-    
+
     %verticalOffset = 30;
     %if strcmp(sys, address) || strcmp(sys, 'All')
-        
+
         % Move all blocks to make room for the Signature
         moveAll(address, 300, 0);
-        
+
         % Add blocks to model
         add_block('built-in/Note', [address '/Inputs'], 'Position', [90 15], 'FontSize', FONT_SIZE);
         [InportGoto, InportFrom, inGotoLength] = InportSig(address, Inports);
         [OutportGoto, OutportFrom, outGotoLength] = OutportSig(address, Outports);
-        
+
         % Organize blocks
         gotoLength = max([inGotoLength outGotoLength]);
         if gotoLength == 0
@@ -57,22 +57,22 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
         verticalOffset = RepositionInportSig(address, InportGoto, InportFrom, Inports, gotoLength);
         verticalOffset = verticalOffset + Y_OFFSET;
     %end
-    
+
     allBlocks = find_system(address, 'SearchDepth', 1); % 2 to omit the current system
     for z = 2:length(allBlocks)
         % If it is a subsystem
         if strcmp(get_param(allBlocks{z}, 'BlockType'), 'SubSystem')
-            
+
             % Disable link
             if strcmp(get_param(allBlocks{z}, 'LinkStatus'), 'resolved')
                 set_param(allBlocks{z}, 'LinkStatus', 'inactive');
             end
-            
+
             % Recurse into the Subsystem
             [scopedGotoAddOutx, dataStoreWriteAddOutx, dataStoreReadAddOutx, ...
                 scopedFromAddOutx, globalGotosAddOutx, globalFromsAddOutx] = ...
-                TieInStrong(allBlocks{z}, hasUpdates, sys); 
-            
+                TieInStrong(allBlocks{z}, hasUpdates, sys);
+
             % Append blocks found in Subsystem
             sGa     = [sGa scopedGotoAddOutx];
             sFa     = [sFa scopedFromAddOutx];
@@ -82,7 +82,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
             gFa     = [gFa globalFromsAddOutx];
         end
     end
-    
+
     % Remove duplicates
     sGa     = unique(sGa);
     sFa     = unique(sFa);
@@ -104,7 +104,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     for l = 1:length(Outports)
         outputPorts{end + 1} = get_param(Outports{l}, 'Name');
     end
-    
+
     for i = 1:length(InportGoto)
         inputPortsTags{end + 1} = get_param(InportGoto{i}, 'GotoTag');
     end
@@ -112,7 +112,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     for j = 1:length(OutportGoto)
         outputPortsTags{end + 1} = get_param(OutportGoto{j}, 'GotoTag');
     end
-    
+
     portTags = [inputPortsTags outputPortsTags];
 
     % Find implicit interface
