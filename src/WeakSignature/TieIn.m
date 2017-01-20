@@ -41,7 +41,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
     moveAll(address, 300, 0);
     
     % Add blocks to model
-     add_block('built-in/Note', [address '/Inputs'], 'Position', [90 10], 'FontSize', FONT_SIZE);
+    add_block('built-in/Note', [address '/Inputs'], 'Position', [90 10], 'FontSize', FONT_SIZE);
     [InportGoto, InportFrom, inGotoLength] = InportSig(address, Inports);
     [OutportGoto, OutportFrom, outGotoLength] = OutportSig(address, Outports);
 
@@ -144,23 +144,17 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
         verticalOffset = MoveDataStoreDex(address, verticalOffset);
     end
 
-    % Get all blocks, but remove the current address
-    allBlocks = find_system(address, 'SearchDepth', 1);
-    allBlocks = setdiff(allBlocks, address);
-    
-    % For every block
-    for z = 1:length(allBlocks)
-        % If it is a subsystem
-        if strcmp(get_param(allBlocks{z}, 'BlockType'), 'SubSystem')  
-            % Recurse into the subsystem
-            if strcmp(get_param(allBlocks{z}, 'IsSubsystemVirtual'), 'on')
-                TieIn(allBlocks{z}, 1, carryUp{2}, carryUp{1}, carryUp{4}, ...
-                    carryUp{3}, globalFroms, globalGotosx, hasUpdates);
-            else
-                % Atomic subsystems (i.e. non-virtual) are handled differently
-                % because Goto/Froms can't cross their boundaries
-                TieIn(allBlocks{z}, 1, {}, {}, carryUp{4}, ...
-                    carryUp{3}, {}, {}, hasUpdates);
-            end
+    % Recurse into other subsystems
+    subsystems = find_system(address, 'SearchDepth', 1, 'BlockType', 'SubSystem');
+    subsystems = setdiff(subsystems, address);
+    for z = 1:length(subsystems)
+        if strcmp(get_param(subsystems{z}, 'IsSubsystemVirtual'), 'on')
+            TieIn(subsystems{z}, 1, carryUp{2}, carryUp{1}, carryUp{4}, ...
+                carryUp{3}, globalFroms, globalGotosx, hasUpdates);
+        else
+            % Atomic subsystems (i.e. non-virtual) are handled differently
+            % because Goto/Froms can't cross their boundaries
+            TieIn(subsystems{z}, 1, {}, {}, carryUp{4}, ...
+                carryUp{3}, {}, {}, hasUpdates);
         end
     end

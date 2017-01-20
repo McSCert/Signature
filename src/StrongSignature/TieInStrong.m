@@ -57,30 +57,27 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
         verticalOffset = RepositionInportSig(address, InportGoto, InportFrom, Inports, gotoLength);
         verticalOffset = verticalOffset + Y_OFFSET;
     %end
-
-    allBlocks = find_system(address, 'SearchDepth', 1); % 2 to omit the current system
-    for z = 2:length(allBlocks)
-        % If it is a subsystem
-        if strcmp(get_param(allBlocks{z}, 'BlockType'), 'SubSystem')
-
-            % Disable link
-            if strcmp(get_param(allBlocks{z}, 'LinkStatus'), 'resolved')
-                set_param(allBlocks{z}, 'LinkStatus', 'inactive');
-            end
-
-            % Recurse into the Subsystem
-            [scopedGotoAddOutx, dataStoreWriteAddOutx, dataStoreReadAddOutx, ...
-                scopedFromAddOutx, globalGotosAddOutx, globalFromsAddOutx] = ...
-                TieInStrong(allBlocks{z}, hasUpdates, sys);
-
-            % Append blocks found in Subsystem
-            sGa     = [sGa scopedGotoAddOutx];
-            sFa     = [sFa scopedFromAddOutx];
-            dSWa    = [dSWa dataStoreWriteAddOutx];
-            dSRa    = [dSRa dataStoreReadAddOutx];
-            gGa     = [gGa globalGotosAddOutx];
-            gFa     = [gFa globalFromsAddOutx];
+    
+    % Recurse into other Subsystems
+    subsystems = find_system(address, 'SearchDepth', 1, 'BlockType', 'SubSystem');
+    subsystems = setdiff(subsystems, address);
+    for z = 1:length(subsystems)
+        % Disable link
+        if strcmp(get_param(subsystems{z}, 'LinkStatus'), 'resolved')
+            set_param(subsystems{z}, 'LinkStatus', 'inactive');
         end
+
+        [scopedGotoAddOutx, dataStoreWriteAddOutx, dataStoreReadAddOutx, ...
+            scopedFromAddOutx, globalGotosAddOutx, globalFromsAddOutx] = ...
+            TieInStrong(subsystems{z}, hasUpdates, sys);
+
+        % Append blocks found in Subsystem
+        sGa     = [sGa scopedGotoAddOutx];
+        sFa     = [sFa scopedFromAddOutx];
+        dSWa    = [dSWa dataStoreWriteAddOutx];
+        dSRa    = [dSRa dataStoreReadAddOutx];
+        gGa     = [gGa globalGotosAddOutx];
+        gFa     = [gFa globalFromsAddOutx];
     end
 
     % Remove duplicates
@@ -91,24 +88,23 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     gGa     = unique(gGa);
     gFa     = unique(gFa);
 
-    % Get ports and their Goto/From tags
-    inputPorts      = {};
-    outputPorts     = {};
-    inputPortsTags  = {};
-    outputPortsTags = {};
+    % Get the names of Inports/Outports and their Goto/Froms
+%     inputPorts = {};
+%     for k = 1:length(Inports)
+%         inputPorts{end + 1} = get_param(Inports{k}, 'Name');
+%     end
+% 
+%     outputPorts = {};
+%     for l = 1:length(Outports)
+%         outputPorts{end + 1} = get_param(Outports{l}, 'Name');
+%     end
 
-    for k = 1:length(Inports)
-        inputPorts{end + 1} = get_param(Inports{k}, 'Name');
-    end
-
-    for l = 1:length(Outports)
-        outputPorts{end + 1} = get_param(Outports{l}, 'Name');
-    end
-
+    inputPortsTags = {};
     for i = 1:length(InportGoto)
         inputPortsTags{end + 1} = get_param(InportGoto{i}, 'GotoTag');
     end
-
+    
+    outputPortsTags = {};
     for j = 1:length(OutportGoto)
         outputPortsTags{end + 1} = get_param(OutportGoto{j}, 'GotoTag');
     end
