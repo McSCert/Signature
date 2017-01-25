@@ -91,7 +91,7 @@ function [metrics signatures] = WeakSignature(address, exportType,...
         dataTypeMap = mapDataTypes(address);
         [metrics, signatures] = ...
             TieInData(address, 0, {}, {}, {}, {}, {}, {}, sys, {}, ...
-                {}, hasUpdates, docFormat, dataTypeMap);
+                {}, hasUpdates, docFormat, dataTypeMap, sys);
     else % If producing model
         sigModel = strcat(address, '_WEAK_SIGNATURE');
 
@@ -105,11 +105,14 @@ function [metrics signatures] = WeakSignature(address, exportType,...
         end
         save_system(address, sigModel, 'BreakAllLinks', true);
         open_system(sigModel);
+        set_param(sigModel, 'Lock', 'off');
+        
+        % Update to new model name
+        sys = strrep(sys, address, sigModel);
         address = sigModel;
-        set_param(address, 'Lock', 'off');
 
         % Generate signature
-        TieIn(address, 0, {}, {}, {}, {}, {}, {}, hasUpdates);
+        TieIn(address, 0, {}, {}, {}, {}, {}, {}, hasUpdates, sys);
         metrics = 0;
         signatures = {};
 

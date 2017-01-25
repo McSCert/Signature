@@ -38,8 +38,11 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     % Get signature for Outports
     Outports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Outport');
 
-    %verticalOffset = 30;
-    %if strcmp(sys, address) || strcmp(sys, 'All')
+    verticalOffset = 30;
+    gotoLength = 15;
+    addSignatureAtThisLevel = strcmp(sys, 'All') || strcmp(sys, address);
+    
+    if addSignatureAtThisLevel
 
         % Move all blocks to make room for the Signature
         moveAll(address, 300, 0);
@@ -56,7 +59,10 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
         end
         verticalOffset = RepositionInportSig(address, InportGoto, InportFrom, Inports, gotoLength);
         verticalOffset = verticalOffset + Y_OFFSET;
-    %end
+    else
+        InportGoto = {};
+        OutportGoto = {};
+    end
     
     % Recurse into other Subsystems
     subsystems = find_system(address, 'SearchDepth', 1, 'BlockType', 'SubSystem');
@@ -88,105 +94,102 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     gGa     = unique(gGa);
     gFa     = unique(gFa);
 
-    % Get the names of Inports/Outports and their Goto/Froms
-%     inputPorts = {};
-%     for k = 1:length(Inports)
-%         inputPorts{end + 1} = get_param(Inports{k}, 'Name');
-%     end
-% 
-%     outputPorts = {};
-%     for l = 1:length(Outports)
-%         outputPorts{end + 1} = get_param(Outports{l}, 'Name');
-%     end
-
+    % Get the names of added Inports/Outport Goto/Froms   
     inputPortsTags = {};
-    for i = 1:length(InportGoto)
-        inputPortsTags{end + 1} = get_param(InportGoto{i}, 'GotoTag');
+    if ~isempty(InportGoto)
+        for i = 1:length(InportGoto)
+            inputPortsTags{end + 1} = get_param(InportGoto{i}, 'GotoTag');
+        end
     end
-    
+
     outputPortsTags = {};
-    for j = 1:length(OutportGoto)
-        outputPortsTags{end + 1} = get_param(OutportGoto{j}, 'GotoTag');
+    if ~isempty(OutportGoto)
+        for j = 1:length(OutportGoto)
+            outputPortsTags{end + 1} = get_param(OutportGoto{j}, 'GotoTag');
+        end
     end
 
     portTags = [inputPortsTags outputPortsTags];
 
-    % Find implicit interface
+    % Find the implicit interface
     [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
         updateBlocks, globalFroms, globalGotos] = ...
-        AddImplicitsStrong(address, sGa, sFa, dSWa, dSRa, gGa, gFa, portTags, hasUpdates);
+        AddImplicitsStrong(address, sGa, sFa, dSWa, dSRa, gGa, gFa, portTags, hasUpdates, sys);
 
-    % Add Data Store Reads
-    if ~isempty(dataStoreReads(~cellfun('isempty', dataStoreReads)))
-        add_block('built-in/Note', [address '/Data Store Reads'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
-        verticalOffset = verticalOffset + Y_OFFSET;
-        verticalOffset = RepositionImplicits(verticalOffset, dataStoreReads, gotoLength, 1);
-        verticalOffset = verticalOffset + Y_OFFSET;
-    end
+     if addSignatureAtThisLevel
+         
+        % Add Data Store Reads
+        if ~isempty(dataStoreReads(~cellfun('isempty', dataStoreReads)))
+            add_block('built-in/Note', [address '/Data Store Reads'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            verticalOffset = verticalOffset + Y_OFFSET;
+            verticalOffset = RepositionImplicits(verticalOffset, dataStoreReads, gotoLength, 1);
+            verticalOffset = verticalOffset + Y_OFFSET;
+        end
 
-    % Add scoped Froms
-    if ~isempty(fromBlocks(~cellfun('isempty', fromBlocks)))
-        add_block('built-in/Note', [address '/Scoped Froms'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
-        verticalOffset = verticalOffset + Y_OFFSET;
-        verticalOffset = RepositionImplicits(verticalOffset, fromBlocks, gotoLength, 1);
-        verticalOffset = verticalOffset + Y_OFFSET;
-    end
+        % Add scoped Froms
+        if ~isempty(fromBlocks(~cellfun('isempty', fromBlocks)))
+            add_block('built-in/Note', [address '/Scoped Froms'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            verticalOffset = verticalOffset + Y_OFFSET;
+            verticalOffset = RepositionImplicits(verticalOffset, fromBlocks, gotoLength, 1);
+            verticalOffset = verticalOffset + Y_OFFSET;
+        end
 
-    % Add global Froms
-    if ~isempty(globalFroms(~cellfun('isempty', globalFroms)))
-        add_block('built-in/Note', [address '/Global Froms'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
-        verticalOffset = verticalOffset + Y_OFFSET;
-        verticalOffset = RepositionImplicits(verticalOffset, globalFroms, gotoLength, 0);
-        verticalOffset = verticalOffset + Y_OFFSET;
-    end
+        % Add global Froms
+        if ~isempty(globalFroms(~cellfun('isempty', globalFroms)))
+            add_block('built-in/Note', [address '/Global Froms'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            verticalOffset = verticalOffset + Y_OFFSET;
+            verticalOffset = RepositionImplicits(verticalOffset, globalFroms, gotoLength, 0);
+            verticalOffset = verticalOffset + Y_OFFSET;
+        end
 
-    % Add updates (if enabled)
-    if hasUpdates && ~isempty(updateBlocks(~cellfun('isempty', updateBlocks)))
-        add_block('built-in/Note', [address '/Updates'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
-        verticalOffset = verticalOffset + Y_OFFSET;
-        verticalOffset = RepositionImplicits(verticalOffset, updateBlocks, gotoLength, 0);
-        verticalOffset = verticalOffset + Y_OFFSET;
-    end
+        % Add updates (if enabled)
+        if hasUpdates && ~isempty(updateBlocks(~cellfun('isempty', updateBlocks)))
+            add_block('built-in/Note', [address '/Updates'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            verticalOffset = verticalOffset + Y_OFFSET;
+            verticalOffset = RepositionImplicits(verticalOffset, updateBlocks, gotoLength, 0);
+            verticalOffset = verticalOffset + Y_OFFSET;
+        end
 
-    % Add Outports
-    if ~isempty(Outports(~cellfun('isempty', Outports)))
-        add_block('built-in/Note', [address '/Outputs'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
-        verticalOffset = verticalOffset + Y_OFFSET;
-        verticalOffset = RepositionOutportSig(address, OutportGoto, OutportFrom, Outports, gotoLength, verticalOffset);
-        verticalOffset = verticalOffset + Y_OFFSET;
-    end
+        % Add Outports
+        if ~isempty(Outports(~cellfun('isempty', Outports)))
+            add_block('built-in/Note', [address '/Outputs'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            verticalOffset = verticalOffset + Y_OFFSET;
+            verticalOffset = RepositionOutportSig(address, OutportGoto, OutportFrom, Outports, gotoLength, verticalOffset);
+            verticalOffset = verticalOffset + Y_OFFSET;
+        end
 
-    % Add Data Store Writes
-    if ~isempty(dataStoreWrites(~cellfun('isempty', dataStoreWrites)))
-        add_block('built-in/Note', [address '/Data Store Writes'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
-        verticalOffset = verticalOffset + Y_OFFSET;
-        verticalOffset = RepositionImplicits(verticalOffset, dataStoreWrites, gotoLength, 0);
-        verticalOffset = verticalOffset + Y_OFFSET;
-    end
+        % Add Data Store Writes
+        if ~isempty(dataStoreWrites(~cellfun('isempty', dataStoreWrites)))
+            add_block('built-in/Note', [address '/Data Store Writes'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            verticalOffset = verticalOffset + Y_OFFSET;
+            verticalOffset = RepositionImplicits(verticalOffset, dataStoreWrites, gotoLength, 0);
+            verticalOffset = verticalOffset + Y_OFFSET;
+        end
 
-    % Add scoped Gotos
-    if ~isempty(gotoBlocks(~cellfun('isempty', gotoBlocks)))
-        add_block('built-in/Note', [address '/Scoped Gotos'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
-        verticalOffset = verticalOffset + Y_OFFSET;
-        verticalOffset = RepositionImplicits(verticalOffset, gotoBlocks, gotoLength, 0);
-        verticalOffset = verticalOffset + Y_OFFSET;
-    end
+        % Add scoped Gotos
+        if ~isempty(gotoBlocks(~cellfun('isempty', gotoBlocks)))
+            add_block('built-in/Note', [address '/Scoped Gotos'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            verticalOffset = verticalOffset + Y_OFFSET;
+            verticalOffset = RepositionImplicits(verticalOffset, gotoBlocks, gotoLength, 0);
+            verticalOffset = verticalOffset + Y_OFFSET;
+        end
 
-    % Add global Gotos
-    if ~isempty(globalGotos(~cellfun('isempty', globalGotos)))
-        add_block('built-in/Note', [address '/Global Gotos'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
-        verticalOffset = verticalOffset + Y_OFFSET;
-        verticalOffset = RepositionImplicits(verticalOffset, globalGotos, gotoLength, 1);
-        verticalOffset = verticalOffset + Y_OFFSET;
-    end
+        % Add global Gotos
+        if ~isempty(globalGotos(~cellfun('isempty', globalGotos)))
+            add_block('built-in/Note', [address '/Global Gotos'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            verticalOffset = verticalOffset + Y_OFFSET;
+            verticalOffset = RepositionImplicits(verticalOffset, globalGotos, gotoLength, 1);
+            verticalOffset = verticalOffset + Y_OFFSET;
+        end
 
-    % Add Data Store declarations (i.e. Memory blocks)
-    dataDex = find_system(address, 'SearchDepth', 1, 'BlockType', 'DataStoreMemory');
-    tagDex = find_system(address, 'SearchDepth', 1, 'BlockType', 'GotoTagVisibility');
-    if ~isempty(dataDex(~cellfun('isempty', dataDex))) || ~isempty(tagDex(~cellfun('isempty', tagDex)))
-        add_block('built-in/Note', [address '/Declarations'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
-        verticalOffset = verticalOffset + Y_OFFSET;
-        verticalOffset = MoveDataStoreDex(address, verticalOffset);
+        % Add Data Store declarations (i.e. Memory blocks)
+        dataDex = find_system(address, 'SearchDepth', 1, 'BlockType', 'DataStoreMemory');
+        tagDex = find_system(address, 'SearchDepth', 1, 'BlockType', 'GotoTagVisibility');
+        if ~isempty(dataDex(~cellfun('isempty', dataDex))) || ~isempty(tagDex(~cellfun('isempty', tagDex)))
+            add_block('built-in/Note', [address '/Declarations'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            verticalOffset = verticalOffset + Y_OFFSET;
+            verticalOffset = MoveDataStoreDex(address, verticalOffset);
+        end
     end
 
     % Set output information

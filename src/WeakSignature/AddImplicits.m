@@ -1,6 +1,6 @@
 function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
     updateBlocks] = AddImplicits(address, scopeGotoAdd, scopeFromAdd, ...
-    dataStoreWriteAdd, dataStoreReadAdd, hasUpdates)
+    dataStoreWriteAdd, dataStoreReadAdd, hasUpdates, sys)
 %   ADDIMPLICITS Add the implicit inputs and outputs (i.e., scoped Gotos
 %    and Data Store Memorys) for the signature of a subsystem.
 %  
@@ -12,6 +12,9 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
 % 		dataStoreReadAdd    Additional Data Store Reads to add to the address.
 %       hasUpdates          Boolean indicating whether updates are included in 
 %                           the signature.
+%       sys                 Name of the system to generate the signature for.
+%                           One can use a specific system name, or use 'All'
+%                           to get signatures of the entire hierarchy.
 %       
 % 	Outputs:
 %       carryUp         List of 6 lists that are carried up to the subsystem
@@ -53,7 +56,9 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
     updateToRepo = [];
     updateTermToRepo = [];
     updatesToAdd = {};
-    
+ 
+    addSignatureAtThisLevel = strcmp(sys, 'All') || strcmp(sys, address);
+        
     % Get list of all blocks
     allBlocks = find_system(address, 'SearchDepth', 1);
 	allBlocks = setdiff(allBlocks, address);
@@ -153,138 +158,141 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
     num = 0;        % Goto/From number
     termnum = 0;    % Terminator number
 
-    % Add the scoped Froms on the temporary list to the model,
-    % along with a terminator
-    for bz = 1:length(scopeFromAddx)
-        if ~isKey(mapObjU, scopeFromAddx{bz})
-            from = add_block('built-in/From', [address '/FromSigScopeAdd' num2str(num)], ...
-                'GotoTag', scopeFromAddx{bz}, 'TagVisibility', 'scoped');
-            fromName = ['FromSigScopeAdd' num2str(num)];
+    if addSignatureAtThisLevel
 
-            Terminator = add_block('built-in/Terminator', [address '/TerminatorFromScopeAdd' num2str(termnum)]);
-            TermName = ['TerminatorFromScopeAdd' num2str(termnum)];
+        % Add the scoped Froms on the temporary list to the model,
+        % along with a terminator
+        for bz = 1:length(scopeFromAddx)
+            if ~isKey(mapObjU, scopeFromAddx{bz})
+                from = add_block('built-in/From', [address '/FromSigScopeAdd' num2str(num)], ...
+                    'GotoTag', scopeFromAddx{bz}, 'TagVisibility', 'scoped');
+                fromName = ['FromSigScopeAdd' num2str(num)];
 
-            fromToRepo(end + 1) = from;
-            fromTermToRepo(end + 1) = Terminator;
+                Terminator = add_block('built-in/Terminator', [address '/TerminatorFromScopeAdd' num2str(termnum)]);
+                TermName = ['TerminatorFromScopeAdd' num2str(termnum)];
 
-            add_line(address, [fromName '/1'], [TermName '/1']);
+                fromToRepo(end + 1) = from;
+                fromTermToRepo(end + 1) = Terminator;
 
-            num = num + 1;
-            termnum = termnum + 1;
+                add_line(address, [fromName '/1'], [TermName '/1']);
+
+                num = num + 1;
+                termnum = termnum + 1;
+            end
         end
-    end
-    
-    % Reset numbering of blocks
-    num = 0;
-    termnum = 0;
-    
-    % Add the scoped Gotos on the temporary list to the model,
-    % along with a terminator
-    for bt = 1:length(scopeGotoAddx)
-        if ~isKey(mapObjU, scopeGotoAddx{bt})
-            from = add_block('built-in/From', [address '/GotoSigScopeAdd' num2str(num)] , ...
-                'GotoTag', scopeGotoAddx{bz}, 'TagVisibility', 'scoped');
-            fromName = ['GotoSigScopeAdd' num2str(num)];
 
-            Terminator = add_block('built-in/Terminator', [address '/TerminatorGotoScopeAdd' num2str(termnum)]);
-            TermName = ['TerminatorGotoScopeAdd' num2str(termnum)];
+        % Reset numbering of blocks
+        num = 0;
+        termnum = 0;
 
-            gotoToRepo(end + 1) = from;
-            gotoTermToRepo(end + 1) = Terminator;
+        % Add the scoped Gotos on the temporary list to the model,
+        % along with a terminator
+        for bt = 1:length(scopeGotoAddx)
+            if ~isKey(mapObjU, scopeGotoAddx{bt})
+                from = add_block('built-in/From', [address '/GotoSigScopeAdd' num2str(num)] , ...
+                    'GotoTag', scopeGotoAddx{bz}, 'TagVisibility', 'scoped');
+                fromName = ['GotoSigScopeAdd' num2str(num)];
 
-            add_line(address, [fromName '/1'], [TermName '/1']);
+                Terminator = add_block('built-in/Terminator', [address '/TerminatorGotoScopeAdd' num2str(termnum)]);
+                TermName = ['TerminatorGotoScopeAdd' num2str(termnum)];
 
-            num = num + 1;
-            termnum = termnum + 1;
+                gotoToRepo(end + 1) = from;
+                gotoTermToRepo(end + 1) = Terminator;
+
+                add_line(address, [fromName '/1'], [TermName '/1']);
+
+                num = num + 1;
+                termnum = termnum + 1;
+            end
         end
-    end
-    
-    % Reset numbering of blocks
-    num = 0;
-    termnum = 0;
-    
-    % Add the Data Store Writes on the temporary list to the model,
-    % along with a terminator
-	for by = 1:length(dataStoreWriteAddx)
-        if ~isKey(mapObjU, dataStoreWriteAddx{by})
-            dataStore = add_block('built-in/dataStoreRead', [address '/DataStoreWriteAdd' num2str(num)], ...
-                'DataStoreName', dataStoreWriteAddx{by});
-            dataStoreName = ['DataStoreWriteAdd' num2str(num)];
 
-            Terminator = add_block('built-in/Terminator', [address '/TerminatorDataStoreWriteAdd' num2str(termnum)]);
-            TermName = ['TerminatorDataStoreWriteAdd' num2str(termnum)];
+        % Reset numbering of blocks
+        num = 0;
+        termnum = 0;
 
-            dSWriteToRepo(end + 1) = dataStore;
-            dSWriteTermToRepo(end + 1) = Terminator;
+        % Add the Data Store Writes on the temporary list to the model,
+        % along with a terminator
+        for by = 1:length(dataStoreWriteAddx)
+            if ~isKey(mapObjU, dataStoreWriteAddx{by})
+                dataStore = add_block('built-in/dataStoreRead', [address '/DataStoreWriteAdd' num2str(num)], ...
+                    'DataStoreName', dataStoreWriteAddx{by});
+                dataStoreName = ['DataStoreWriteAdd' num2str(num)];
 
-            add_line(address, [dataStoreName '/1'], [TermName '/1']);
+                Terminator = add_block('built-in/Terminator', [address '/TerminatorDataStoreWriteAdd' num2str(termnum)]);
+                TermName = ['TerminatorDataStoreWriteAdd' num2str(termnum)];
 
-            num = num + 1;
-            termnum = termnum + 1;
+                dSWriteToRepo(end + 1) = dataStore;
+                dSWriteTermToRepo(end + 1) = Terminator;
+
+                add_line(address, [dataStoreName '/1'], [TermName '/1']);
+
+                num = num + 1;
+                termnum = termnum + 1;
+            end
         end
-    end
- 
-    % Reset numbering of blocks   
-    num = 0;
-    termnum = 0;
-    
-    % Add the Data Store Reads on the temporary list to the model,
-    % along with a terminator
-    for bx = 1:length(dataStoreReadAddx)
-        if ~isKey(mapObjU, dataStoreReadAddx{bx})
-            dataStore = add_block('built-in/dataStoreRead', [address '/DataStoreReadAdd' num2str(num)], ...
-                'DataStoreName', dataStoreReadAddx{bx});
-            Terminator = add_block('built-in/Terminator', [address '/TerminatorDataStoreReadAdd' num2str(termnum)]);
-            
-            dataStoreName = ['DataStoreReadAdd' num2str(num)];
-            TermName = ['TerminatorDataStoreReadAdd' num2str(termnum)];
 
-            dSReadToRepo(end + 1) = dataStore;
-            dSReadTermToRepo(end + 1) = Terminator;
+        % Reset numbering of blocks   
+        num = 0;
+        termnum = 0;
 
-            add_line(address, [dataStoreName '/1'], [TermName '/1']);
+        % Add the Data Store Reads on the temporary list to the model,
+        % along with a terminator
+        for bx = 1:length(dataStoreReadAddx)
+            if ~isKey(mapObjU, dataStoreReadAddx{bx})
+                dataStore = add_block('built-in/dataStoreRead', [address '/DataStoreReadAdd' num2str(num)], ...
+                    'DataStoreName', dataStoreReadAddx{bx});
+                Terminator = add_block('built-in/Terminator', [address '/TerminatorDataStoreReadAdd' num2str(termnum)]);
 
-            num = num + 1;
-            termnum = termnum + 1;
+                dataStoreName = ['DataStoreReadAdd' num2str(num)];
+                TermName = ['TerminatorDataStoreReadAdd' num2str(termnum)];
+
+                dSReadToRepo(end + 1) = dataStore;
+                dSReadTermToRepo(end + 1) = Terminator;
+
+                add_line(address, [dataStoreName '/1'], [TermName '/1']);
+
+                num = num + 1;
+                termnum = termnum + 1;
+            end
         end
-    end
- 
-    % Reset numbering of blocks   
-    num = 0;
-    termnum = 0;
-    
-    % Add the updates on the list to the model, along with a terminator
-    for bw = 1:length(updatesToAdd)
-        if strcmp(updatesToAdd{bw}.Type, 'DataStoreRead')
-            dataStore = add_block('built-in/DataStoreRead', [address '/DataStoreUpdate' num2str(num)], ...
-                 'DataStoreName', updatesToAdd{bw}.Name);
-            Terminator = add_block('built-in/Terminator', [address '/TermDSUpdate' num2str(termnum)]);
-            
-            dataStoreName = ['DataStoreUpdate' num2str(num)];
-            TermName = ['TermDSUpdate' num2str(termnum)];
 
-            updateToRepo(end + 1) = dataStore;
-            updateTermToRepo(end + 1) = Terminator;
+        % Reset numbering of blocks   
+        num = 0;
+        termnum = 0;
 
-            add_line(address, [dataStoreName '/1'], [TermName '/1']);
+        % Add the updates on the list to the model, along with a terminator
+        for bw = 1:length(updatesToAdd)
+            if strcmp(updatesToAdd{bw}.Type, 'DataStoreRead')
+                dataStore = add_block('built-in/DataStoreRead', [address '/DataStoreUpdate' num2str(num)], ...
+                     'DataStoreName', updatesToAdd{bw}.Name);
+                Terminator = add_block('built-in/Terminator', [address '/TermDSUpdate' num2str(termnum)]);
 
-            num = num + 1;
-            termnum = termnum + 1;
-        else
-            from = add_block('built-in/From', [address '/FromUpdate' num2str(num)], ...
-                'GotoTag', updatesToAdd{bw}.Name, 'TagVisibility', 'scoped');
-            Terminator = add_block('built-in/Terminator', [address '/TermFromUpdate' num2str(termnum)]);
-            
-            fromName = ['FromUpdate' num2str(num)];
-            TermName = ['TermFromUpdate' num2str(termnum)];
+                dataStoreName = ['DataStoreUpdate' num2str(num)];
+                TermName = ['TermDSUpdate' num2str(termnum)];
 
-            updateToRepo(end + 1) = from;
-            updateTermToRepo(end + 1) = Terminator;
+                updateToRepo(end + 1) = dataStore;
+                updateTermToRepo(end + 1) = Terminator;
 
-            add_line(address, [fromName '/1'], [TermName '/1']);
-            
-            num = num + 1;
-            termnum = termnum + 1;
+                add_line(address, [dataStoreName '/1'], [TermName '/1']);
+
+                num = num + 1;
+                termnum = termnum + 1;
+            else
+                from = add_block('built-in/From', [address '/FromUpdate' num2str(num)], ...
+                    'GotoTag', updatesToAdd{bw}.Name, 'TagVisibility', 'scoped');
+                Terminator = add_block('built-in/Terminator', [address '/TermFromUpdate' num2str(termnum)]);
+
+                fromName = ['FromUpdate' num2str(num)];
+                TermName = ['TermFromUpdate' num2str(termnum)];
+
+                updateToRepo(end + 1) = from;
+                updateTermToRepo(end + 1) = Terminator;
+
+                add_line(address, [fromName '/1'], [TermName '/1']);
+
+                num = num + 1;
+                termnum = termnum + 1;
+            end
         end
     end
     
