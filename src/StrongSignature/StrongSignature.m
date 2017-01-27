@@ -89,9 +89,8 @@ function [metrics signatures] = StrongSignature(address, exportType, ...
         end
     end
     
-    % 2) Check that exportType is numeric and in range
+    % 2) Check that exportType is in range
     try
-        assert(isnumeric(exportType))
         assert((exportType == [0,1]))
     catch ME
          if strcmp(ME.identifier, 'MATLAB:assert:failed') || ...
@@ -102,9 +101,8 @@ function [metrics signatures] = StrongSignature(address, exportType, ...
         end
     end
     
-    % 3) Check that hasUpdates is numeric and in range
+    % 3) Check that hasUpdates is in range
     try
-        assert(isnumeric(hasUpdates))
         assert(any(hasUpdates == [0,1]))
     catch ME
          if strcmp(ME.identifier, 'MATLAB:assert:failed') || ...
@@ -126,9 +124,8 @@ function [metrics signatures] = StrongSignature(address, exportType, ...
         end
     end
     
-    % 5) Check that docFormat is numeric and in range
+    % 5) Check that docFormat is in range
     try
-        assert(isnumeric(docFormat))
         assert(any(docFormat == [0,1,2]))
     catch ME
          if strcmp(ME.identifier, 'MATLAB:assert:failed') || ...
