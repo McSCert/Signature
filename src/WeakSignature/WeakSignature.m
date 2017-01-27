@@ -152,7 +152,7 @@ function [metrics signatures] = WeakSignature(address, exportType, ...
             TieInData(address, 0, {}, {}, {}, {}, {}, {}, sys, {}, ...
                 {}, hasUpdates, docFormat, dataTypeMap, sys);
     else % If producing model
-        sigModel = strcat(address, '_WEAK_SIGNATURE');
+        sigModel = strcat(address, '_WeakSig');
 
         % Create signature model
         if exist(sigModel, 'file') == 4
@@ -179,4 +179,8 @@ function [metrics signatures] = WeakSignature(address, exportType, ...
         % they will be left with a model named as a signature, but without
         % the signature
         save_system(address, sigModel);
+        
+        if ~strcmp(sys, 'All')
+            open_system(sys);
+        end
     end

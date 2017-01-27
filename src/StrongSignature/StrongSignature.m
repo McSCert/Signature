@@ -143,7 +143,7 @@ function [metrics signatures] = StrongSignature(address, exportType, ...
             metrics, signatures] = ...
             TieInStrongData(address, sys, hasUpdates, docFormat, dataTypeMap);
     else % If producing model
-        sigModel = strcat(address, '_STRONG_SIGNATURE');
+        sigModel = strcat(address, '_StrongSig');
 
         % Create signature model
         if exist(sigModel, 'file') == 4
@@ -170,4 +170,8 @@ function [metrics signatures] = StrongSignature(address, exportType, ...
         % they will be left with a model named as a signature, but without
         % the signature
         save_system(address, sigModel);
+        
+        if ~strcmp(sys, 'All')
+            open_system(sys);
+        end
     end

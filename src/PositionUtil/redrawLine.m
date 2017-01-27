@@ -18,5 +18,11 @@ function redrawLine(address, block1, block2)
     block2Port = get_param(block2, 'PortHandles');
     block2Port = block2Port.Inport;
 
-    delete_line(address, block1Port, block2Port);
+    try
+        delete_line(address, block1Port, block2Port);
+    catch ME
+        if strcmp(ME.identifier, 'Invalid line specifier')
+            % no line to delete
+        end
+    end
     add_line(address, block1Port, block2Port);

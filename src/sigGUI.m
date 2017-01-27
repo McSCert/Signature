@@ -22,7 +22,7 @@ function varargout = sigGUI(varargin)
 
 % Edit the above text to modify the response to help sigGUI
 
-% Last Modified by GUIDE v2.5 13-Jan-2017 13:09:07
+% Last Modified by GUIDE v2.5 27-Jan-2017 12:18:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -78,23 +78,27 @@ function pushbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-address = gcs;
-numChars = strfind(address, '/');
 
-if ~isempty(numChars)
-    address = address(1:numChars(1) - 1);
+% Get all arguments
+address = bdroot(gcs);
+exportType = ~get(handles.radio_model, 'Value');
+hasUpdates = get(handles.radio_enableupdate, 'Value');
+
+sys = 'All';
+if get(handles.radio_current, 'Value')
+    sys = gcs;
 end
 
-% Get all the group's children. Get their values and put into a matrix.
-% Flip it so that it matches the GUI order. Find the index of the radio
-% button that is selected (value is nonzero. Minus 1 becuase the function 
+% Get all the values of the group's children as a vector.
+% Flip it so it matches the GUI order. Find the index of the radio
+% button that is selected (value is nonzero). Minus 1 becuase the function 
 % takes 0,1,2 instead of 1,2,3.
 docType = find(flipud(cell2mat(get(get(handles.group_DocType, 'Children'), 'Value')))) - 1;
 
 if get(handles.radio_strongsig, 'Value')
-    StrongSignature(address, ~get(handles.radio_model, 'Value'), get(handles.radio_enableupdate, 'Value'), 'All', docType);
+    StrongSignature(address, exportType, hasUpdates, sys, docType);
 else
-    WeakSignature(address, ~get(handles.radio_model, 'Value'), get(handles.radio_enableupdate, 'Value'), 'All', docType);
+    WeakSignature(address, exportType, hasUpdates, sys, docType);
 end
 
 close(handles.signaturegui);
@@ -105,9 +109,9 @@ function signaturegui_CreateFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
-% --- Executes when selected object is changed in uipanel2.
-function uipanel2_SelectionChangeFcn(hObject, eventdata, handles)
-% hObject    handle to the selected object in uipanel2 
+% --- Executes when selected object is changed in group_ExportAs.
+function group_ExportAs_SelectionChangeFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in group_ExportAs 
 % eventdata  structure with the following fields (see UIBUTTONGROUP)
 %	EventName: string 'SelectionChanged' (read only)
 %	OldValue: handle of the previously selected object or empty if none was selected
@@ -116,12 +120,21 @@ function uipanel2_SelectionChangeFcn(hObject, eventdata, handles)
 
 % Enable/disable Documentation Type radio buttons based on whether or not
 % the user wants the signature in the model or as documentation
-if get(handles.radio_model, 'Value')
-    set(handles.radio_txt, 'Enable', 'off');
-    set(handles.radio_tex, 'Enable', 'off');
-    set(handles.radio_doc, 'Enable', 'off');
-else
+if get(handles.radio_document, 'Value')
     set(handles.radio_txt, 'Enable', 'on');
     set(handles.radio_tex, 'Enable', 'on');
     set(handles.radio_doc, 'Enable', 'on');
+
+else
+    set(handles.radio_txt, 'Enable', 'off');
+    set(handles.radio_tex, 'Enable', 'off');
+    set(handles.radio_doc, 'Enable', 'off');
 end
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over radio_document.
+function radio_document_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to radio_document (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
