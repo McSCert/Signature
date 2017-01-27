@@ -1,11 +1,10 @@
-function [address, outports] = OutportSigData(address)
+function [outports] = OutportSigData(address)
 % OUTPORTSIGDATA List Outports for a system.
 %
 %   Inputs:
-%       address     Simulink system path.
+%       address     Simulink model name.
 %
 %   Outputs:
-%       address     Simulink system path.
 %       outports    List of inport names.
 
     outports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Outport');

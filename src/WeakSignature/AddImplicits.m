@@ -5,16 +5,22 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
 %    and Data Store Memorys) for the signature of a subsystem.
 %  
 % 	Inputs:
-%       address             Simulink system path.
+%       address             Simulink model name.
 % 		scopeGotoAdd	    Additional scoped Gotos to add to the address.
+%
 %       scopeFromAdd        Additional scoped Froms to add to the address.
+%
 %       dataStoreWriteAdd   Additional Data Store Writes to add to the address.
+%
 % 		dataStoreReadAdd    Additional Data Store Reads to add to the address.
-%       hasUpdates          Boolean indicating whether updates are included in 
-%                           the signature.
-%       sys                 Name of the system to generate the signature for.
-%                           One can use a specific system name, or use 'All'
-%                           to get signatures of the entire hierarchy.
+%
+%       hasUpdates          Number indicating whether reads and writes in the
+%                           same subsystem are kept separate (0), or combined 
+%                           and listed as an update (1).
+%                   
+%       sys                 Name of the system to generate the documentation for.
+%                           It can be a specific subsystem name, or 'All' to get
+%                           documentation for the entire hierarchy.
 %       
 % 	Outputs:
 %       carryUp         List of 6 lists that are carried up to the subsystem

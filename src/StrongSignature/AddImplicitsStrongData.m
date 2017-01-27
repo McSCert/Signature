@@ -1,11 +1,11 @@
-function [address, scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
+function [scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
     updates, globalGotos, globalFroms] = AddImplicitsStrongData(address, ...
     scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd, dataStoreReadAdd, ...
     globalGotosAdd, globalFromsAdd, hasUpdates)
 % ADDIMPLICITSSTRONGDATA Find implicit inputs/outputs for the signature.
 %
 %   Inputs:
-%       address         Simulink system path.
+%       address         Simulink model name.
 %
 %       scopeGotoAdd    List of all scoped Gotos being passed in to be
 %                       potentially added to the signature.
@@ -19,10 +19,10 @@ function [address, scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
 %       dataStoreReadAdd List of all Data Store Reads being passed in to be
 %                       potentially added to the signature.
 %
-%       hasUpdates      Boolean indicating whether updates are included in the signature.
+%       hasUpdates      Number indicating whether updates are included in the 
+%                       signature.
 %
 %   Outputs:
-%       address     Simulink system path.
 %
 %       scopedGoto  List of all scoped Gotos that will be included in the
 %                   signature (unless they are part of an update).

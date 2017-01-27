@@ -5,7 +5,7 @@ function TestHarness(system)
 %   Data Store Writes and Gotos so that testing can record this data.
 %
 %   Inputs:
-%       system      Simulink subsystem path to generate the harness for.
+%       system      Simulink model name to generate the harness for.
 %
 %   Outputs:
 %       N/A

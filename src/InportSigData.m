@@ -1,11 +1,10 @@
-function [address, inports] = InportSigData(address)
+function [inports] = InportSigData(address)
 %  INPORTSIGDATA List Imports for a system.
 %
 %	Inputs:
-%		address     Simulink system path.
+%		address     Simulink model name.
 %
 %	Outputs:
-%       address     Simulink system path.
 %		inports     List of Inport names.
 
     inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');

@@ -1,4 +1,6 @@
+% Note: These functions are used in Signature.rpt
 function [table, title] = SignatureTableSetup(system, dataTypeMap, getUnit, tableType, signatures, index)
+% SIGNATURETABLESETUP Create and fill tables in the report.
 
     % Set title
     switch tableType
@@ -89,34 +91,3 @@ function blockInfo = findBlockInfo(block, name, dataTypeMap, getUnit)
     % Set ith row entries
     blockInfo = [name, unit, min, max, datatype, description];
 end
-
-% % % Though this is not needed here, it may be useful for other parts of the signature tool
-%  function blocks = findBlocks(system,blockType)
-%  % Find the blocks to fill the table
-%  
-%  if strcmp(blockType,'SubSystem')
-%      blocks=find_system(system, 'SearchDepth', '1', 'LookUnderMasks', 'all', 'BlockType', blockType, 'MaskType', '');
-%      if ~strcmp(system,bdroot)
-%          blocks=blocks(2:end);
-%      end
-%  elseif strcmp(blockType,'Goto')
-%      blocks=find_system(system, 'SearchDepth', '1', 'LookUnderMasks', 'all', 'BlockType', blockType, 'MaskType', '');
-%      
-%      %  Exclude local gotos
-%      blocks=blocks(~strcmp(get_param(blocks,'TagVisibility'),'local'));
-%  elseif strcmp(blockType,'From')
-%      blocks=find_system(system, 'SearchDepth', '1', 'LookUnderMasks', 'all', 'BlockType', blockType, 'MaskType', '');
-%      
-%      %  Exclude froms at the same level, in the same subsystem, as their corresponding goto
-%      gotos=find_system(system, 'SearchDepth', '1', 'LookUnderMasks', 'all', 'BlockType', 'Goto', 'MaskType', '');
-%      for i = 1:length(gotos)
-%          %  if any from has the same goto tag as the current goto, then it isn't needed for the interface (as the source is from within)
-%          blocks=blocks(~strcmp(get_param(blocks,'GotoTag'),get_param(gotos{i},'GotoTag')));
-%      end
-%      
-%      %  Exclude local froms
-%      blocks=blocks(~strcmp(get_param(blocks,'TagVisibility'),'local'));
-%  else
-%      blocks=find_system(system, 'SearchDepth', '1', 'LookUnderMasks', 'all', 'BlockType', blockType);
-%  end
-%  end

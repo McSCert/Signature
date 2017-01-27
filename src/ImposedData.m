@@ -3,7 +3,7 @@ function [tagDex, dsDex] = ImposedData(address)
 %	hierarchy and are to be in the signature.
 %
 %   Inputs:
-%		address     Simulink system path.
+%		address     Simulink model name.
 %
 %   Outputs:
 %       tagDex		Names of Gotos in scope in scope of the system.
@@ -16,7 +16,7 @@ function [tagDex, dsDex] = ImposedData(address)
 	allBlocks = find_system(address, 'SearchDepth', 1);
 	allBlocks = setdiff(allBlocks, address);
 
-	for z = 1:length(allBlocks)
+    for z = 1:length(allBlocks)
 		BlockType = get_param(allBlocks{z}, 'BlockType');
 
 		% Get names of Data Stores and Gotos
@@ -25,4 +25,4 @@ function [tagDex, dsDex] = ImposedData(address)
         elseif strcmp(BlockType, 'GotoTagVisibility')
             tagDex{end + 1} = get_param(allBlocks{z}, 'GotoTag');
         end
-	end
+    end

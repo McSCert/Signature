@@ -4,7 +4,7 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
 %  TIEINDATA Find the weak signature recursively and output as documentation.
 %
 %   Inputs:
-%       address         Simulink system path.
+%       address         Simulink model name.
 %
 %       num             Zero if not to be recursed, one for recursed.
 %
@@ -27,8 +27,8 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
 %                       froms in the model.
 %
 %       sys             Name of the system to generate the documentation for.
-%                       One can use a specific system name, or use 'All' to
-%                       get documentation of the entire hierarchy.
+%                       It can be a specific subsystem name, or 'All' to get
+%                       documentation for the entire hierarchy.
 %
 %       metrics         Cell array listing the system and its subsystems, with
 %                       the size of their signature (i.e. number of elements in
@@ -41,8 +41,9 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
 %                       DataStoreWrites, Updates, GotoTagVisibilities, and
 %                       DataStoreMemories.
 %
-%       hasUpdates      Boolean indicating whether updates are included in
-%                       the signature.
+%       hasUpdates      Number indicating whether reads and writes in the same
+%                       subsystem are kept separate (0), or combined and listed
+%                       as an update (1).
 %
 %       docFormat       Number indicating which docmentation type to
 %                       generate: .txt(0), .tex(1), or .doc(2).
@@ -62,8 +63,8 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
 %                       DataStoreMemories.
 
     % Get signature for Inports and Outports
-    [inaddress, Inports] = InportSigData(address);
-    [outaddress, Outports] = OutportSigData(address);
+    Inports = InportSigData(address);
+    Outports = OutportSigData(address);
 
     % If at the appropriate level, add the global Gotos in the model
     if num == 0
@@ -72,7 +73,7 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
         globalFroms = globalGotos;
     end
 
-    [address, scopedGoto, scopedFrom, DataStoreW, DataStoreR, removableDS,...
+    [scopedGoto, scopedFrom, DataStoreW, DataStoreR, removableDS,...
         removableTags, updates] = AddImplicitsData(address, scopeGotoAdd,...
         scopeFromAdd, dataStoreWriteAdd, dataStoreReadAdd, hasUpdates);
 

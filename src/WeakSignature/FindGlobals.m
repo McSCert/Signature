@@ -2,7 +2,7 @@ function globalGotos = FindGlobals(address)
 % GLOBALGOTOS Find names of global Gotos.
 %
 %   Inputs:
-%		address      The name and location of the system.
+%		address      Simulink model name.
 %
 %   Outputs:
 %   	globalGotos	 List of global Goto names.

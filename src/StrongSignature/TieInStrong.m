@@ -6,12 +6,13 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
 %   Inputs:
 %       address     Simulink system path.
 %
-%       hasUpdates  Boolean indicating whether updates are included in the
-%                   signature.
+%       hasUpdates  Number indicating whether reads and writes in the same
+%                   subsystem are kept separate (0), or combined and listed as
+%                   an update (1).
 %
-%       sys         Name of the system to generate the signature for.
-%                   One can use a specific system name, or use 'All' to get
-%                   signatures of the entire hierarchy.
+%       sys         Name of the system to generate the documentation for.
+%                   It can be a specific subsystem name, or 'All' to get
+%                   documentation for the entire hierarchy.
 %
 %   Outputs:
 %       scopedGotoAddOut        List of scoped gotos that the function will pass out.

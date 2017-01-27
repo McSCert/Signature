@@ -1,20 +1,23 @@
-function [metrics signatures] = StrongSignature(address, exportType,...
+function [metrics signatures] = StrongSignature(address, exportType, ...
     hasUpdates, sys, docFormat)
-% STRONGSIGNATURE Generate documentation of a system's strong signature or
-% 	produce the model of the strong signature.
+% STRONGSIGNATURE Generate documentation/model of a system's strong signature.
+%
+%   Function:
+%       STRONGSIGNATURE(address, exportType, hasUpdates, sys, docFormat)
 %
 %   Inputs:
-%       address     Simulink model name or path.
+%       address     Simulink model name.
 %
-%       exportType  Boolean indicating whether to export the signature as
+%       exportType  Number indicating whether to export the signature as
 %                   a model(0) or as documentation (1).
 %
-%       hasUpdates  Boolean indicating whether updates are to be
-%                   included in the signature.
+%       hasUpdates  Number indicating whether reads and writes in the same
+%                   subsystem are kept separate (0), or combined and listed
+%                   as an update (1).
 %
 %       sys         Name of the system to generate the documentation for.
-%                   One can use a specific system name, or use 'All' to get
-%                   documentation of the entire hierarchy.
+%                   It can be a specific subsystem name, or 'All' to get
+%                   documentation for the entire hierarchy.
 %
 %       docFormat   Number indicating which docmentation type to
 %                   generate: .txt(0), .tex(1), or .doc(2).
@@ -34,12 +37,12 @@ function [metrics signatures] = StrongSignature(address, exportType,...
 %   Example 1:
 %       StrongSignature('SignatureDemo', 0, 1, 'All', 0)
 %           Generates a strong signature model, that include updates, for
-%           the model 'SignatureDemo' and all its subsystems.
+%           the model SignatureDemo and all its subsystems.
 %
 %   Example 2:
 %       StrongSignature('SignatureDemo', 1, 1, 'SignatureDemo/Subsystem', 0)
 %           Generates strong signature documentation, that includes updates,
-%           for a specific subsystem of 'SignatureDemo', as a .txt file.
+%           for a specific subsystem of SignatureDemo, as a .txt file.
 
     % Check number of arguments
     try
@@ -51,17 +54,30 @@ function [metrics signatures] = StrongSignature(address, exportType,...
     end
 
     % Check address argument
-    % 1) Check model at address is open
+    % 1a) Check that address is a model and is open
     try
-       assert(ischar(address));
-       assert(bdIsLoaded(bdroot(address)));
+        assert(ischar(address));
+        assert(bdIsLoaded(bdroot(address)));
     catch
         disp(['Error using ' mfilename ':' char(10) ...
             ' Invalid argument: address. Model may not be loaded or name is invalid.' char(10)])
         return
     end
+    % 1b) Check that address is the root system
+    % i.e. the user isn't passing a subsystem
+    try     
+       assert(strcmp(get_param(address, 'Type'), 'block_diagram'));
+    catch ME
+        if strcmp(ME.identifier, 'MATLAB:assert:failed') || ...
+                strcmp(ME.identifier, 'MATLAB:assertion:failed')
+            disp(['Warning using ' mfilename ':' char(10) ...
+                ' Invalid argument: address. It must be the root system name.' char(10) ...
+                ' Using ' bdroot(address) ' instead of ' address '.' char(10)])
+            address = bdroot(address);
+        end
+    end
 
-    % 2) Check that model is unlocked
+    % 1c) Check that model is unlocked
     try
         assert(strcmp(get_param(bdroot(address), 'Lock'), 'off'));
     catch ME
@@ -72,8 +88,34 @@ function [metrics signatures] = StrongSignature(address, exportType,...
             return
         end
     end
-
-    % Check sys argument
+    
+    % 2) Check that exportType is numeric and in range
+    try
+        assert(isnumeric(exportType))
+        assert((exportType == [0,1]))
+    catch ME
+         if strcmp(ME.identifier, 'MATLAB:assert:failed') || ...
+                strcmp(ME.identifier, 'MATLAB:assertion:failed')
+            disp(['Error using ' mfilename ':' char(10) ...
+                ' Invalid argument: exportType. Valid input is 0 or 1.'])
+            return
+        end
+    end
+    
+    % 3) Check that hasUpdates is numeric and in range
+    try
+        assert(isnumeric(hasUpdates))
+        assert(any(hasUpdates == [0,1]))
+    catch ME
+         if strcmp(ME.identifier, 'MATLAB:assert:failed') || ...
+                strcmp(ME.identifier, 'MATLAB:assertion:failed')
+            disp(['Error using ' mfilename ':' char(10) ...
+                ' Invalid argument: hasUpdates. Valid input is 0 or 1.'])
+            return
+        end
+    end
+    
+    % 4) Check that sys is an exisiting Subsystem 
     if ~strcmp(sys, 'All')
         try
             find_system(sys, 'SearchDepth', 0, 'BlockType', 'SubSystem');
@@ -83,6 +125,19 @@ function [metrics signatures] = StrongSignature(address, exportType,...
             return
         end
     end
+    
+    % 5) Check that docFormat is numeric and in range
+    try
+        assert(isnumeric(docFormat))
+        assert(any(docFormat == [0,1,2]))
+    catch ME
+         if strcmp(ME.identifier, 'MATLAB:assert:failed') || ...
+                strcmp(ME.identifier, 'MATLAB:assertion:failed')
+            disp(['Error using ' mfilename ':' char(10) ...
+                ' Invalid argument: docFormat. Valid input is 0, 1, or 2.'])
+            return
+        end
+    end  
 
     if exportType % If producing documentation
         dataTypeMap = mapDataTypes(address);

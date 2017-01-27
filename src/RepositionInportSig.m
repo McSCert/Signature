@@ -1,8 +1,9 @@
-function yOffsetFinal = RepositionInportSig(address, inGo, inFrom, inports, gotoLength)
+function yOffsetFinal = RepositionInportSig(address, inGo, inFrom, ...
+    inports, gotoLength)
 %   RESPOSITIONINPORTSIG Reposition Inports and Inport Goto/Froms. 
 %
 %   Inputs:
-%       address     The name and location in the model.
+%       address     Simulink model name.
 %       inGo        Inport Goto handles.
 %       inFrom      Inport From handles.
 %       inports     Inport handles.

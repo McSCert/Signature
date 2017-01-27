@@ -2,11 +2,11 @@ function yOffsetFinal = AddGlobals(address, yOffset, globals, gotoLength, addGot
 %  ADDGLOBALS Add and reposition global Gotos in the model.
 %
 %	Inputs:
-%	  address         Name and location in the model.
+%	  address         Simulink model name.
 %	  yOffset         Point in the y-axis to start positioning blocks.
 %	  globals         Names of all the global blocks to add.
 %	  gotoLength      Max length of global tags.
-%     addGotos        Boolean indicating whether adding global Froms(0) or Gotos(1).
+%     addGotos        Number indicating whether adding global Froms(0) or Gotos(1).
 %
 %	Outputs:
 %	  yOffsetFinal    Point in the y-axis to start repositioning blocks next time.

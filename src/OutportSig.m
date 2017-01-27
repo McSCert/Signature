@@ -2,10 +2,9 @@ function [outportGoto, outportFrom, gotoLength] = OutportSig(address, outports)
 %  OUTPORTSIG Add Outports to the signature in the model by adding Goto/Froms for Outports.
 %
 %   Inputs:
-%       address      Simulink system path.
+%       address      Simulink model name.
 %
 %   Outputs:
-%       address      Simulink system path.
 %		outportGoto  Handles of Outport Gotos.
 %		outportFrom  Handles of Outport Froms.
 %		outports     Handles of Outport.

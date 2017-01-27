@@ -2,10 +2,9 @@ function [inportGoto, inportFrom, gotoLength] = InportSig(address, inports)
 %  INPORTSIG Add Inports to the signature in the model by adding Goto/Froms for Inports.
 %
 %	Inputs:
-%		address     Simulink system path.
+%		address     Simulink model name.
 %
 %	Outputs:
-%		address     Simulink system path.
 %		inportGoto  Handles of Inport Gotos.
 %		inportFrom  Handles of Inport Froms.
 %		inports 	Handles of Inport.

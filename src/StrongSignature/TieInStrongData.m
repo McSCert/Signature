@@ -6,12 +6,13 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
 %   Inputs:
 %       address         Simulink system path.
 %
-%       sys             Name of the system to generate the documentation for.
-%                       One can use a specific system name, or use 'All' to
-%                       get documentation of the entire hierarchy.
+%       sys         Name of the system to generate the documentation for.
+%                   It can be a specific subsystem name, or 'All' to get
+%                   documentation for the entire hierarchy.
 %
-%       hasUpdates      Boolean indicating whether updates are included in
-%                       the signature.
+%       hasUpdates      Number indicating whether reads and writes in the same
+%                       subsystem are kept separate (0), or combined and listed
+%                       as an update (1).
 %
 %       docFormat       Number indicating which docmentation type to
 %                       generate: .txt(0), .tex(1), or .doc(2).
@@ -59,8 +60,8 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
 	BlockName = get_param(address,'Name');
 
     % Get signature for Inports and Outports
-    [inaddress, Inports] = InportSigData(address);
-    [outaddress, Outports] = OutportSigData(address);
+    Inports = InportSigData(address);
+    Outports = OutportSigData(address);
 
     % Get all blocks, but remove the current address
     allBlocks = find_system(address, 'SearchDepth', 1);
@@ -100,7 +101,7 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
     gFa     = unique(gFa);
 
     % Find all Data Store Reads, Writes, scoped Gotos/Froms, and updates
-    [address, scopedGoto, scopedFrom, DataStoreW, DataStoreR, Updates, ...
+    [scopedGoto, scopedFrom, DataStoreW, DataStoreR, Updates, ...
         GlobalGotos, GlobalFroms] = AddImplicitsStrongData(address, sGa, ...
         sFa, dSWa, dSRa,gGa,gFa, hasUpdates);
 

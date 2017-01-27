@@ -2,7 +2,7 @@ function yOffsetFinal = MoveDataStoreDex(address, yOffset)
 % MOVEDATASTOREDEX Move Data Store Memory blocks to the left side of the signature.
 %
 %   Inputs:
-%       address     Simulink system path.
+%       address     Simulink model name.
 %       yOffset     Point in the y-axis to start positioning blocks.
 %
 %   Outputs:

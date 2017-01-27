@@ -1,40 +1,40 @@
-function [address, scopedGoto, scopedFrom, dataStoreW, dataStoreR, removableDS, ...
+function [scopedGoto, scopedFrom, dataStoreW, dataStoreR, removableDS, ...
     removableTags, updates] = AddImplicitsData(address, scopeGotoAdd, ...
         scopeFromAdd, dataStoreWriteAdd, dataStoreReadAdd, isupdates)
 % ADDIMPLICITSDATA Add the scoped Goto and Data Store signature.
 %  
 %	Inputs:
-%		address      The name and location of the system.
+%		address         Simulink model name.
 %
-%		scopeGotoAdd Additional scoped gotos to add to the address.
+%		scopeGotoAdd    Additional scoped gotos to add to the address.
 %
-%       scopeFromAdd Additional scoped froms to add to the address.
+%       scopeFromAdd    Additional scoped froms to add to the address.
 %
 %		dataStoreReadAdd Additional data store reads to add to the address.
 %
 %       dataStoreWriteAdd Additional data store writes to add to the address.
 %       
 %	Outputs:
-%		scopedGoto   The scoped goto tags that are part of the signature
+%		scopedGoto   The scoped Goto tags that are part of the signature
 %		             and are listed for documentation.
 %
-%		scopedFrom   The scoped from tags that are part of the signature
+%		scopedFrom   The scoped From tags that are part of the signature
 %		             and are listed for documentation.
 %
-%       dataStoreW   The data store writes that are part of the signature
+%       dataStoreW   The Data Store Writes that are part of the signature
 %		             and are listed for documentation.
 %
-%       dataStoreR   The data store reads that are part of the signature
+%       dataStoreR   The Data Store Reads that are part of the signature
 %		             and are listed for documentation
 %
-%       removableDS  The data stores that can be removed at a certain
+%       removableDS  The Data Stores that can be removed at a certain
 %                    subsystem level.
 %
 %       removableTags The removable scoped tags that can be removed at
 %                     a certain subsystem level.
 %
-%       updates       The blocknames that are part of the signature and are
-%                     considered updates.
+%       updates       The block names that are part of the signature and 
+%                     are considered updates.
 
 	mapObjU = containers.Map(); % Map for updates
     updatesToAdd = {};

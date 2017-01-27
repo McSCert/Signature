@@ -7,7 +7,7 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks,...
 %   and Data Store Memorys) for the signature of a subsystem.
 %
 %   Inputs:
-%       address         Simulink system path.
+%       address         Simulink model name.
 %
 %       scopedGotoAdd   List of scoped Gotos that potentially could be
 %                       included in the signature.
@@ -24,12 +24,12 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks,...
 %       PortsTags       List of the tags used for the Gotos/Froms representing
 %                       input ports that are NOT to be included in updates.
 %
-%       hasUpdates      Boolean indicating whether updates are included in
+%       hasUpdates      Number indicating whether updates are included in
 %                       the signature.
 %
-%       sys             Name of the system to generate the signature for.
-%                       One can use a specific system name, or use 'All' to get
-%                       signatures of the entire hierarchy.
+%       sys             Name of the system to generate the documentation for.
+%                       It can be a specific subsystem name, or 'All' to get
+%                       documentation for the entire hierarchy.
 %
 %	Outputs:
 %       carryUp         List of 6 lists that are carried up to the subsystem

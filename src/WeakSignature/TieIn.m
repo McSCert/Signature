@@ -3,14 +3,14 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
 %  TIEIN Find the weak signature recursively and insert it into the model. 
 %  
 %	Inputs:
-%       address             Simulink system path.
+%       address             Simulink model name.
 %
 %       num                 Zero if not be recursed, one for recursed.
 %
 %		scopeGotoAdd        List of scoped Goto Tags that need to be added 
 %                           to the signature.
 %
-%		scopeFromAdd        Scoped From Tags to be added to the signature.
+%		scopeFromAdd        List of Scoped From Tags to be added to the signature.
 %
 %		dataStoreWriteAdd   List of Data Store Writes to be added to the
 %                           signature.
@@ -22,12 +22,13 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
 %
 %		globalGotos         Tags of global Gotos to be added in recursion.
 %
-%       hasUpdates          Boolean indicating whether updates are included
-%                           in the signature.
+%       hasUpdates          Number indicating whether reads and writes in the same
+%                           same subsystem are kept separate (0), or combined 
+%                           and listed as an update (1).
 %
-%       sys                 Name of the system to generate the signature for.
-%                           One can use a specific system name, or use 'All'
-%                           to get signatures of the entire hierarchy.
+%       sys                 Name of the system to generate the documentation
+%                           for. It can be a specific subsystem name, or 'All'
+%                           to get documentation for the entire hierarchy.
 %
 %   Outputs:
 %       N/A
