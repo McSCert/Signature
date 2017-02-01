@@ -98,6 +98,20 @@ function [metrics signatures] = WeakSignature(address, exportType, ...
             return
         end
     end
+    
+    % 1d) Check that model doesn't already have a signature
+    try
+        assert(isempty(regexp(bdroot(address), '.*(_WeakSig|_StrongSig).*', 'once')));
+    catch ME
+        if strcmp(ME.identifier, 'MATLAB:assert:failed') || ...
+                strcmp(ME.identifier, 'MATLAB:assertion:failed')
+            disp(['Error using ' mfilename ':' char(10) ...
+                ' Cannot generate a signature when one exists.' ...
+                '  The filename indicates that there may already be' char(10) ...
+                ' a signature in the model.'])
+            return
+        end
+    end
 
     % 2) Check that exportType is in range
     try

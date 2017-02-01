@@ -10,6 +10,7 @@ function yOffsetFinal = MoveDataStoreDex(address, yOffset)
 
     % For starting the signature
     XMARGIN = 30; 
+    MIN_LENGTH = 15;
     
 	allBlocks = find_system(address, 'SearchDepth', 1);
 	allBlocks = setdiff(allBlocks, address);
@@ -18,7 +19,7 @@ function yOffsetFinal = MoveDataStoreDex(address, yOffset)
 		BlockType = get_param(allBlocks{z}, 'BlockType');
 		if strcmp(BlockType, 'DataStoreMemory')
 			dsName   = get_param(allBlocks{z}, 'DataStoreName');
-			dsLength = 11 * length(dsName);
+			dsLength = 11 * length(dsName) + MIN_LENGTH;
             
 			dsPos = get_param(allBlocks{z}, 'Position');
 			dsPos(1) = XMARGIN;
@@ -33,7 +34,7 @@ function yOffsetFinal = MoveDataStoreDex(address, yOffset)
             
         elseif strcmp(BlockType, 'GotoTagVisibility')
             tagName   = get_param(allBlocks{z}, 'GotoTag');
-			tagLength = 11 * length(tagName);
+			tagLength = 11 * length(tagName) + MIN_LENGTH;
             
 			tagPos = get_param(allBlocks{z}, 'Position');
 			tagPos(1) = XMARGIN;

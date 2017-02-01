@@ -4,7 +4,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
 % TIEINSTRONG Find the strong signature recursively and insert it into the model.
 %
 %   Inputs:
-%       address     Simulink system path.
+%       address     Simulink model name.
 %
 %       hasUpdates  Number indicating whether reads and writes in the same
 %                   subsystem are kept separate (0), or combined and listed as
@@ -41,28 +41,36 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
 
     verticalOffset = 30;
     gotoLength = 15;
+
     addSignatureAtThisLevel = strcmp(sys, 'All') || strcmp(sys, address);
     
+    InportGoto = {};
+    OutportGoto = {};
     if addSignatureAtThisLevel
 
         % Move all blocks to make room for the Signature
         moveAll(address, 300, 0);
 
         % Add blocks to model
-        add_block('built-in/Note', [address '/Inputs'], 'Position', [90 15], 'FontSize', FONT_SIZE);
-        [InportGoto, InportFrom, inGotoLength] = InportSig(address, Inports);
-        [OutportGoto, OutportFrom, outGotoLength] = OutportSig(address, Outports);
-
+        inGotoLength = 0;
+        outGotoLength = 0;
+        if ~isempty(Inports)
+            add_block('built-in/Note', [address '/Inputs'], 'Position', [90 15], 'FontSize', FONT_SIZE);     
+            [InportGoto, InportFrom, inGotoLength] = InportSig(address, Inports);
+        end
+        if ~isempty(Outports)
+            [OutportGoto, OutportFrom, outGotoLength] = OutportSig(address, Outports);
+        end
+        
         % Organize blocks
         gotoLength = max([inGotoLength outGotoLength]);
         if gotoLength == 0
             gotoLength = 15;
         end
-        verticalOffset = RepositionInportSig(address, InportGoto, InportFrom, Inports, gotoLength);
-        verticalOffset = verticalOffset + Y_OFFSET;
-    else
-        InportGoto = {};
-        OutportGoto = {};
+        if ~isempty(Inports)
+            verticalOffset = RepositionInportSig(address, InportGoto, InportFrom, Inports, gotoLength);
+            verticalOffset = verticalOffset + Y_OFFSET;
+        end
     end
     
     % Recurse into other Subsystems

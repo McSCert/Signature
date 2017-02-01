@@ -39,15 +39,23 @@ function [outportGoto, outportFrom, gotoLength] = OutportSig(address, outports)
         end
 
         % Add Goto block
-        Goto = add_block('built-in/Goto', [address '/GotoOut' pSID], ...
-            'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
+        try
+            Goto = add_block('built-in/Goto', [address '/GotoOut' pSID], ...
+                'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
+        catch
+            error('Signature blocks already exist in this subsystem.')
+        end
         GotoName = ['GotoOut' pSID];
         set_param(Goto, 'Position', get_param(outports{z}, 'Position')); % Move to same position as Outport it is replacing
         outportGoto{end + 1} = getfullname(Goto);
 
         % Add From block
-        From = add_block('built-in/From', [address '/FromOut' pSID], ...
-            'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
+        try
+            From = add_block('built-in/From', [address '/FromOut' pSID], ...
+                'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
+        catch
+            error('Signature blocks already exist in this subsystem.')
+        end       
         FromName = ['FromOut' pSID];
         outportFrom{end + 1} = getfullname(From);
         % No need to move now, becuase the repositioning functions take

@@ -4,11 +4,11 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
 % TIEINSTRONGDATA Find the strong signature recursively and output as documentation.
 %
 %   Inputs:
-%       address         Simulink system path.
+%       address         Simulink model name.
 %
-%       sys         Name of the system to generate the documentation for.
-%                   It can be a specific subsystem name, or 'All' to get
-%                   documentation for the entire hierarchy.
+%       sys             Name of the system to generate the documentation for.
+%                       It can be a specific subsystem name, or 'All' to get
+%                       documentation for the entire hierarchy.
 %
 %       hasUpdates      Number indicating whether reads and writes in the same
 %                       subsystem are kept separate (0), or combined and listed

@@ -34,8 +34,13 @@ function [inportGoto, inportFrom, gotoLength] = InportSig(address, inports)
         end
 
         % Add Goto block
-        Goto = add_block('built-in/Goto', [address '/GotoIn' pSID], ...
-            'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
+        try
+            Goto = add_block('built-in/Goto', [address '/GotoIn' pSID], ...
+                'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
+        catch
+            error('Signature blocks already exist in this subsystem.')
+        end
+            
         GotoName = GotoTag;
         inportGoto{end + 1} = getfullname(Goto);
         % No need to move now, because the repositioning functions take
@@ -43,8 +48,12 @@ function [inportGoto, inportFrom, gotoLength] = InportSig(address, inports)
         %set_param(Goto, 'Position', get_param(inports{z}, 'Position'));
 
         % Add From block
-        From = add_block('built-in/From', [address '/FromIn' pSID], ...
-            'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
+        try
+            From = add_block('built-in/From', [address '/FromIn' pSID], ...
+                'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
+        catch
+            error('Signature blocks already exist in this subsystem.')
+        end
         FromName = ['FromIn' pSID];
         inportFrom{end + 1} = getfullname(From);
         set_param(From, 'Position', get_param(inports{z}, 'Position')); % Move to same position as Inport it is replacing
