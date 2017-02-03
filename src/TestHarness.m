@@ -11,7 +11,7 @@ function TestHarness(system)
 %       N/A
 
     % Constants:
-    FONT_SIZE = getSignatureConfig('heading_size', 14); % Heading font size
+    FONT_SIZE = str2num(getSignatureConfig('heading_size', 14)) + 1; % Heading font size
 
     addedBlocks = {};
     dataTypes = {};

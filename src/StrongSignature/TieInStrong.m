@@ -24,6 +24,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
 
     % Constants:
     FONT_SIZE = getSignatureConfig('heading_size', 14); % Heading font size
+    FONT_SIZE_LARGER = str2num(FONT_SIZE) + 1;
     Y_OFFSET = 25;  % Vertical spacing between signature sections
 
     % Elements in the signature being carried up from the signatures of lower levels
@@ -55,7 +56,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
         inGotoLength = 0;
         outGotoLength = 0;
         if ~isempty(Inports)
-            add_block('built-in/Note', [address '/Inputs'], 'Position', [90 15], 'FontSize', FONT_SIZE);     
+            add_block('built-in/Note', [address '/Inputs'], 'Position', [90 15], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');     
             [InportGoto, InportFrom, inGotoLength] = InportSig(address, Inports);
         end
         if ~isempty(Outports)
@@ -153,7 +154,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
 
         % Add updates (if enabled)
         if hasUpdates && ~isempty(updateBlocks(~cellfun('isempty', updateBlocks)))
-            add_block('built-in/Note', [address '/Updates'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            add_block('built-in/Note', [address '/Updates'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionImplicits(verticalOffset, updateBlocks, gotoLength, 0);
             verticalOffset = verticalOffset + Y_OFFSET;
@@ -161,7 +162,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
 
         % Add Outports
         if ~isempty(Outports(~cellfun('isempty', Outports)))
-            add_block('built-in/Note', [address '/Outputs'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            add_block('built-in/Note', [address '/Outputs'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionOutportSig(address, OutportGoto, OutportFrom, Outports, gotoLength, verticalOffset);
             verticalOffset = verticalOffset + Y_OFFSET;
@@ -191,11 +192,11 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
             verticalOffset = verticalOffset + Y_OFFSET;
         end
 
-        % Add Data Store declarations (i.e. Memory blocks)
+        % Add declarations (i.e. Data Store Memory or Goto Tag Visibility)
         dataDex = find_system(address, 'SearchDepth', 1, 'BlockType', 'DataStoreMemory');
         tagDex = find_system(address, 'SearchDepth', 1, 'BlockType', 'GotoTagVisibility');
         if ~isempty(dataDex(~cellfun('isempty', dataDex))) || ~isempty(tagDex(~cellfun('isempty', tagDex)))
-            add_block('built-in/Note', [address '/Declarations'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            add_block('built-in/Note', [address '/Declarations'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = MoveDataStoreDex(address, verticalOffset);
         end
