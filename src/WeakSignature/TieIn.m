@@ -34,8 +34,9 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
 %       N/A
 
     % Constants: 
-    FONT_SIZE = getSignatureConfig('heading_size', 14); % Heading font size
-    FONT_SIZE_LARGER = str2num(FONT_SIZE) + 1;
+    FONT_SIZE = getSignatureConfig('heading_size', 12); % Heading font size
+    FONT_SIZE_LARGER = str2num(FONT_SIZE) + 2;
+    X_OFFSET_HEADING = 110;
     Y_OFFSET = 25;  % Vertical spacing between signature sections
     
     verticalOffset = 30;
@@ -58,7 +59,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
         inGotoLength = 0;
         outGotoLength = 0;
         if ~isempty(Inports)
-            add_block('built-in/Note', [address '/Inputs'], 'Position', [90 10], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');
+            add_block('built-in/Note', [address '/Inputs'], 'Position', [X_OFFSET_HEADING 10], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');
             [InportGoto, InportFrom, inGotoLength] = InportSig(address, Inports);
         end
         if ~isempty(Outports)
@@ -98,7 +99,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
 
         % Add Data Store Reads
         if ~isempty(dataStoreReads(~cellfun('isempty', dataStoreReads)))
-            add_block('built-in/Note', [address '/Data Store Reads'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            add_block('built-in/Note', [address '/Data Store Reads'], 'Position', [X_OFFSET_HEADING verticalOffset + 20], 'FontSize', FONT_SIZE);
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionImplicits(verticalOffset, dataStoreReads, gotoLength, 1);
             verticalOffset = verticalOffset + Y_OFFSET;
@@ -106,7 +107,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
 
         % Add scoped Froms
         if ~isempty(fromBlocks(~cellfun('isempty', fromBlocks)))
-            add_block('built-in/Note', [address '/Scoped Froms'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            add_block('built-in/Note', [address '/Scoped Froms'], 'Position', [X_OFFSET_HEADING verticalOffset + 20], 'FontSize', FONT_SIZE);
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionImplicits(verticalOffset, fromBlocks, gotoLength, 1);
             verticalOffset = verticalOffset + Y_OFFSET;
@@ -114,7 +115,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
 
         % Add global Froms
         if ~isempty(globalFroms(~cellfun('isempty', globalFroms)))
-            add_block('built-in/Note', [address '/Global Froms'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            add_block('built-in/Note', [address '/Global Froms'], 'Position', [X_OFFSET_HEADING verticalOffset + 20], 'FontSize', FONT_SIZE);
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = AddGlobals(address, verticalOffset, globalFroms, gotoLength, 0);
             verticalOffset = verticalOffset + Y_OFFSET;
@@ -122,7 +123,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
 
         % Add updates (if enabled)
         if hasUpdates && ~isempty(updateBlocks(~cellfun('isempty', updateBlocks)))
-            add_block('built-in/Note', [address '/Updates'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');
+            add_block('built-in/Note', [address '/Updates'], 'Position', [X_OFFSET_HEADING verticalOffset + 20], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionImplicits(verticalOffset, updateBlocks, gotoLength, 0);
             verticalOffset = verticalOffset + Y_OFFSET;
@@ -130,7 +131,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
 
         % Add Outports
         if ~isempty(Outports(~cellfun('isempty', Outports)))
-            add_block('built-in/Note', [address '/Outputs'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');
+            add_block('built-in/Note', [address '/Outputs'], 'Position', [X_OFFSET_HEADING verticalOffset + 20], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionOutportSig(address, OutportGoto, OutportFrom, Outports, gotoLength, verticalOffset);
             verticalOffset = verticalOffset + Y_OFFSET;
@@ -138,7 +139,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
 
         % Add Data Store Writes
         if ~isempty(dataStoreWrites(~cellfun('isempty', dataStoreWrites)))
-            add_block('built-in/Note', [address '/Data Store Writes'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            add_block('built-in/Note', [address '/Data Store Writes'], 'Position', [X_OFFSET_HEADING verticalOffset + 20], 'FontSize', FONT_SIZE);
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionImplicits(verticalOffset, dataStoreWrites, gotoLength, 0);
             verticalOffset = verticalOffset + Y_OFFSET;
@@ -146,7 +147,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
 
         % Add scoped Gotos
         if ~isempty(gotoBlocks(~cellfun('isempty', gotoBlocks)))
-            add_block('built-in/Note', [address '/Scoped Gotos'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            add_block('built-in/Note', [address '/Scoped Gotos'], 'Position', [X_OFFSET_HEADING verticalOffset + 20], 'FontSize', FONT_SIZE);
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionImplicits(verticalOffset, gotoBlocks, gotoLength, 0);
             verticalOffset = verticalOffset + Y_OFFSET;
@@ -154,7 +155,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
 
         % Add global Gotos
         if ~isempty(globalGotosx(~cellfun('isempty', globalGotosx)))
-            add_block('built-in/Note', [address '/Global Gotos'], 'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE);
+            add_block('built-in/Note', [address '/Global Gotos'], 'Position', [X_OFFSET_HEADING verticalOffset + 20], 'FontSize', FONT_SIZE);
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = AddGlobals(address, verticalOffset, globalGotosx, gotoLength, 1);
             verticalOffset = verticalOffset + Y_OFFSET;
@@ -165,7 +166,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
         tagDex = find_system(address, 'SearchDepth', 1, 'BlockType', 'GotoTagVisibility');
         if ~isempty(dataDex(~cellfun('isempty', dataDex))) || ~isempty(tagDex(~cellfun('isempty', tagDex)))
             add_block('built-in/Note', [address '/Declarations'], ...
-                'Position', [90 verticalOffset + 20], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');
+                'Position', [X_OFFSET_HEADING verticalOffset + 20], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = MoveDataStoreDex(address, verticalOffset);
         end

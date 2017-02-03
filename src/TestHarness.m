@@ -11,7 +11,8 @@ function TestHarness(system)
 %       N/A
 
     % Constants:
-    FONT_SIZE = str2num(getSignatureConfig('heading_size', 14)) + 1; % Heading font size
+    FONT_SIZE = str2num(getSignatureConfig('heading_size', 12)); % Heading font size
+    X_OFFSET_HEADING = 110;
 
     addedBlocks = {};
     dataTypes = {};
@@ -263,7 +264,7 @@ function TestHarness(system)
 
         % Add heading for test harness specific blocks
         add_block('built-in/Note', [system '/Inputs for Harness'], ...
-            'Position', [90 startTop], 'FontSize', FONT_SIZE)
+            'Position', [X_OFFSET_HEADING startTop], 'FontSize', FONT_SIZE, 'FontWeight', 'Bold')
 
         startTop = startTop + 30;
 

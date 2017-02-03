@@ -17,4 +17,4 @@ gotofrom_bgcolor: green
 # Acceptable parameter values are:
 #	1 - 25
 #
-heading_size: 14
+heading_size: 12
