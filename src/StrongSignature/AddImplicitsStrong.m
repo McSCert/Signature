@@ -375,7 +375,10 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks,...
     % the model diagram, with a corresponding terminator, and adds each
     % block to its corresponding matrix.
     for by = 1:length(dataStoreWriteAdd)
-        if ~isKey(mapObjDU, dataStoreWriteAdd{by})          
+        if ~isKey(mapObjDU, dataStoreWriteAdd{by})
+            mapObjDW(dataStoreWriteAdd{by}) = true;
+            mapObjAddedBlock(getfullname(dataStore)) = true;
+            
             if addSignatureAtThisLevel
                 dataStore = add_block('built-in/dataStoreRead', [address '/dataStoreWriteAdd' num2str(num)], ...
                     'DataStoreName', dataStoreWriteAdd{by});
@@ -388,9 +391,6 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks,...
                 
                 dSWriteToRepo(end + 1) = dataStore;
                 dSWriteTermToRepo(end + 1) = terminator;
-                
-                mapObjDW(dataStoreWriteAdd{by}) = true;
-                mapObjAddedBlock(getfullname(dataStore)) = true;
             end
             num = num + 1;
             termnum = termnum + 1;
@@ -405,7 +405,11 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks,...
     % the model diagram, with a corresponding terminator, and adds each
     % block to its corresponding matrix.
     for bx = 1:length(dataStoreReadAdd)
-        if ~isKey(mapObjDU, dataStoreReadAdd{bx})          
+        if ~isKey(mapObjDU, dataStoreReadAdd{bx})
+            mapObjDR(dataStoreReadAdd{bx}) = true;
+            mapObjAddedBlock(getfullname(dataStore)) = true;
+            mapObjDR(DataStoreName) = true;
+            
             if addSignatureAtThisLevel
                 dataStore = add_block('built-in/dataStoreRead', [address '/dataStoreReadAdd' num2str(num)], ...
                     'DataStoreName', dataStoreReadAdd{bx});
@@ -418,10 +422,6 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks,...
                 
                 dSReadToRepo(end + 1) = dataStore;
                 dSReadTermToRepo(end + 1) = terminator;
-                
-                mapObjDR(dataStoreReadAdd{bx}) = true;
-                mapObjAddedBlock(getfullname(dataStore)) = true;
-                mapObjDR(DataStoreName) = true;
             end
             num = num + 1;
             termnum = termnum + 1;
@@ -436,7 +436,10 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks,...
     % corresponding terminator, and adds each block to its corresponding
     % matrix
     for bw = 1:length(updatesToAdd)
-        if strcmp(updatesToAdd{bw}.Type, 'DataStoreRead')           
+        if strcmp(updatesToAdd{bw}.Type, 'DataStoreRead')
+            mapObjAddedBlock(getfullname(dataStore)) = true;
+            mapObjDR(DataStoreName) = true;
+            
             if addSignatureAtThisLevel
                 dataStore = add_block('built-in/dataStoreRead', [address '/DataStoreUpdate' num2str(num)], ...
                     'DataStoreName', updatesToAdd{bw}.Name);
@@ -449,9 +452,6 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks,...
                 
                 updateToRepo(end + 1) = dataStore;
                 updateTermToRepo(end + 1) = terminator;
-                
-                mapObjAddedBlock(getfullname(dataStore)) = true;
-                mapObjDR(DataStoreName) = true;
             end
             num = num + 1;
             termnum = termnum + 1;

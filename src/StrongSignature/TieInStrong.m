@@ -25,7 +25,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     % Constants:
     FONT_SIZE = getSignatureConfig('heading_size', 12); % Heading font size
     FONT_SIZE_LARGER = str2num(FONT_SIZE) + 2;
-    X_OFFSET_HEADING = 110;
+    X_OFFSET_HEADING = 90;
     Y_OFFSET = 25;  % Vertical spacing between signature sections
 
     % Elements in the signature being carried up from the signatures of lower levels
