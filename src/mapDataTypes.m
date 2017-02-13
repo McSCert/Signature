@@ -150,7 +150,7 @@ function blockDataType = getBlockType(block, mapPrevBlocks, dataTypeMap)
     end
     
     if ~exist('blockDataType')
-        blockDataType = 'No type';
+        blockDataType = 'N/A';
     end
 end
 
