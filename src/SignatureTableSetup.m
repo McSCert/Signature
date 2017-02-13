@@ -31,7 +31,7 @@ function [table, title] = SignatureTableSetup(system, dataTypeMap, getUnit, tabl
         case 'Updates'
             title = 'Updates';
             blockType = 'DataStoreRead'; % Assumes updates can only occur with data stores
-        case 'GotoTagVisibilities';
+        case 'GotoTagVisibilities'
             title = 'Goto Tag Declarations';
             blockType = 'GotoTagVisibility';
         case 'DataStoreMemories'
@@ -67,7 +67,12 @@ function blockInfo = findBlockInfo(block, name, dataTypeMap, getUnit)
 
     % Find appropriate values for the row entries
     name = strrep({name}, sprintf('\n'), ' ');
-    unit = getUnit(block);
+    try
+        unit = getUnit(block);
+    catch
+        unit = {'N/A'};
+    end
+    
     try
         min = get_param(block, 'OutMin');
         max = get_param(block, 'OutMax');
@@ -80,13 +85,17 @@ function blockInfo = findBlockInfo(block, name, dataTypeMap, getUnit)
     try
         datatype = dataTypeMap(char(block));
     catch
-        datatype = {''};
+        datatype = {'N/A'};
     end
 
-    description = {get_param(block, 'Description')};
-    % if strcmp(description,'')
-    %     description = {'N/A'};
-    % end
+    try
+        description = {get_param(block, 'Description')};
+        if strcmp(description,'')
+            description = {'N/A'};
+        end
+    catch
+        description = {'N/A'};
+    end
 
     % Set ith row entries
     blockInfo = [name, unit, min, max, datatype, description];

@@ -162,7 +162,8 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         chapter = [get_param(address, 'Name'), ' ', 'Signature'];
 
         % Save workspace variables because using the 'report' function
-        % later on will overwrite them
+        % later on will overwrite them (these are the variables which will
+        % be created/used in Signature.rpt)
         varsForReport = {'filename', 'dataTypeMap', 'address', 'signatures', ...
             'chapter', 'getUnit', 'k', 'includeTableDefaults', 'removeInterfaceCols', ...
             'sigParams', 'tableSections', 'index', 'table', 'tableTitle', 'sigParam'};
@@ -251,13 +252,17 @@ end
 function type = getBlockDataType(address, dataTypeMap, blockID, blockType)
     try
         [block, ~] = getBlockPath(address, blockID, blockType);
-        if isKey(dataTypeMap,block)
-            type = dataTypeMap(block);
+        if strcmp(block,'')
+            type = 'N/A';
         else
-            type = '';
+            if isKey(dataTypeMap,block)
+                type = dataTypeMap(block);
+            else
+                type = 'N/A';
+            end
         end
     catch
-        type = '';
+        type = 'N/A';
     end
 end
 
