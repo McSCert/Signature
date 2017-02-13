@@ -9,8 +9,11 @@ function [blockPath, isTag] = getBlockPath(sys, blockID, blockType)
 %       blockType   The block type.
 %
 %   Outputs:
-%       isTag       True if the block had a tag parameter, such as GotoTag 
-%                   or DataStoreName.
+%       blockPath   Block name (including path) of the block with the given
+%                   blockID and blockType within sys, returns '' if block 
+%                   not found. 
+%       isTag       Logical, true if the block had a tag parameter, such as
+%                   GotoTag or DataStoreName, else false.
 
     isTag = true;
     switch blockType
@@ -36,7 +39,7 @@ function [blockPath, isTag] = getBlockPath(sys, blockID, blockType)
             % Get block path
             % Could have also done: block = [sys '/' blockID];
             blockPath = find_system(sys, 'SearchDepth', 1, 'Name', blockID);
-            blockPath = blockPath{1};
+            getBlock;
             isTag = false;
     end
 
@@ -44,7 +47,8 @@ function [blockPath, isTag] = getBlockPath(sys, blockID, blockType)
         if ~isempty(blockPath)
             blockPath = blockPath{1};
         else
-            error('Error. \nThere should be at least one %s in the %s system.', blockType, sys);
+            blockPath = '';
+%             error('Error. \nThere should be at least one %s in the %s system.', blockType, sys); %Not the case for WeakSignature
         end
     end
 end
