@@ -171,7 +171,7 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         OverwriteBaseVars(varsForReport); % Replace values in base workspace with values from this workspace
 
         % Generate the report as a .doc file, using the Signature.rpt template
-        report('Signature', '-fdoc');
+        report('Signature', '-fdoc', '-quiet');
 
         % Restore the workspace
         LoadBaseVars(varsForReport, tempVarsFromBase);
