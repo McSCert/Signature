@@ -14,10 +14,10 @@ function yOffsetFinal = RepositionOutportSig(address, outGo, outFrom, ...
 %		yOffsetFinal Point in the y-axis to start repositioning blocks next time.
 
     % To make appropriately sized Goto/Froms
-    tagLength = 11 * gotoLength;
+    tagLength = 14 * gotoLength;
     
     % For starting the signature
-    XMARGIN = 30; 
+    XMARGIN = 50; 
     
 	% Reposition Froms
     for i = 1:length(outFrom)

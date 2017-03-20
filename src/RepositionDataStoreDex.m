@@ -1,5 +1,5 @@
-function yOffsetFinal = MoveDataStoreDex(address, yOffset)
-% MOVEDATASTOREDEX Move Data Store Memory blocks to the left side of the signature.
+function yOffsetFinal = RepositionDataStoreDex(address, yOffset)
+% REPOSITIONDATASTOREDEX Move Data Store Memory blocks to the left side of the signature.
 %
 %   Inputs:
 %       address     Simulink model name.
@@ -9,17 +9,19 @@ function yOffsetFinal = MoveDataStoreDex(address, yOffset)
 %       yOffsetFinal Point in the y-axis to start repositioning blocks next time.
 
     % For starting the signature
-    XMARGIN = 30; 
-    MIN_LENGTH = 15;
+    XMARGIN = 50; 
+    
+    % Block sizes
+    blkLength_factor = 8;
     
 	allBlocks = find_system(address, 'SearchDepth', 1);
 	allBlocks = setdiff(allBlocks, address);
     
 	for z = 1:length(allBlocks)
 		BlockType = get_param(allBlocks{z}, 'BlockType');
-		if strcmp(BlockType, 'DataStoreMemory')
+        if strcmp(BlockType, 'DataStoreMemory')
 			dsName   = get_param(allBlocks{z}, 'DataStoreName');
-			dsLength = 11 * length(dsName) + MIN_LENGTH;
+			dsLength = blkLength_factor * length(dsName);
             
 			dsPos = get_param(allBlocks{z}, 'Position');
 			dsPos(1) = XMARGIN;
@@ -34,7 +36,7 @@ function yOffsetFinal = MoveDataStoreDex(address, yOffset)
             
         elseif strcmp(BlockType, 'GotoTagVisibility')
             tagName   = get_param(allBlocks{z}, 'GotoTag');
-			tagLength = 11 * length(tagName) + MIN_LENGTH;
+			tagLength = blkLength_factor * length(tagName);
             
 			tagPos = get_param(allBlocks{z}, 'Position');
 			tagPos(1) = XMARGIN;

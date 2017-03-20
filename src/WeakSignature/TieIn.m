@@ -36,7 +36,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
     % Constants: 
     FONT_SIZE = getSignatureConfig('heading_size', 12); % Heading font size
     FONT_SIZE_LARGER = str2num(FONT_SIZE) + 2;
-    X_OFFSET_HEADING = 90;
+    X_OFFSET_HEADING = 150;
     Y_OFFSET = 25;  % Vertical spacing between signature sections
     
     verticalOffset = 30;
@@ -53,7 +53,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
     if addSignatureAtThisLevel
         
         % Move all blocks to make room for the Signature
-        moveAll(address, 300, 0);
+        moveAll(address, 350, 0);
 
         % Add blocks to model
         inGotoLength = 0;
@@ -168,7 +168,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
             add_block('built-in/Note', [address '/Declarations'], ...
                 'Position', [X_OFFSET_HEADING verticalOffset + 20], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');
             verticalOffset = verticalOffset + Y_OFFSET;
-            verticalOffset = MoveDataStoreDex(address, verticalOffset);
+            verticalOffset = RepositionDataStoreDex(address, verticalOffset);
         end
     end
 

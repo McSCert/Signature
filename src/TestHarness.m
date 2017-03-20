@@ -13,7 +13,7 @@ function TestHarness(system)
     % Constants:
     FONT_SIZE = str2num(getSignatureConfig('heading_size', 12)); % Heading font size
     FONT_SIZE_LARGER = FONT_SIZE + 2;
-    X_OFFSET_HEADING = 80;
+    X_OFFSET_HEADING = 150;
 
     addedBlocks = {};
     dataTypes = {};
@@ -261,7 +261,7 @@ function TestHarness(system)
 
         % Resposition new test harness blocks
         startTop = 10;
-        startLeft = 30;
+        startLeft = 50;
 
         % Add heading for test harness specific blocks
         add_block('built-in/Note', [system '/Inputs for Harness'], ...
@@ -354,7 +354,7 @@ function resizeGotoFrom(block)
 %
 %   Outputs:
 %       N/A
-    resizeBlock(block, 90, 14);
+    resizeBlock(block, 125, 14);
 end
 
 function resizeInOutPort(block)

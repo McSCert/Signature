@@ -11,6 +11,12 @@ function yOffsetFinal = AddGlobals(address, yOffset, globals, gotoLength, addGot
 %	Outputs:
 %	  yOffsetFinal    Point in the y-axis to start repositioning blocks next time.
 
+    % Where to start the signature
+    XMARGIN = 50; 
+    
+    % Block sizes
+    blkLength_factor = 14;
+
     num = 0;        % Goto/From number
     termnum = 0;    % Terminator number
 
@@ -30,10 +36,10 @@ function yOffsetFinal = AddGlobals(address, yOffset, globals, gotoLength, addGot
             set_param(Terminator, 'Orientation', 'left');
 
             % Reposition Terminator
-            tPoints =  get_param(Terminator, 'Position');
-            tPoints(1) = 20;
+            tPoints = get_param(Terminator, 'Position');
+            tPoints(1) = XMARGIN;
             tPoints(2) = yOffset + 20;
-            tPoints(3) = 20 + 30;
+            tPoints(3) = XMARGIN + 30;
             tPoints(4) = tPoints(2) + 14;
             set_param(Terminator, 'position', tPoints)
 
@@ -41,7 +47,7 @@ function yOffsetFinal = AddGlobals(address, yOffset, globals, gotoLength, addGot
             fPoints = get_param(From, 'Position');
             fPoints(1) = tPoints(3) + 50;
             fPoints(2) = tPoints(2);
-            fPoints(3) = fPoints(1) + 10*gotoLength + 20;
+            fPoints(3) = fPoints(1) + (blkLength_factor * gotoLength); 
             fPoints(4) = fPoints(2) + 14;
             set_param(From, 'position', fPoints);
 
@@ -66,15 +72,15 @@ function yOffsetFinal = AddGlobals(address, yOffset, globals, gotoLength, addGot
 
             % Reposition From
             fPoints =  get_param(From, 'Position');
-            fPoints(1) = 20;
+            fPoints(1) = XMARGIN;
             fPoints(2) = yOffset + 20;
-            fPoints(3) = 10*gotoLength + 20;
+            fPoints(3) = XMARGIN + (blkLength_factor * gotoLength);
             fPoints(4) = fPoints(2) + 14;
             set_param(From, 'position', fPoints);
 
             % Reposition Terminator
             tPoints = get_param(Terminator, 'position');
-            tPoints(1) = 10*gotoLength + 20 + 50;
+            tPoints(1) = fPoints(3) + 50;
             tPoints(2) = fPoints(2);
             tPoints(3) = tPoints(1) + 30;
             tPoints(4) = tPoints(2) + 14;

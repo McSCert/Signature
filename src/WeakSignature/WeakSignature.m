@@ -75,7 +75,7 @@ function [metrics signatures] = WeakSignature(address, exportType, ...
     end
     % 1b) Check that address is the root system
     % i.e. the user isn't passing a subsystem
-    try     
+    try
        assert(strcmp(get_param(address, 'Type'), 'block_diagram'));
     catch ME
         if strcmp(ME.identifier, 'MATLAB:assert:failed') || ...
@@ -98,7 +98,7 @@ function [metrics signatures] = WeakSignature(address, exportType, ...
             return
         end
     end
-    
+
     % 1d) Check that model doesn't already have a signature
     try
         assert(isempty(regexp(bdroot(address), '.*(_WeakSig|_StrongSig).*', 'once')));
@@ -137,7 +137,7 @@ function [metrics signatures] = WeakSignature(address, exportType, ...
         end
     end
 
-    % 4) Check that sys is an exisiting Subsystem 
+    % 4) Check that sys is an exisiting Subsystem
     if ~strcmp(sys, 'All')
         try
             find_system(sys, 'SearchDepth', 0, 'BlockType', 'SubSystem');
@@ -158,7 +158,7 @@ function [metrics signatures] = WeakSignature(address, exportType, ...
                 ' Invalid argument: docFormat. Valid input is 0, 1, or 2.'])
             return
         end
-    end  
+    end
     
     if exportType % If producing documentation
         dataTypeMap = mapDataTypes(address);
@@ -181,7 +181,11 @@ function [metrics signatures] = WeakSignature(address, exportType, ...
         set_param(sigModel, 'Lock', 'off');
         
         % Update to new model name
-        sys = strrep(sys, address, sigModel);
+        if ~strcmp(sys, 'All')
+            i = strfind(sys, address);
+            i = i(1);
+            sys =  [sys(1:i-1), sigModel, sys(i+length(address):end)]; % Replace first occurance
+        end
         address = sigModel;
 
         % Generate signature
