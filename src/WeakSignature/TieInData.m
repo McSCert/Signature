@@ -46,7 +46,8 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
 %                       as an update (1).
 %
 %       docFormat       Number indicating which docmentation type to
-%                       generate: .txt(0), .tex(1), or .doc(2).
+%                       generate: no doc(0), .txt(1), .tex(2), .doc(3), 
+%                       else no doc.
 %
 %       dataTypeMap     Map of blocks and their corresponding data type.
 %

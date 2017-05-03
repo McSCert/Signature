@@ -20,14 +20,15 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
 %                       same subsystem are kept separate (0), or combined and 
 %                       listed as an update (1).
 %       docFormat       Number indicating which docmentation type to
-%                       generate: .txt(0), .tex(1), or .doc(2).
+%                       generate: no doc(0), .txt(1), .tex(2), .doc(3), 
+%                       else no doc.
 %       dataTypeMap     Map of blocks and their corresponding data type.
 %       signatures      Struct array of the signatures of each subsystem.
 %
 %   Outputs:
 %       N/A
 
-    if docFormat == 0 % .txt
+    if docFormat == 1 % .txt
         % Create a valid file name based on the current subsystem name
         filename = [address '.txt'];
         filename = strrep(filename, '/', '_');
@@ -66,7 +67,7 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         printTxtSection(address, file, dataTypeMap, '', dsDex, 'DataStoreMemory');
         fclose(file);
 
-    elseif docFormat == 1 % .tex
+    elseif docFormat == 2 % .tex
         % Create a valid file name based on the current subsystem name
         filename = [address '.tex'];
         filename = strrep(filename, '/', '_');
@@ -150,7 +151,7 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
         fprintf(file, '%s\n', table);
         fclose(file);
 
-    elseif docFormat == 2 % .doc
+    elseif docFormat == 3 % .doc
         % Create a valid file name based on the current subsystem name
         filename = address;
         filename = strrep(filename, '/', '_');
@@ -175,6 +176,7 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
 
         % Restore the workspace
         LoadBaseVars(varsForReport, tempVarsFromBase);
+    %else %produce no document
     end
 end
 

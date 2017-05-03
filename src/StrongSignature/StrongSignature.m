@@ -19,8 +19,8 @@ function [metrics signatures] = StrongSignature(address, exportType, ...
 %                   It can be a specific subsystem name, or 'All' to get
 %                   documentation for the entire hierarchy.
 %
-%       docFormat   Number indicating which docmentation type to
-%                   generate: .txt(0), .tex(1), or .doc(2).
+%       docFormat   Number indicating which docmentation type to generate: 
+%                   no doc(0), .txt(1), .tex(2), .doc(3), else no doc.
 %
 %   Outputs:
 %       metrics     Cell array listing the system and its subsystems, with
@@ -105,7 +105,8 @@ function [metrics signatures] = StrongSignature(address, exportType, ...
 
     % 2) Check that exportType is in range
     try
-        assert((exportType == [0,1]))
+        assert(any(exportType == [0,1]))
+        assert(length(exportType) == 1)
     catch ME
          if strcmp(ME.identifier, 'MATLAB:assert:failed') || ...
                 strcmp(ME.identifier, 'MATLAB:assertion:failed')
@@ -118,6 +119,7 @@ function [metrics signatures] = StrongSignature(address, exportType, ...
     % 3) Check that hasUpdates is in range
     try
         assert(any(hasUpdates == [0,1]))
+        assert(length(hasUpdates) == 1)
     catch ME
          if strcmp(ME.identifier, 'MATLAB:assert:failed') || ...
                 strcmp(ME.identifier, 'MATLAB:assertion:failed')
@@ -140,7 +142,9 @@ function [metrics signatures] = StrongSignature(address, exportType, ...
 
     % 5) Check that docFormat is in range
     try
-        assert(any(docFormat == [0,1,2]))
+        assert(isnumeric(docFormat))
+        assert(length(docFormat) == 1)
+        %assert(any(docFormat == [0,1,2]))
     catch ME
          if strcmp(ME.identifier, 'MATLAB:assert:failed') || ...
                 strcmp(ME.identifier, 'MATLAB:assertion:failed')
