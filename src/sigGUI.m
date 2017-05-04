@@ -91,9 +91,10 @@ end
 
 % Get all the values of the group's children as a vector.
 % Flip it so it matches the GUI order. Find the index of the radio
-% button that is selected (value is nonzero). Minus 1 becuase the function 
-% takes 0,1,2,3 instead of 1,2,3,4.
-docType = find(flipud(cell2mat(get(get(handles.group_DocType, 'Children'), 'Value')))) - 1;
+% button that is selected (value is nonzero). Minus 1 would be needed
+% becuase the function normally takes 0,1,2,3 instead of 1,2,3,4, but the
+% no doc button is the forth and 4 is also a valid value for no doc.
+docType = find(flipud(cell2mat(get(get(handles.group_DocType, 'Children'), 'Value'))));% - 1;
 
 if get(handles.radio_strongsig, 'Value')
     StrongSignature(address, exportType, hasUpdates, sys, docType);
