@@ -91,10 +91,9 @@ end
 
 % Get all the values of the group's children as a vector.
 % Flip it so it matches the GUI order. Find the index of the radio
-% button that is selected (value is nonzero). Minus 1 would be needed
-% becuase the function normally takes 0,1,2,3 instead of 1,2,3,4, but the
-% no doc button is the forth and 4 is also a valid value for no doc.
-docType = find(flipud(cell2mat(get(get(handles.group_DocType, 'Children'), 'Value'))));% - 1;
+% button that is selected (value is nonzero). This gives 1,2,3 which
+% matches with the signature functions.
+docType = find(flipud(cell2mat(get(get(handles.group_DocType, 'Children'), 'Value'))));
 
 if get(handles.radio_strongsig, 'Value')
     StrongSignature(address, exportType, hasUpdates, sys, docType);
@@ -122,13 +121,11 @@ function group_ExportAs_SelectionChangeFcn(hObject, eventdata, handles)
 % Enable/disable Documentation Type radio buttons based on whether or not
 % the user wants the signature in the model or as documentation
 if get(handles.radio_document, 'Value')
-    set(handles.radio_no_doc, 'Enable', 'on');
     set(handles.radio_txt, 'Enable', 'on');
     set(handles.radio_tex, 'Enable', 'on');
     set(handles.radio_doc, 'Enable', 'on');
 
 else
-    set(handles.radio_no_doc, 'Enable', 'off');
     set(handles.radio_txt, 'Enable', 'off');
     set(handles.radio_tex, 'Enable', 'off');
     set(handles.radio_doc, 'Enable', 'off');
