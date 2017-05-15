@@ -13,7 +13,7 @@ function yOffsetFinal = RepositionInportSig(address, inGo, inFrom, ...
 %       yOffsetFinal Point in the y-axis to start repositioning blocks next time.
 
     % Where to start the signature
-    XMARGIN = 50; 
+    XMARGIN = 20; 
     yoffset = 30;
     
     % To make appropriately sized Goto/Froms

@@ -9,7 +9,7 @@ function yOffsetFinal = RepositionDataStoreDex(address, yOffset)
 %       yOffsetFinal Point in the y-axis to start repositioning blocks next time.
 
     % For starting the signature
-    XMARGIN = 50; 
+    XMARGIN = 20; 
     
     % Block sizes
     blkLength_factor = 8;

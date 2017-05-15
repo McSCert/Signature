@@ -17,7 +17,7 @@ function yOffsetFinal = RepositionOutportSig(address, outGo, outFrom, ...
     tagLength = 14 * gotoLength;
     
     % For starting the signature
-    XMARGIN = 50; 
+    XMARGIN = 20; 
     
 	% Reposition Froms
     for i = 1:length(outFrom)
