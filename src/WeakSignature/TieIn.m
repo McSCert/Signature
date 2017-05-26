@@ -36,7 +36,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
     % Constants: 
     FONT_SIZE = getSignatureConfig('heading_size', 12); % Heading font size
     FONT_SIZE_LARGER = str2num(FONT_SIZE) + 2;
-    X_OFFSET_HEADING = 150;
+    X_OFFSET_HEADING = 75;
     Y_OFFSET = 25;  % Vertical spacing between signature sections
     
     verticalOffset = 30;
