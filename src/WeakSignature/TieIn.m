@@ -43,6 +43,10 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
     gotoLength = 15;
     addSignatureAtThisLevel = strcmp(sys, 'All') || strcmp(sys, address);
     
+    % Defining containers for moving blocks over
+    dontMoveNote = {};
+    dontMoveBlocks = [];
+    
     % Get signature for Inports
     Inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');
     % Get signature for Outports
@@ -51,9 +55,6 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
     InportGoto = {};
     OutportGoto = {}; 
     if addSignatureAtThisLevel
-        
-        % Move all blocks to make room for the Signature
-        moveAll(address, 350, 0);
 
         % Add blocks to model
         inGotoLength = 0;
@@ -61,9 +62,17 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
         if ~isempty(Inports)
             add_block('built-in/Note', [address '/Inputs'], 'Position', [X_OFFSET_HEADING 10], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');
             [InportGoto, InportFrom, inGotoLength] = InportSig(address, Inports);
+            for i = 1:length(Inports)
+                dontMoveBlocks(end+1) = get_param(Inports{i}, 'Handle');
+                dontMoveBlocks(end+1) = get_param(InportGoto{i}, 'Handle');
+            end
         end
         if ~isempty(Outports)
             [OutportGoto, OutportFrom, outGotoLength] = OutportSig(address, Outports);
+            for i = 1:length(Outports)
+                dontMoveBlocks(end+1) = get_param(Outports{i}, 'Handle');
+                dontMoveBlocks(end+1) = get_param(OutportFrom{i}, 'Handle');
+            end
         end
         
         % Organize blocks
@@ -103,6 +112,8 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionImplicits(verticalOffset, dataStoreReads, gotoLength, 1);
             verticalOffset = verticalOffset + Y_OFFSET;
+            dontMoveBlocks = [dontMoveBlocks dataStoreReads{1}];
+            dontMoveBlocks = [dontMoveBlocks dataStoreReads{2}];
         end
 
         % Add scoped Froms
@@ -111,6 +122,8 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionImplicits(verticalOffset, fromBlocks, gotoLength, 1);
             verticalOffset = verticalOffset + Y_OFFSET;
+            dontMoveBlocks = [dontMoveBlocks fromBlocks{1}];
+            dontMoveBlocks = [dontMoveBlocks fromBlocks{2}];
         end
 
         % Add global Froms
@@ -119,6 +132,8 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = AddGlobals(address, verticalOffset, globalFroms, gotoLength, 0);
             verticalOffset = verticalOffset + Y_OFFSET;
+            dontMoveBlocks = [dontMoveBlocks globalFroms{1}];
+            dontMoveBlocks = [dontMoveBlocks globalFroms{2}];
         end
 
         % Add updates (if enabled)
@@ -127,6 +142,8 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionImplicits(verticalOffset, updateBlocks, gotoLength, 0);
             verticalOffset = verticalOffset + Y_OFFSET;
+            dontMoveBlocks = [dontMoveBlocks updateBlocks{1}];
+            dontMoveBlocks = [dontMoveBlocks updateBlocks{2}];
         end
 
         % Add Outports
@@ -143,6 +160,8 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionImplicits(verticalOffset, dataStoreWrites, gotoLength, 0);
             verticalOffset = verticalOffset + Y_OFFSET;
+            dontMoveBlocks = [dontMoveBlocks dataStoreWrites{1}];
+            dontMoveBlocks = [dontMoveBlocks dataStoreWrites{2}];
         end
 
         % Add scoped Gotos
@@ -151,6 +170,8 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionImplicits(verticalOffset, gotoBlocks, gotoLength, 0);
             verticalOffset = verticalOffset + Y_OFFSET;
+            dontMoveBlocks = [dontMoveBlocks gotoBlocks{1}];
+            dontMoveBlocks = [dontMoveBlocks gotoBlocks{2}];
         end
 
         % Add global Gotos
@@ -159,6 +180,8 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = AddGlobals(address, verticalOffset, globalGotosx, gotoLength, 1);
             verticalOffset = verticalOffset + Y_OFFSET;
+            dontMoveBlocks = [dontMoveBlocks globalGotos{1}];
+            dontMoveBlocks = [dontMoveBlocks globalGotos{2}];
         end
 
         % Add declarations (i.e. Data Store Memory or Goto Tag Visibility)
@@ -170,6 +193,18 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionDataStoreDex(address, verticalOffset);
         end
+        
+        for i = 1:length(dataDex)
+            dontMoveBlocks = [dontMoveBlocks get_param(dataDex{i}, 'Handle')];
+        end
+        
+        for i = 1:length(tagDex)
+            dontMoveBlocks = [dontMoveBlocks get_param(tagDex{i}, 'Handle')];
+        end
+        
+        % Move all blocks to make room for the Signature
+        moveUnselected(address, 100, 0, dontMoveBlocks, dontMoveNote);
+        
     end
 
     % Recurse into other subsystems
