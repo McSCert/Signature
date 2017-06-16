@@ -196,7 +196,7 @@ function TestHarness(system)
         end
         if ~isempty(writescheck2{i}) && (writescheck2{i}(1) == (length(system) + 2))
             % Read
-            dataStore = add_block('built-in/dataStoreRead', [system '/HarnessWrite' num2str(num)], ...
+            dataStore = add_block('built-in/dataStoreRead', [system '/HarnessRead' num2str(num)], ...
                 'DataStoreName', get_param(writes{i}, 'DataStoreName'));
             addedBlocks{end + 1} = dataStore;
             resizeDataStore(dataStore);
