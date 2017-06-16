@@ -43,11 +43,15 @@ function moveUnselected(address, xoffset, yshift, dontMoveBlocks, dontMoveNotes)
             xshift = max(xshift, pos(3));
         end
         
-        leftXMin = get_param(blocksToMove{1}, 'Position');
-        leftXMin = leftXMin(1);
-        for i = 1:length(blocksToMove)
-            pos = get_param(blocksToMove{i}, 'Position');
-            leftXMin = min(leftXMin, pos(1));
+        if ~isempty(blocksToMove)
+            leftXMin = get_param(blocksToMove{1}, 'Position');
+            leftXMin = leftXMin(1);
+            for i = 1:length(blocksToMove)
+                pos = get_param(blocksToMove{i}, 'Position');
+                leftXMin = min(leftXMin, pos(1));
+            end
+        else
+            leftXMin = xshift;
         end
         
         xshift = xshift - leftXMin;
