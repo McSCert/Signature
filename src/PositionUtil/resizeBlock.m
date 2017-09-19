@@ -1,5 +1,5 @@
 function resizeBlock(block, length, height)
-%% RESIZEBLOCK Resize a block to a specific length and height.
+% RESIZEBLOCK Resize a block to a specific length and height.
 %   Resizing is done w.r.t. the center of the block.
 %
 %   Inputs:

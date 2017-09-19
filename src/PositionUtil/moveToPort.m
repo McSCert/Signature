@@ -1,5 +1,5 @@
 function moveToPort(block, port, onLeft)
-%% MOVETOPORT Move a block to the right/left of a block port.
+% MOVETOPORT Move a block to the right/left of a block port.
 %
 %   Inputs:
 %       block   Handle of the block to be moved.

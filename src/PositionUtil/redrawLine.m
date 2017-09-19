@@ -1,5 +1,5 @@
 function redrawLine(address, block1, block2)
-%% REDRAWLINE Redraw a line between blocks.
+% REDRAWLINE Redraw a line between blocks.
 %   Note: Only works on non-branched lines and between blocks with at most
 %   one inport or outport for the start and end blocks.
 %

@@ -1,5 +1,4 @@
-function yOffsetFinal = RepositionInportSig(address, inGo, inFrom, ...
-    inports, gotoLength)
+function yOffsetFinal = RepositionInportSig(address, inGo, inFrom, inports, gotoLength)
 %   RESPOSITIONINPORTSIG Reposition Inports and Inport Goto/Froms. 
 %
 %   Inputs:
