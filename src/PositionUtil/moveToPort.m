@@ -1,17 +1,29 @@
-function moveToPort(block, port, onLeft)
+function moveToPort(block, port, varargin)
 % MOVETOPORT Move a block to the right/left of a block port.
 %
 %   Inputs:
-%       block   Handle of the block to be moved.
-%       port    Handle of the port to align the block with.
-%       onLeft  Boolean indicating if the block is to be on the right(0) or
-%               left(1) of the port.
+%       block       Handle of the block to be moved.
+%       port        Handle of the port to align the block with.
+%       varargin{1} Boolean indicating if the block is to be on the right(0) or
+%                   left(1) of the port.
+%       varargin{2} Block offset in pixels.
 %
 %   Outputs:
 %       N/A
 
-    BLOCK_OFFSET = 70;
-
+    % Default values
+    blockOffset = 70;
+    onLeft = 1;
+    
+    nVarargs = length(varargin);
+    if nVarargs >= 1
+        onLeft = varargin{1};
+    end
+    
+    if nVarargs >= 2
+        blockOffset = varargin{2};
+    end
+    
     % Get block's current position
     blockPosition = get_param(block, 'Position');
 
@@ -24,10 +36,10 @@ function moveToPort(block, port, onLeft)
 
     % Compute x dimensions
     if ~onLeft
-        newBlockPosition(1) = portPosition(1) + BLOCK_OFFSET; % Left
+        newBlockPosition(1) = portPosition(1) + blockOffset; % Left
         newBlockPosition(3) = newBlockPosition(1) + blockLength; % Right
     else
-        newBlockPosition(3) = portPosition(1) - BLOCK_OFFSET; % Right
+        newBlockPosition(3) = portPosition(1) - blockOffset; % Right
         newBlockPosition(1) = newBlockPosition(3) - blockLength; % Left
     end
 
