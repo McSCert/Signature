@@ -2,24 +2,21 @@ function [metrics signatures] = WeakSignature(address, exportType, ...
     hasUpdates, sys, docFormat)
 % WEAKSIGNATURE Generate documentation/model of a system's weak signature.
 %
-%   Function:
-%       WEAKSIGNATURE(address, exportType, hasUpdates, sys, docFormat)
-%
 %   Inputs:
-%       address     Simulink model name.
+%       address     Simulink model name or path.
 %
 %       exportType  Number indicating whether to export the signature as
-%                   a model(0) or as documentation (1).
+%                   a model(0) or as documentation(1).
 %
 %       hasUpdates  Number indicating whether reads and writes in the same
-%                   subsystem are kept separate (0), or combined and listed
-%                   as an update (1).
+%                   subsystem are kept separate(0), or combined and listed
+%                   as an update(1).
 %
 %       sys         Name of the system to generate the documentation for.
 %                   It can be a specific subsystem name, or 'All' to get
 %                   documentation for the entire hierarchy.
 %
-%       docFormat   Number indicating which docmentation type to generate: 
+%       docFormat   Number indicating which docmentation type to generate:
 %                   no doc(0), .txt(1), .tex(2), .doc(3), else no doc.
 %
 %   Outputs:
@@ -125,7 +122,7 @@ function [metrics signatures] = WeakSignature(address, exportType, ...
             return
         end
     end
-    
+
     % 3) Check that hasUpdates is in range
     try
         assert(any(hasUpdates == [0,1]))
@@ -163,7 +160,7 @@ function [metrics signatures] = WeakSignature(address, exportType, ...
             return
         end
     end
-    
+
     if exportType % If producing documentation
         dataTypeMap = mapDataTypes(address);
         [metrics, signatures] = ...
@@ -183,7 +180,7 @@ function [metrics signatures] = WeakSignature(address, exportType, ...
         save_system(address, sigModel, 'BreakAllLinks', true);
         open_system(sigModel);
         set_param(sigModel, 'Lock', 'off');
-        
+
         % Update to new model name
         if ~strcmp(sys, 'All')
             i = strfind(sys, address);
@@ -201,7 +198,7 @@ function [metrics signatures] = WeakSignature(address, exportType, ...
         % they will be left with a model named as a signature, but without
         % the signature
         save_system(address, sigModel);
-        
+
         if ~strcmp(sys, 'All')
             open_system(sys);
         end
