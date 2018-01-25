@@ -5,7 +5,7 @@ function [scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
 % ADDIMPLICITSSTRONGDATA Find implicit inputs/outputs for the signature.
 %
 %   Inputs:
-%       address         Simulink model name.
+%       address         Simulink model name or path.
 %
 %       scopeGotoAdd    List of all scoped Gotos being passed in to be
 %                       potentially added to the signature.
@@ -19,7 +19,7 @@ function [scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
 %       dataStoreReadAdd List of all Data Store Reads being passed in to be
 %                       potentially added to the signature.
 %
-%       hasUpdates      Number indicating whether updates are included in the 
+%       hasUpdates      Number indicating whether updates are included in the
 %                       signature.
 %
 %   Outputs:
@@ -47,9 +47,9 @@ function [scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
 
     % Hash maps keeping track of if a block of a certain name has already
     % been counted towards one or more of the lists
-	mapObjDR = containers.Map(); % Data Store Reads
+    mapObjDR = containers.Map(); % Data Store Reads
     mapObjDW = containers.Map(); % Data Store Writes
-	mapObjF = containers.Map();  % Froms
+    mapObjF = containers.Map();  % Froms
     mapObjG = containers.Map();  % Gotos
     mapObjU = containers.Map();  % Updates
     updatesToAdd = {};
@@ -217,12 +217,12 @@ function [scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
 
     % Avoid finding the same blocks more than once, by marking the hashmaps
     % for their respective blocktype
-	for bz = 1:length(scopeFromAdd)
-		mapObjF(scopeFromAdd{bz}) = true;
+    for bz = 1:length(scopeFromAdd)
+        mapObjF(scopeFromAdd{bz}) = true;
     end
 
     for bt = 1:length(scopeGotoAdd)
-		mapObjG(scopeGotoAdd{bt}) = true;
+        mapObjG(scopeGotoAdd{bt}) = true;
     end
 
     for by = 1:length(dataStoreWriteAdd)
@@ -239,16 +239,16 @@ function [scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
     end
 
     % Make a list of all blocks in the subsystem
-	allBlocks = find_system(address, 'SearchDepth', 1);
-	allBlocks = setdiff(allBlocks, address);
+    allBlocks = find_system(address, 'SearchDepth', 1);
+    allBlocks = setdiff(allBlocks, address);
 
     % For each of the blocks in said list, add Data Store Reads and writes,
     % and scoped Froms and Gotos to their respective lists to pass out, if
     % not already marked on the hashmap
-	for z = 1:length(allBlocks)
-		Blocktype = get_param(allBlocks{z}, 'Blocktype');
+    for z = 1:length(allBlocks)
+        Blocktype = get_param(allBlocks{z}, 'Blocktype');
 
-		switch Blocktype
+        switch Blocktype
             case 'Goto'
                 tagVisibility = get_param(allBlocks{z}, 'TagVisibility');
                 if strcmp(tagVisibility, 'scoped')
@@ -264,11 +264,11 @@ function [scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
                         globalGotosAdd{end + 1} = get_param(allBlocks{z}, 'GotoTag');
                     end
                 end
-			case 'From'
+            case 'From'
                 gotoConnected  =  get_param(allBlocks{z}, 'GotoBlock');
-				tagVisibility = get_param(gotoConnected.handle, 'tagVisibility');
-				if strcmp(tagVisibility, 'scoped')
-					GotoTag = get_param(allBlocks{z}, 'GotoTag');
+                tagVisibility = get_param(gotoConnected.handle, 'tagVisibility');
+                if strcmp(tagVisibility, 'scoped')
+                    GotoTag = get_param(allBlocks{z}, 'GotoTag');
                     if ~(isKey(mapObjF, GotoTag));
                         mapObjF(allBlocks{z}) = true;
                         scopeFromAdd{end + 1} = get_param(allBlocks{z}, 'GotoTag');
@@ -279,27 +279,28 @@ function [scopedGoto, scopedFrom, dataStoreW, dataStoreR, ...
                         mapObjF(allBlocks{z}) = true;
                         globalFromsAdd{end + 1} = get_param(allBlocks{z}, 'GotoTag');
                     end
-				end
-			case 'DataStoreRead'
-				DataStoreName = get_param(allBlocks{z}, 'DataStoreName');
- 				if ~(isKey(mapObjDR, DataStoreName))
+                end
+            case 'DataStoreRead'
+                DataStoreName = get_param(allBlocks{z}, 'DataStoreName');
+                 if ~(isKey(mapObjDR, DataStoreName))
                     mapObjDR(allBlocks{z}) = true;
                     dataStoreReadAdd{end + 1} = DataStoreName;
                 end
-			case 'DataStoreWrite'
-				DataStoreName = get_param(allBlocks{z}, 'DataStoreName');
-				if ~(isKey(mapObjDW, DataStoreName))
+            case 'DataStoreWrite'
+                DataStoreName = get_param(allBlocks{z}, 'DataStoreName');
+                if ~(isKey(mapObjDW, DataStoreName))
                     mapObjDW(allBlocks{z}) = true;
                     dataStoreWriteAdd{end + 1} = DataStoreName;
-				end
-		end
+                end
+        end
     end
 
     % Remove duplicates
-	scopedGoto  = unique(scopeGotoAdd);
-	scopedFrom  = unique(scopeFromAdd);
+    scopedGoto  = unique(scopeGotoAdd);
+    scopedFrom  = unique(scopeFromAdd);
     dataStoreR  = unique(dataStoreReadAdd);
-	dataStoreW  = unique(dataStoreWriteAdd);
+    dataStoreW  = unique(dataStoreWriteAdd);
     updates     = unique(updatesToAdd);
     globalGotos = unique(globalGotosAdd);
     globalFroms = unique(globalFromsAdd);
+end

@@ -1,11 +1,11 @@
 function TestHarness(system)
-% TESTHARNESS Augment a subsystem with Inports for hidden data flow
-%   (Data Stores Reads and Froms) so that testing will generate test inputs
-%   and exercise them. Also augments the subsystem with Outports for
-%   Data Store Writes and Gotos so that testing can record this data.
+% TESTHARNESS Augment a subsystem with Inports for hidden data flow (Data Stores
+%   Reads and Froms) so that testing will generate test inputs and exercise them.
+%   Also augments the subsystem with Outports for Data Store Writes and Gotos so
+%   that testing can record this data.
 %
 %   Inputs:
-%       system      Simulink model name to generate the harness for.
+%       system      Simulink model name or path to generate the harness for.
 %
 %   Outputs:
 %       N/A

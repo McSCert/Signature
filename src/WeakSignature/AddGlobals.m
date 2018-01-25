@@ -1,8 +1,8 @@
 function yOffsetFinal = AddGlobals(address, yOffset, globals, gotoLength, addGotos)
-%  ADDGLOBALS Add and reposition global Gotos in the model.
+% ADDGLOBALS Add and reposition global Gotos in the model.
 %
 %	Inputs:
-%	  address         Simulink model name.
+%	  address         Simulink model name or path.
 %	  yOffset         Point in the y-axis to start positioning blocks.
 %	  globals         Names of all the global blocks to add.
 %	  gotoLength      Max length of global tags.
@@ -12,8 +12,8 @@ function yOffsetFinal = AddGlobals(address, yOffset, globals, gotoLength, addGot
 %	  yOffsetFinal    Point in the y-axis to start repositioning blocks next time.
 
     % Where to start the signature
-    XMARGIN = 50; 
-    
+    XMARGIN = 50;
+
     % Block sizes
     blkLength_factor = 14;
 
@@ -47,7 +47,7 @@ function yOffsetFinal = AddGlobals(address, yOffset, globals, gotoLength, addGot
             fPoints = get_param(From, 'Position');
             fPoints(1) = tPoints(3) + 50;
             fPoints(2) = tPoints(2);
-            fPoints(3) = fPoints(1) + (blkLength_factor * gotoLength); 
+            fPoints(3) = fPoints(1) + (blkLength_factor * gotoLength);
             fPoints(4) = fPoints(2) + 14;
             set_param(From, 'position', fPoints);
 
@@ -90,10 +90,11 @@ function yOffsetFinal = AddGlobals(address, yOffset, globals, gotoLength, addGot
             add_line(address, ['FromSigGlobal' num2str(num) '/1'], ['globalTerminator' num2str(termnum) '/1'])
 
             % Update for next blocks being added
-            yOffset = fPoints(4); 
+            yOffset = fPoints(4);
             num = num + 1;
             termnum = termnum + 1;
         end
     end
     % Update offset output
     yOffsetFinal = yOffset;
+end

@@ -2,7 +2,7 @@ function [outports] = OutportSigData(address)
 % OUTPORTSIGDATA List Outports for a system.
 %
 %   Inputs:
-%       address     Simulink model name.
+%       address     Simulink model name or path.
 %
 %   Outputs:
 %       outports    List of inport names.
@@ -11,3 +11,4 @@ function [outports] = OutportSigData(address)
     for i = 1:length(outports)
         outports{i} = get_param(outports{i}, 'Name');
     end
+end

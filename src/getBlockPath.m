@@ -1,17 +1,17 @@
 function [blockPath, isTag] = getBlockPath(sys, blockID, blockType)
-% GETBLOCKPATH Find the full path of a block in system sys with 
+% GETBLOCKPATH Find the full path of a block in system sys with
 %   block type blockType, and a name of blockID.
 %
 %   Inputs:
-%       sys         Simulink model name.
+%       sys         Simulink model name or path.
 %       blockID     The block name, or GotoTag for Goto/Froms, or
 %                   DataStoreName for Data Store blocks.
 %       blockType   The block type.
 %
 %   Outputs:
 %       blockPath   Block name (including path) of the block with the given
-%                   blockID and blockType within sys, returns '' if block 
-%                   not found. 
+%                   blockID and blockType within sys, returns '' if block
+%                   not found.
 %       isTag       Logical, true if the block had a tag parameter, such as
 %                   GotoTag or DataStoreName, else false.
 

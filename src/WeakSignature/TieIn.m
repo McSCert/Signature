@@ -1,30 +1,30 @@
 function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
     dataStoreReadAdd, globalFroms, globalGotos, hasUpdates, sys)
-%  TIEIN Find the weak signature recursively and insert it into the model. 
-%  
-%	Inputs:
-%       address             Simulink model name.
+%  TIEIN Find the weak signature recursively and insert it into the model.
+%
+%    Inputs:
+%       address             Simulink model name or path.
 %
 %       num                 Zero if not be recursed, one for recursed.
 %
-%		scopeGotoAdd        List of scoped Goto Tags that need to be added 
+%       scopeGotoAdd        List of scoped Goto Tags that need to be added
 %                           to the signature.
 %
-%		scopeFromAdd        List of Scoped From Tags to be added to the signature.
+%       scopeFromAdd        List of Scoped From Tags to be added to the signature.
 %
-%		dataStoreWriteAdd   List of Data Store Writes to be added to the
+%       dataStoreWriteAdd   List of Data Store Writes to be added to the
 %                           signature.
 %
-%       dataStoreReadAdd    List of Data Store Reads to be added to the 
+%       dataStoreReadAdd    List of Data Store Reads to be added to the
 %                           signature.
 %
 %       globalFroms         Tags of global Froms to be added in recursion.
 %
-%		globalGotos         Tags of global Gotos to be added in recursion.
+%       globalGotos         Tags of global Gotos to be added in recursion.
 %
 %       hasUpdates          Number indicating whether reads and writes in the same
-%                           same subsystem are kept separate (0), or combined 
-%                           and listed as an update (1).
+%                           same subsystem are kept separate(0), or combined
+%                           and listed as an update(1).
 %
 %       sys                 Name of the system to generate the documentation
 %                           for. It can be a specific subsystem name, or 'All'
@@ -33,27 +33,27 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
 %   Outputs:
 %       N/A
 
-    % Constants: 
+    % Constants:
     FONT_SIZE = getSignatureConfig('heading_size', 12); % Heading font size
     FONT_SIZE_LARGER = str2num(FONT_SIZE) + 2;
     X_OFFSET_HEADING = 75;
     Y_OFFSET = 25;  % Vertical spacing between signature sections
-    
+
     verticalOffset = 30;
     gotoLength = 15;
     addSignatureAtThisLevel = strcmp(sys, 'All') || strcmp(sys, address);
-    
+
     % Defining containers for moving blocks over
     dontMoveNote = {};
     dontMoveBlocks = [];
-    
+
     % Get signature for Inports
     Inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');
     % Get signature for Outports
     Outports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Outport');
-    
+
     InportGoto = {};
-    OutportGoto = {}; 
+    OutportGoto = {};
     if addSignatureAtThisLevel
 
         % Add blocks to model
@@ -74,7 +74,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
                 dontMoveBlocks(end+1) = get_param(OutportFrom{i}, 'Handle');
             end
         end
-        
+
         % Organize blocks
         gotoLength = max([inGotoLength outGotoLength]);
         if gotoLength == 0
@@ -85,13 +85,13 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
             verticalOffset = verticalOffset + Y_OFFSET;
         end
     end
-    
+
     % If at the appropriate level, include the global Gotos
     if num == 0
         globalGotos = unique(FindGlobals(address));
         globalFroms = globalGotos;
     end
-    
+
     % Find the implicit interface
     [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
         updateBlocks] = AddImplicits(address, scopeGotoAdd, scopeFromAdd, ...
@@ -103,7 +103,7 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
         removableGotosNames{end + 1} = get_param(removableGotos{i}, 'GotoTag');
     end
     globalGotosx = setdiff(globalGotos, removableGotosNames);
-    
+
     if addSignatureAtThisLevel
 
         % Add Data Store Reads
@@ -193,18 +193,18 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionDataStoreDex(address, verticalOffset);
         end
-        
+
         for i = 1:length(dataDex)
             dontMoveBlocks = [dontMoveBlocks get_param(dataDex{i}, 'Handle')];
         end
-        
+
         for i = 1:length(tagDex)
             dontMoveBlocks = [dontMoveBlocks get_param(tagDex{i}, 'Handle')];
         end
-        
+
         % Move all blocks to make room for the Signature
         moveUnselected(address, 100, 0, dontMoveBlocks, dontMoveNote);
-        
+
     end
 
     % Recurse into other subsystems

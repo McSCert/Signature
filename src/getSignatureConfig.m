@@ -1,5 +1,5 @@
 function val = getSignatureConfig(parameter, default)
-%% GETSIGNATURECONFIG Get a parameter from the tool configuration file.
+% GETSIGNATURECONFIG Get a parameter from the tool configuration file.
 %
 %   Inputs:
 %       parameter   Configuration parameter to retrieve value for.

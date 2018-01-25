@@ -14,16 +14,16 @@ function moveToPort(block, port, varargin)
     % Default values
     blockOffset = 70;
     onLeft = 1;
-    
+
     nVarargs = length(varargin);
     if nVarargs >= 1
         onLeft = varargin{1};
     end
-    
+
     if nVarargs >= 2
         blockOffset = varargin{2};
     end
-    
+
     % Get block's current position
     blockPosition = get_param(block, 'Position');
 

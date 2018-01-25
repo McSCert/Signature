@@ -1,18 +1,18 @@
 %% Register custom menu function to beginning of Simulink Editor's context menu
 function sl_customization(cm)
-	cm.addCustomMenuFcn('Simulink:PreContextMenu', @getMcMasterTool);
+    cm.addCustomMenuFcn('Simulink:PreContextMenu', @getMcMasterTool);
 end
 
 %% Define the custom menu function
-function schemaFcns = getMcMasterTool(callbackInfo) 
-	schemaFcns = {@getSignatureToolbox}; 
+function schemaFcns = getMcMasterTool(callbackInfo)
+    schemaFcns = {@getSignatureToolbox};
 end
 
 %% Define custom menu item
 function schema = getSignatureToolbox(callbackInfo)
     schema = sl_container_schema;
     schema.label = 'Signature';
-    schema.ChildrenFcns = {@getSignature @getTestHarness}; 
+    schema.ChildrenFcns = {@getSignature @getTestHarness};
 end
 
 %% Define first action: Extract Signature

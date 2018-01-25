@@ -2,52 +2,53 @@ function yOffsetFinal = RepositionDataStoreDex(address, yOffset)
 % REPOSITIONDATASTOREDEX Move Data Store Memory blocks to the left side of the signature.
 %
 %   Inputs:
-%       address     Simulink model name.
+%       address     Simulink model name or path.
 %       yOffset     Point in the y-axis to start positioning blocks.
 %
 %   Outputs:
 %       yOffsetFinal Point in the y-axis to start repositioning blocks next time.
 
     % For starting the signature
-    XMARGIN = 20; 
-    
+    XMARGIN = 20;
+
     % Block sizes
     blkLength_factor = 8;
-    
-	allBlocks = find_system(address, 'SearchDepth', 1);
-	allBlocks = setdiff(allBlocks, address);
-    
-	for z = 1:length(allBlocks)
-		BlockType = get_param(allBlocks{z}, 'BlockType');
+
+    allBlocks = find_system(address, 'SearchDepth', 1);
+    allBlocks = setdiff(allBlocks, address);
+
+    for z = 1:length(allBlocks)
+        BlockType = get_param(allBlocks{z}, 'BlockType');
         if strcmp(BlockType, 'DataStoreMemory')
-			dsName   = get_param(allBlocks{z}, 'DataStoreName');
-			dsLength = blkLength_factor * length(dsName);
-            
-			dsPos = get_param(allBlocks{z}, 'Position');
-			dsPos(1) = XMARGIN;
-			dsPos(2) = yOffset + 20;
-			dsPos(3) = dsPos(1) + dsLength;
-			dsPos(4) = dsPos(2) + 30;
-            
-			set_param(allBlocks{z}, 'Position', dsPos);
-            
+            dsName   = get_param(allBlocks{z}, 'DataStoreName');
+            dsLength = blkLength_factor * length(dsName);
+
+            dsPos = get_param(allBlocks{z}, 'Position');
+            dsPos(1) = XMARGIN;
+            dsPos(2) = yOffset + 20;
+            dsPos(3) = dsPos(1) + dsLength;
+            dsPos(4) = dsPos(2) + 30;
+
+            set_param(allBlocks{z}, 'Position', dsPos);
+
             % Update for next blocks
-			yOffset = dsPos(4);
-            
+            yOffset = dsPos(4);
+
         elseif strcmp(BlockType, 'GotoTagVisibility')
             tagName   = get_param(allBlocks{z}, 'GotoTag');
-			tagLength = blkLength_factor * length(tagName);
-            
-			tagPos = get_param(allBlocks{z}, 'Position');
-			tagPos(1) = XMARGIN;
-			tagPos(2) = yOffset + 20;
-			tagPos(3) = tagPos(1) + tagLength;
-			tagPos(4) = tagPos(2) + 30;
-            
-			set_param(allBlocks{z}, 'Position', tagPos);
-            
+            tagLength = blkLength_factor * length(tagName);
+
+            tagPos = get_param(allBlocks{z}, 'Position');
+            tagPos(1) = XMARGIN;
+            tagPos(2) = yOffset + 20;
+            tagPos(3) = tagPos(1) + tagLength;
+            tagPos(4) = tagPos(2) + 30;
+
+            set_param(allBlocks{z}, 'Position', tagPos);
+
             % Update for next blocks
-			yOffset = tagPos(4);
+            yOffset = tagPos(4);
         end
-	end
+    end
     yOffsetFinal = yOffset;
+end

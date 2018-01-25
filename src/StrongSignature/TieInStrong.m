@@ -4,11 +4,11 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
 % TIEINSTRONG Find the strong signature recursively and insert it into the model.
 %
 %   Inputs:
-%       address     Simulink model name.
+%       address     Simulink model name or path.
 %
 %       hasUpdates  Number indicating whether reads and writes in the same
-%                   subsystem are kept separate (0), or combined and listed as
-%                   an update (1).
+%                   subsystem are kept separate(0), or combined and listed as
+%                   an update(1).
 %
 %       sys         Name of the system to generate the documentation for.
 %                   It can be a specific subsystem name, or 'All' to get
@@ -29,9 +29,9 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     Y_OFFSET = 25;  % Vertical spacing between signature sections
 
     % Elements in the signature being carried up from the signatures of lower levels
-	sGa     = {};   % Scoped Gotos
-	sFa     = {};   % Scoped Froms
-	dSWa    = {};   % Data Store Writes
+    sGa     = {};   % Scoped Gotos
+    sFa     = {};   % Scoped Froms
+    dSWa    = {};   % Data Store Writes
     dSRa    = {};   % Data Store Reads
     gGa     = {};   % Global Gotos
     gFa     = {};   % Global Froms
@@ -39,7 +39,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     % Defining containers for moving blocks over
     dontMoveNote = {};
     dontMoveBlocks = [];
-    
+
     % Get signature for Inports
     Inports = find_system(address, 'SearchDepth', 1, 'BlockType', 'Inport');
     % Get signature for Outports
@@ -49,7 +49,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     gotoLength = 15;
 
     addSignatureAtThisLevel = strcmp(sys, 'All') || strcmp(sys, address);
-    
+
     InportGoto = {};
     OutportGoto = {};
     if addSignatureAtThisLevel
@@ -58,7 +58,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
         inGotoLength = 0;
         outGotoLength = 0;
         if ~isempty(Inports)
-            dontMoveNote{end+1} = add_block('built-in/Note', [address '/Inputs'], 'Position', [X_OFFSET_HEADING 15], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');     
+            dontMoveNote{end+1} = add_block('built-in/Note', [address '/Inputs'], 'Position', [X_OFFSET_HEADING 15], 'FontSize', FONT_SIZE_LARGER, 'FontWeight', 'Bold');
             [InportGoto, InportFrom, inGotoLength] = InportSig(address, Inports);
             for i = 1:length(Inports)
                 dontMoveBlocks(end+1) = get_param(Inports{i}, 'Handle');
@@ -72,7 +72,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
                 dontMoveBlocks(end+1) = get_param(OutportFrom{i}, 'Handle');
             end
         end
-        
+
         % Organize blocks
         gotoLength = max([inGotoLength outGotoLength]);
         if gotoLength == 0
@@ -83,7 +83,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
             verticalOffset = verticalOffset + Y_OFFSET;
         end
     end
-    
+
     % Recurse into other Subsystems
     subsystems = find_system(address, 'SearchDepth', 1, 'BlockType', 'SubSystem');
     subsystems = setdiff(subsystems, address);
@@ -114,7 +114,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
     gGa     = unique(gGa);
     gFa     = unique(gFa);
 
-    % Get the names of added Inports/Outport Goto/Froms   
+    % Get the names of added Inports/Outport Goto/Froms
     inputPortsTags = {};
     if ~isempty(InportGoto)
         for i = 1:length(InportGoto)
@@ -137,7 +137,7 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
         AddImplicitsStrong(address, sGa, sFa, dSWa, dSRa, gGa, gFa, portTags, hasUpdates, sys);
 
      if addSignatureAtThisLevel
-         
+
         % Add Data Store Reads
         if ~isempty(dataStoreReads(~cellfun('isempty', dataStoreReads)))
             dontMoveNote{end+1} = add_block('built-in/Note', [address '/Data Store Reads'], 'Position', [X_OFFSET_HEADING verticalOffset + 20], 'FontSize', FONT_SIZE);
@@ -224,25 +224,25 @@ function [scopedGotoAddOut, dataStoreWriteAddOut, dataStoreReadAddOut ...
             verticalOffset = verticalOffset + Y_OFFSET;
             verticalOffset = RepositionDataStoreDex(address, verticalOffset);
         end
-        
+
         for i = 1:length(dataDex)
             dontMoveBlocks = [dontMoveBlocks get_param(dataDex{i}, 'Handle')];
         end
-        
+
         for i = 1:length(tagDex)
             dontMoveBlocks = [dontMoveBlocks get_param(tagDex{i}, 'Handle')];
         end
-        
+
         % Move all blocks to make room for the Signature
         moveUnselected(address, 100, 0, dontMoveBlocks, dontMoveNote);
-        
+
      end
 
     % Set output information
-    scopedFromAddOut    = carryUp{1};
-    scopedGotoAddOut    = carryUp{4};
-    dataStoreReadAddOut	= carryUp{2};
+    scopedFromAddOut     = carryUp{1};
+    scopedGotoAddOut     = carryUp{4};
+    dataStoreReadAddOut  = carryUp{2};
     dataStoreWriteAddOut = carryUp{3};
-    globalFromsAddOut   = carryUp{5};
-    globalGotosAddOut   = carryUp{6};
+    globalFromsAddOut    = carryUp{5};
+    globalGotosAddOut    = carryUp{6};
 end

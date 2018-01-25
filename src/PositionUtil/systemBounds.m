@@ -87,9 +87,9 @@ function [leftBound,topBound,rightBound,botBound] = blocksBounds(blocks)
         else
             itemBounds = get_param(blocks(i), 'Position');
         end
-        
+
         % itemBounds is a vector of coordinates: [left top right bottom]
-        
+
         if itemBounds(3) > rightBound
             % The block has the new right-most position
             rightBound = itemBounds(3);
@@ -98,7 +98,7 @@ function [leftBound,topBound,rightBound,botBound] = blocksBounds(blocks)
             % The block has the new left-most position
             leftBound = itemBounds(1);
         end
-        
+
         if itemBounds(4) > botBound
             % The block has the new bottom-most position
             botBound = itemBounds(4);
@@ -139,9 +139,9 @@ function [leftBound,topBound,rightBound,botBound] = annotationsBounds(annotation
         else
             itemBounds = get_param(annotations(i), 'Position');
         end
-        
+
         % itemBounds is a vector of coordinates: [left top right bottom]
-        
+
         if itemBounds(3) > rightBound
             % The block has the new right-most position
             rightBound = itemBounds(3);
@@ -150,7 +150,7 @@ function [leftBound,topBound,rightBound,botBound] = annotationsBounds(annotation
             % The block has the new left-most position
             leftBound = itemBounds(1);
         end
-        
+
         if itemBounds(4) > botBound
             % The block has the new bottom-most position
             botBound = itemBounds(4);
@@ -193,9 +193,9 @@ function [leftBound,topBound,rightBound,botBound] = linesBounds(lines)
             points = get_param(lines(i), 'Points');
             itemBounds = [min(points(:,1)) min(points(:,2)) max(points(:,1)) max(points(:,2))];
         end
-        
+
         % itemBounds is a vector of coordinates: [left top right bottom]
-        
+
         if itemBounds(3) > rightBound
             % The block has the new right-most position
             rightBound = itemBounds(3);
@@ -204,7 +204,7 @@ function [leftBound,topBound,rightBound,botBound] = linesBounds(lines)
             % The block has the new left-most position
             leftBound = itemBounds(1);
         end
-        
+
         if itemBounds(4) > botBound
             % The block has the new bottom-most position
             botBound = itemBounds(4);

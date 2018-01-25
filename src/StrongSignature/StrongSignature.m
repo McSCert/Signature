@@ -3,26 +3,26 @@ function [metrics signatures] = StrongSignature(address, exportType, ...
 % STRONGSIGNATURE Generate documentation/model of a system's strong signature.
 %
 %   Inputs:
-%       address     Simulink model name.
+%       address     Simulink model name or path.
 %
-%       exportType  Number indicating whether to export the signature as
-%                   a model(0) or as documentation(1).
+%       exportType  Number indicating whether to export the signature as a
+%                   model(0) or as documentation(1).
 %
 %       hasUpdates  Number indicating whether reads and writes in the same
 %                   subsystem are kept separate(0), or combined and listed
 %                   as an update(1).
 %
-%       sys         Name of the system to generate the documentation for.
-%                   It can be a specific subsystem name, or 'All' to get
+%       sys         Name of the system to generate the documentation for. It
+%                   can be a specific subsystem name, or 'All' to get
 %                   documentation for the entire hierarchy.
 %
 %       docFormat   Number indicating which docmentation type to generate:
 %                   no doc(0), .txt(1), .tex(2), .doc(3), else no doc.
 %
 %   Outputs:
-%       metrics     Cell array listing the system and its subsystems, with
-%                   the size of their signature (i.e. number of elements in
-%                   the signature).
+%       metrics     Cell array listing the system and its subsystems, with the
+%                   size of their signature (i.e. number of elements in the
+%                   signature).
 %
 %       signatures  Cell array of signature data for the system and its
 %                   subsystems. Signature data includes: Subsystem, Size,
@@ -194,3 +194,4 @@ function [metrics signatures] = StrongSignature(address, exportType, ...
             open_system(sys);
         end
     end
+end

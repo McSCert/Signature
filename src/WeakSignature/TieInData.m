@@ -4,27 +4,27 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
 %  TIEINDATA Find the weak signature recursively and output as documentation.
 %
 %   Inputs:
-%       address         Simulink model name.
+%       address         Simulink model name or path.
 %
 %       num             Zero if not to be recursed, one for recursed.
 %
-%		scopeGotoAdd    Scoped gotos that need to be added to the
-%                       list of scoped gotos in the signature.
+%       scopeGotoAdd    Scoped gotos that need to be added to the list of
+%                       scoped gotos in the signature.
 %
-%       scopeFromAdd    Scoped froms that need to be added to the
-%                       list of scoped froms in the signature.
+%       scopeFromAdd    Scoped froms that need to be added to the list of
+%                       scoped froms in the signature.
 %
-%		dataStoreWriteAdd Data store writes that need to be added to the
-%                         list of data store writes in the model.
+%       dataStoreWriteAdd Data store writes that need to be added to the list
+%                         of data store writes in the model.
 %
-%		dataStoreReadAdd  Data store reads that need to be added to the
-%                         list of data store reads in the model.
+%       dataStoreReadAdd  Data store reads that need to be added to the list
+%                         of data store reads in the model.
 %
-%		globalGotos     Global gotos to be added to the list of global
-%                       gotos in the model.
+%       globalGotos     Global gotos to be added to the list of global gotos in
+%                       the model.
 %
-%		globalFroms     Global froms to be added to the list of global
-%                       froms in the model.
+%       globalFroms     Global froms to be added to the list of global froms
+%                       in the model.
 %
 %       sys             Name of the system to generate the documentation for.
 %                       It can be a specific subsystem name, or 'All' to get
@@ -42,11 +42,11 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
 %                       DataStoreMemories.
 %
 %       hasUpdates      Number indicating whether reads and writes in the same
-%                       subsystem are kept separate (0), or combined and listed
-%                       as an update (1).
+%                       subsystem are kept separate(0), or combined and listed
+%                       as an update(1).
 %
 %       docFormat       Number indicating which docmentation type to
-%                       generate: no doc(0), .txt(1), .tex(2), .doc(3), 
+%                       generate: no doc(0), .txt(1), .tex(2), .doc(3),
 %                       else no doc.
 %
 %       dataTypeMap     Map of blocks and their corresponding data type.
@@ -101,7 +101,7 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
         length(tagDex) + length(dsDex);
     size = num2str(size);
     metrics{end + 1} = struct('Subsystem', system, 'Size', size);
-    
+
     % Append this subsystem's signature data to the output
     signatures{end + 1} = struct(...
         'Subsystem',            system, ...
@@ -117,14 +117,14 @@ function [metrics, signatures] = TieInData(address, num, scopeGotoAdd, ...
         'Updates',              {updates}, ...
         'GotoTagVisibilities',  {tagDex}, ...
         'DataStoreMemories',    {dsDex});
-    
+
     % Make the documentation file for this system
     if strcmp(sys, address) || strcmp(sys, 'All')
         DataMaker(address, Inports, Outports, scopedGotoTags, scopedFromTags,...
             dataStoreWrites, dataStoreReads, updates, globalGotos, ...
             globalFroms, tagDex, dsDex, hasUpdates, docFormat, dataTypeMap, signatures);
     end
-    
+
     % Get all blocks, but remove the current address
     allBlocks = find_system(address, 'SearchDepth', 1);
     allBlocks = setdiff(allBlocks, address);

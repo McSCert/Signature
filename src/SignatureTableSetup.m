@@ -1,5 +1,6 @@
 % Note: These functions are used in Signature.rpt
-function [table, title] = SignatureTableSetup(system, dataTypeMap, getUnit, tableType, signatures, index)
+function [table, title] = SignatureTableSetup(system, dataTypeMap, getUnit, ...
+    tableType, signatures, index)
 % SIGNATURETABLESETUP Create and fill tables in the report.
 
     % Set title
@@ -62,7 +63,7 @@ end
 
 function blockInfo = findBlockInfo(block, name, dataTypeMap, getUnit)
 % BLOCKINFO Produce block information in the form:
-%    [{'Name'}, {'Unit'}, {'Min'}, {'Max'}, {'Data Type'}, {'Description'}]; 
+%    [{'Name'}, {'Unit'}, {'Min'}, {'Max'}, {'Data Type'}, {'Description'}];
 % where each char is replaced with an appropriate value for the block
 
     % Find appropriate values for the row entries
@@ -72,7 +73,7 @@ function blockInfo = findBlockInfo(block, name, dataTypeMap, getUnit)
     catch
         unit = {'N/A'};
     end
-    
+
     try
         min = get_param(block, 'OutMin');
         max = get_param(block, 'OutMax');
@@ -81,7 +82,7 @@ function blockInfo = findBlockInfo(block, name, dataTypeMap, getUnit)
         max = {'N/A'};
     end
 
-    % TODO mapDataTypes.m needs to be improved to find a type for every block 
+    % TODO mapDataTypes.m needs to be improved to find a type for every block
     try
         datatype = dataTypeMap(char(block));
     catch

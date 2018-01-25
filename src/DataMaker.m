@@ -4,7 +4,7 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
 % DATAMAKER Make a text file of a signature.
 %
 %   Inputs:
-%       address         Simulink model name.
+%       address         Simulink model name or path.
 %       inputs          List of Inports.
 %       outputs         List of Outports.
 %       scopedGotos     List of all scoped Gotos in the signature.
@@ -17,10 +17,10 @@ function DataMaker(address, inputs, outputs, scopedGotos, scopedFroms, ...
 %       tagDex		    Names of Gotos in scope in scope of the system.
 %       dsDex           Names of Data Store Memorys in scope of the system.
 %       hasUpdates      Number indicating whether reads and writes in the same
-%                       same subsystem are kept separate (0), or combined and 
+%                       same subsystem are kept separate (0), or combined and
 %                       listed as an update (1).
 %       docFormat       Number indicating which docmentation type to
-%                       generate: no doc(0), .txt(1), .tex(2), .doc(3), 
+%                       generate: no doc(0), .txt(1), .tex(2), .doc(3),
 %                       else no doc.
 %       dataTypeMap     Map of blocks and their corresponding data type.
 %       signatures      Struct array of the signatures of each subsystem.

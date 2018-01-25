@@ -1,74 +1,71 @@
 function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
     updateBlocks] = AddImplicits(address, scopeGotoAdd, scopeFromAdd, ...
     dataStoreWriteAdd, dataStoreReadAdd, hasUpdates, sys)
-%   ADDIMPLICITS Add the implicit inputs and outputs (i.e., scoped Gotos
-%    and Data Store Memorys) for the signature of a subsystem.
-%  
-% 	Inputs:
-%       address             Simulink model name.
-% 		scopeGotoAdd	    Additional scoped Gotos to add to the address.
+% ADDIMPLICITS Add the implicit inputs and outputs (i.e., scoped Gotos
+%   and Data Store Memorys) for the signature of a subsystem.
+%
+%     Inputs:
+%       address             Simulink model name or path.
+%
+%       scopeGotoAdd        Additional scoped Gotos to add to the address.
 %
 %       scopeFromAdd        Additional scoped Froms to add to the address.
 %
 %       dataStoreWriteAdd   Additional Data Store Writes to add to the address.
 %
-% 		dataStoreReadAdd    Additional Data Store Reads to add to the address.
+%       dataStoreReadAdd    Additional Data Store Reads to add to the address.
 %
 %       hasUpdates          Number indicating whether reads and writes in the
-%                           same subsystem are kept separate (0), or combined 
-%                           and listed as an update (1).
-%                   
+%                           same subsystem are kept separate(0), or combined
+%                           and listed as an update(1).
+%
 %       sys                 Name of the system to generate the documentation for.
 %                           It can be a specific subsystem name, or 'All' to get
 %                           documentation for the entire hierarchy.
-%       
-% 	Outputs:
+%
+%     Outputs:
 %       carryUp         List of 6 lists that are carried up to the subsystem
-%                       above: scoped Froms, scoped Gotos, Data Store
-%                       Reads, Data Store Writes, global Froms and global
-%                       Gotos.                   
+%                       above: scoped Froms, scoped Gotos, Data Store Reads,
+%                       Data Store Writes, global Froms and global Gotos.
 %
-%       fromBlocks      Set containing two matrices: that of the scoped
-%                       From blocks, and that of the scoped From blocks' 
-%                       corresponding terminators.
-%
-%
-%       dataStoreWrites	Set containing two matrices: that of the Data
-%                       Store Write blocks, and that of their corresponding 
+%       fromBlocks      Set containing two matrices: that of the scoped From
+%                       blocks, and that of the scoped From blocks' corresponding
 %                       terminators.
 %
-%       dataStoreReads  Set containing two matrices: that of the Data
-%                       Store Read blocks, and that of their corresponding 
+%       dataStoreWrites Set containing two matrices: that of the Data Store
+%                       Write blocks, and that of their corresponding terminators.
+%
+%       dataStoreReads  Set containing two matrices: that of the Data Store
+%                       Read blocks, and that of their corresponding terminators.
+%
+%       gotoBlocks      Set containing two matrices: that of the scoped Goto
+%                       blocks, and that of the scoped From blocks' corresponding
 %                       terminators.
 %
-%       gotoBlocks      Set containing two matrices: that of the scoped
-%                       Goto blocks, and that of the scoped From blocks' 
-%                       corresponding terminators.
-%
-%       updateBlocks    Set containing two matrices: that of the update
-%                       blocks (represented by reads), and their corresponding
+%       updateBlocks    Set containing two matrices: that of the update blocks
+%                       (represented by reads), and their corresponding
 %                       terminators.
 
     % Initialize sets, matrices, and maps
     fromToRepo = [];
-	fromTermToRepo = [];
+    fromTermToRepo = [];
     gotoToRepo = [];
     gotoTermToRepo = [];
-	dSWriteToRepo = [];
-	dSWriteTermToRepo = [];
-	dSReadToRepo = [];
-	dSReadTermToRepo = [];
+    dSWriteToRepo = [];
+    dSWriteTermToRepo = [];
+    dSReadToRepo = [];
+    dSReadTermToRepo = [];
     mapObjU = containers.Map();
     updateToRepo = [];
     updateTermToRepo = [];
     updatesToAdd = {};
- 
+
     addSignatureAtThisLevel = strcmp(sys, 'All') || strcmp(sys, address);
-        
+
     % Get list of all blocks
     allBlocks = find_system(address, 'SearchDepth', 1);
-	allBlocks = setdiff(allBlocks, address);
-	
+    allBlocks = setdiff(allBlocks, address);
+
     % Find all visibility tags and declarations, such that their
     % corresponding reads and writes will be added to the weak signature
     for z = 1:length(allBlocks)
@@ -84,7 +81,7 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
                 dataStoreWriteAdd{end + 1} = dataStoreName;
         end
     end
-    
+
     % If there is a scoped Goto in the current subsystem, this block removes
     % the Goto from the weak signature of all subsequent subsystems
     gotosRemove = {};
@@ -97,26 +94,26 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
         end
     end
     scopeGotoAdd = setdiff(scopeGotoAdd, gotosRemove);
-     
+
     % Find blocks that are associated with declarations/visibility tags on
     % the same level that they are declared
     removableDataStoresNames = {};
     removableDataStores = find_system(address, 'SearchDepth', 1, 'BlockType', 'DataStoreMemory');
     for rds = 1:length(removableDataStores)
-        removableDataStoresNames{end + 1} =  get_param(removableDataStores{rds}, 'DataStoreName');  
+        removableDataStoresNames{end + 1} =  get_param(removableDataStores{rds}, 'DataStoreName');
     end
- 
+
     removableScopedTagsNames = {};
     removableScopedTags = find_system(address, 'SearchDepth', 1, 'BlockType', 'GotoTagVisibility');
     for rsi = 1:length(removableScopedTags)
         removableScopedTagsNames{end + 1} = get_param(removableScopedTags{rsi}, 'GotoTag');
     end
-    
+
     scopeFromAdd = unique(scopeFromAdd);
     scopeGotoAdd = unique(scopeGotoAdd);
     dataStoreReadAdd = unique(dataStoreReadAdd);
     dataStoreWriteAdd = unique(dataStoreReadAdd);
-    
+
     % Make temporary variables of the lists of Data Stores/scoped tags
     % for the signatures that exclude the blocks that are not included due
     % to declarations on this level
@@ -124,7 +121,7 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
     scopeGotoAddx = setdiff(scopeGotoAdd, removableScopedTagsNames);
     dataStoreReadAddx = setdiff(dataStoreReadAdd, removableDataStoresNames);
     dataStoreWriteAddx = setdiff(dataStoreReadAdd, removableDataStoresNames);
-    
+
     if hasUpdates
         % Check for updates in the Data Stores, i.e. that there is a Read and
         % Write that correspond to eachother. If an update exists, it is marked
@@ -142,7 +139,7 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
                 end
             end
         end
-        
+
         % Check for updates in the scoped tags, i.e. that there is a Goto and
         % From that correspond to eachother. If an update exists, it is marked
         % in the map and an update is added to the update list
@@ -237,7 +234,7 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
             end
         end
 
-        % Reset numbering of blocks   
+        % Reset numbering of blocks
         num = 0;
         termnum = 0;
 
@@ -262,7 +259,7 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
             end
         end
 
-        % Reset numbering of blocks   
+        % Reset numbering of blocks
         num = 0;
         termnum = 0;
 
@@ -301,7 +298,7 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
             end
         end
     end
-    
+
     for i = 1:length(updatesToAdd)
         updatesToAdd{i} = updatesToAdd{i}.Name;
     end
@@ -310,7 +307,7 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
     % Group implicit signature data in order to minimize the number of outputs
     scopedGoto = scopeGotoAdd;
     scopedFrom = scopeFromAdd;
-	dataStoreW = dataStoreWriteAdd;
+    dataStoreW = dataStoreWriteAdd;
     dataStoreR = dataStoreReadAdd;
     carryUp = {scopedFrom, scopedGoto, dataStoreR, dataStoreW};
 
@@ -321,3 +318,4 @@ function [carryUp, fromBlocks, dataStoreWrites, dataStoreReads, gotoBlocks, ...
     dataStoreReads  = {dSReadToRepo, dSReadTermToRepo};
     gotoBlocks      = {gotoToRepo, gotoTermToRepo};
     updateBlocks    = {updateToRepo, updateTermToRepo};
+end

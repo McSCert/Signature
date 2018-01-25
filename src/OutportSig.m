@@ -1,24 +1,24 @@
 function [outportGoto, outportFrom, gotoLength] = OutportSig(address, outports)
-%  OUTPORTSIG Add Outports to the signature in the model by adding Goto/Froms for Outports.
+% OUTPORTSIG Add Outports to the signature in the model by adding Goto/Froms for Outports.
 %
 %   Inputs:
-%       address      Simulink model name.
+%        address      Simulink model name or path.
 %
 %   Outputs:
-%		outportGoto  Handles of Outport Gotos.
-%		outportFrom  Handles of Outport Froms.
-%		outports     Handles of Outport.
-%		gotoLength   Max length of Outport Goto/From tags.
+%        outportGoto  Handles of Outport Gotos.
+%        outportFrom  Handles of Outport Froms.
+%        outports     Handles of Outport.
+%        gotoLength   Max length of Outport Goto/From tags.
 
     % Constant: Colour of signature Goto/Froms
     GOTOFROM_BGCOLOR = getSignatureConfig('gotofrom_bgcolor', 'white'); % Background color of signature Goto/Froms
 
     % Initialize outputs
-	outportGoto = {};
-	outportFrom = {};
-	gotoLength  = 0;
-    
-	for z = 1:length(outports)
+    outportGoto = {};
+    outportFrom = {};
+    gotoLength  = 0;
+
+    for z = 1:length(outports)
         % Get Outport info
         pConnect = get_param(outports{z}, 'portConnectivity');
         pName    = get_param(outports{z}, 'Name');
@@ -55,7 +55,7 @@ function [outportGoto, outportFrom, gotoLength] = OutportSig(address, outports)
                 'GotoTag', GotoTag, 'BackgroundColor', GOTOFROM_BGCOLOR);
         catch
             error('Signature blocks already exist in this subsystem.')
-        end       
+        end
         FromName = ['FromOut' pSID];
         outportFrom{end + 1} = getfullname(From);
         % No need to move now, becuase the repositioning functions take
@@ -83,4 +83,5 @@ function [outportGoto, outportFrom, gotoLength] = OutportSig(address, outports)
         catch
             % Do nothing
         end
-	end
+    end
+end

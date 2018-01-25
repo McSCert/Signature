@@ -1,18 +1,18 @@
 function [inportGoto, inportFrom, gotoLength] = InportSig(address, inports)
-%  INPORTSIG Add Inports to the signature in the model by adding Goto/Froms for Inports.
+% INPORTSIG Add Inports to the signature in the model by adding Goto/Froms for Inports.
 %
-%	Inputs:
-%		address     Simulink model name.
+%   Inputs:
+%        address     Simulink model name or path.
 %
-%	Outputs:
-%		inportGoto  Handles of Inport Gotos.
-%		inportFrom  Handles of Inport Froms.
-%		inports 	Handles of Inport.
-%		gotoLength  Max length of Inport Goto/From tags.
+%   Outputs:
+%        inportGoto  Handles of Inport Gotos.
+%        inportFrom  Handles of Inport Froms.
+%        inports     Handles of Inport.
+%        gotoLength  Max length of Inport Goto/From tags.
 
     % Constants:
     GOTOFROM_BGCOLOR = getSignatureConfig('gotofrom_bgcolor', 'white'); % Background color of signature Goto/Froms
-        
+
     % Initialize outputs
     inportGoto = {};
     inportFrom = {};
@@ -40,7 +40,7 @@ function [inportGoto, inportFrom, gotoLength] = InportSig(address, inports)
         catch
             error('Signature blocks already exist in this subsystem.')
         end
-            
+
         GotoName = GotoTag;
         inportGoto{end + 1} = getfullname(Goto);
         % No need to move now, because the repositioning functions take
@@ -68,7 +68,7 @@ function [inportGoto, inportFrom, gotoLength] = InportSig(address, inports)
 
             % 1a) Inport connected to Enable port
             try
-            	delete_line(address, [pName '/1'], [DstBlockName '/' 'Enable']);
+                delete_line(address, [pName '/1'], [DstBlockName '/' 'Enable']);
                 add_line(address, [FromName '/1'], [DstBlockName '/' 'Enable'], 'autorouting', 'on');
             catch ME
                 if strcmp(ME.identifier, 'Simulink:Commands:InvSimulinkObjectName')
@@ -98,9 +98,10 @@ function [inportGoto, inportFrom, gotoLength] = InportSig(address, inports)
         end
 
         % 2) Connect Inport to Goto
-       	try
+           try
             add_line(address, [pName '/1'], [GotoName '/1'], 'autorouting', 'on')
         catch
             % Do nothing
         end
     end
+end

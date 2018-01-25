@@ -6,10 +6,10 @@ function yOffsetFinal = RepositionImplicits(yOffset, blocksToRepo, ...
 %   Inputs:
 %       yOffset         Point in the y-axis to start positioning blocks.
 %
-%   	blocksToRepo    Blocks to reposition and their corresponding
+%       blocksToRepo    Blocks to reposition and their corresponding
 %                       terminators.
 %
-%   	blockLength     Desired size of the block.
+%       blockLength     Desired size of the block.
 %
 %       blockOnLeft     Number indicating the orientation of the block
 %                       and terminator: block is on the left of the terminator (1),
@@ -69,3 +69,4 @@ function yOffsetFinal = RepositionImplicits(yOffset, blocksToRepo, ...
     end
     % Update offset output
     yOffsetFinal = yOffset;
+end

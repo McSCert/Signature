@@ -4,18 +4,18 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
 % TIEINSTRONGDATA Find the strong signature recursively and output as documentation.
 %
 %   Inputs:
-%       address         Simulink model name.
+%       address         Simulink model name or path.
 %
 %       sys             Name of the system to generate the documentation for.
 %                       It can be a specific subsystem name, or 'All' to get
 %                       documentation for the entire hierarchy.
 %
 %       hasUpdates      Number indicating whether reads and writes in the same
-%                       subsystem are kept separate (0), or combined and listed
-%                       as an update (1).
+%                       subsystem are kept separate(0), or combined and listed
+%                       as an update(1).
 %
 %       docFormat       Number indicating which docmentation type to
-%                       generate: no doc(0), .txt(1), .tex(2), .doc(3), 
+%                       generate: no doc(0), .txt(1), .tex(2), .doc(3),
 %                       else no doc.
 %
 %       dataTypeMap     Map of blocks and their corresponding data type.
@@ -51,14 +51,14 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
     signatures              = {};
 
     % Elements in the signature being carried up from the signatures of lower levels
-	sGa     = {};   % Scoped Gotos
-	sFa     = {};   % Scoped Froms
-	dSWa    = {};   % Data Store Writes
+    sGa     = {};   % Scoped Gotos
+    sFa     = {};   % Scoped Froms
+    dSWa    = {};   % Data Store Writes
     dSRa    = {};   % Data Store Reads
     gGa     = {};   % Global Gotos
     gFa     = {};   % Global Froms
 
-	BlockName = get_param(address,'Name');
+    BlockName = get_param(address,'Name');
 
     % Get signature for Inports and Outports
     Inports = InportSigData(address);
@@ -156,3 +156,4 @@ function [scopeGotoAddout, dataStoreWriteAddout, dataStoreReadAddout, ...
             globalGotosAddout, globalFromsAddout, tagDex, dsDex, ...
             hasUpdates, docFormat, dataTypeMap, signatures);
     end
+end

@@ -26,3 +26,4 @@ function redrawLine(address, block1, block2)
         end
     end
     add_line(address, block1Port, block2Port);
+end
