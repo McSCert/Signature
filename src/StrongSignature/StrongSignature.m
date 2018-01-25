@@ -31,12 +31,11 @@ function [metrics signatures] = StrongSignature(address, exportType, ...
 %                   DataStoreWrites, Updates, GotoTagVisibilities, and
 %                   DataStoreMemories.
 %
-%   Example 1:
+%   Examples:
 %       StrongSignature('SignatureDemo', 0, 1, 'All', 0)
 %           Generates a strong signature model, that include updates, for
 %           the model SignatureDemo and all its subsystems.
 %
-%   Example 2:
 %       StrongSignature('SignatureDemo', 1, 1, 'SignatureDemo/Subsystem', 0)
 %           Generates strong signature documentation, that includes updates,
 %           for a specific subsystem of SignatureDemo, as a .txt file.

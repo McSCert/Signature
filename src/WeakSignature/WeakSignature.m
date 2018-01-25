@@ -31,12 +31,11 @@ function [metrics signatures] = WeakSignature(address, exportType, ...
 %                   DataStoreWrites, Updates, GotoTagVisibilities, and
 %                   DataStoreMemories.
 %
-%   Example 1:
+%   Examples:
 %       WeakSignature('SignatureDemo', 0, 1, 'All', 0)
 %           Generates a weak signature model, that include updates, for
 %           the model SignatureDemo and all its subsystems.
 %
-%   Example 2:
 %       WealSignature('SignatureDemo', 1, 1, 'SignatureDemo/Subsystem/Subsystem0', 0)
 %           Generates weak signature documentation, that includes updates,
 %           for a specific subsystem of SignatureDemo, as a .txt file.
