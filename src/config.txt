@@ -1,10 +1,10 @@
-# GOTOFROM_BGCOLOR The color for the Goto/From blocks in the signature, and 
-# their corresponding Goto/From blocks connecting the signature to the original 
+# GOTOFROM_BGCOLOR The color for the Goto/From blocks in the signature, and
+# their corresponding Goto/From blocks connecting the signature to the original
 # model. The use of a color is beneficial to easily see these connections.
 # Default is green.
-# 
+#
 # Acceptable parameter values are:
-#	black, white, red, green, blue, cyan, magenta, yellow, gray, lightBlue
+#   black, white, red, green, blue, cyan, magenta, yellow, gray, lightBlue
 #   orange, darkGreen
 # or their short names or color triples.
 # See: https://www.mathworks.com/help/matlab/ref/colorspec.html
@@ -13,8 +13,8 @@ gotofrom_bgcolor: green
 
 # HEADING_SIZE The font size for the signature section heading annotations
 # (i.e., Inputs, Outputs, Test Harness). Default is 14.
-# 
+#
 # Acceptable parameter values are:
-#	1 - 25
+#   1 - 25
 #
 heading_size: 12
