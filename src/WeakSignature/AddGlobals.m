@@ -1,4 +1,4 @@
-function yOffsetFinal = AddGlobals(address, yOffset, globals, gotoLength, addGotos)
+function [outBlocks, yOffsetFinal] = AddGlobals(address, yOffset, globals, gotoLength, addGotos)
 % ADDGLOBALS Add and reposition global Gotos in the model.
 %
 %	Inputs:
@@ -19,6 +19,9 @@ function yOffsetFinal = AddGlobals(address, yOffset, globals, gotoLength, addGot
 
     num = 0;        % Goto/From number
     termnum = 0;    % Terminator number
+    
+    termBlocks = [];
+    globalBlocks = [];
 
     if addGotos
         for y = 1:length(globals)
@@ -58,6 +61,9 @@ function yOffsetFinal = AddGlobals(address, yOffset, globals, gotoLength, addGot
             yOffset = tPoints(4);
             num = num + 1;
             termnum = termnum + 1;
+            
+            globalBlocks(end+1) = From;
+            termBlocks(end+1) = Terminator;
         end
     else
         for y = 1:length(globals)
@@ -93,8 +99,12 @@ function yOffsetFinal = AddGlobals(address, yOffset, globals, gotoLength, addGot
             yOffset = fPoints(4);
             num = num + 1;
             termnum = termnum + 1;
+            
+            globalBlocks(end+1) = From;
+            termBlocks(end+1) = Terminator;
         end
     end
     % Update offset output
     yOffsetFinal = yOffset;
+    outBlocks = {globalBlocks, termBlocks};
 end

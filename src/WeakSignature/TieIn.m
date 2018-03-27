@@ -130,10 +130,10 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
         if ~isempty(globalFroms(~cellfun('isempty', globalFroms)))
             dontMoveNote{end+1} = add_block('built-in/Note', [address '/Global Froms'], 'Position', [X_OFFSET_HEADING verticalOffset + 20], 'FontSize', FONT_SIZE);
             verticalOffset = verticalOffset + Y_OFFSET;
-            verticalOffset = AddGlobals(address, verticalOffset, globalFroms, gotoLength, 0);
+            [sigBlocks, verticalOffset] = AddGlobals(address, verticalOffset, globalFroms, gotoLength, 0);
             verticalOffset = verticalOffset + Y_OFFSET;
-            dontMoveBlocks = [dontMoveBlocks globalFroms{1}];
-            dontMoveBlocks = [dontMoveBlocks globalFroms{2}];
+            dontMoveBlocks = [dontMoveBlocks sigBlocks{1}];
+            dontMoveBlocks = [dontMoveBlocks sigBlocks{2}];
         end
 
         % Add updates (if enabled)
@@ -178,10 +178,10 @@ function TieIn(address, num, scopeGotoAdd, scopeFromAdd, dataStoreWriteAdd,...
         if ~isempty(globalGotosx(~cellfun('isempty', globalGotosx)))
             dontMoveNote{end+1} = add_block('built-in/Note', [address '/Global Gotos'], 'Position', [X_OFFSET_HEADING verticalOffset + 20], 'FontSize', FONT_SIZE);
             verticalOffset = verticalOffset + Y_OFFSET;
-            verticalOffset = AddGlobals(address, verticalOffset, globalGotosx, gotoLength, 1);
+            [sigBlocks, verticalOffset] = AddGlobals(address, verticalOffset, globalGotosx, gotoLength, 1);
             verticalOffset = verticalOffset + Y_OFFSET;
-            dontMoveBlocks = [dontMoveBlocks globalGotos{1}];
-            dontMoveBlocks = [dontMoveBlocks globalGotos{2}];
+            dontMoveBlocks = [dontMoveBlocks sigBlocks{1}];
+            dontMoveBlocks = [dontMoveBlocks sigBlocks{2}];
         end
 
         % Add declarations (i.e. Data Store Memory or Goto Tag Visibility)
