@@ -4,10 +4,12 @@
 # Default is green.
 #
 # Acceptable parameter values are:
-#   black, white, red, green, blue, cyan, magenta, yellow, gray, lightBlue
-#   orange, darkGreen
+#   black, white, red, orange, yellow, green, darkGreen, blue, lightBlue, cyan,
+#   magenta, gray
 # or their short names or color triples.
 # See: https://www.mathworks.com/help/matlab/ref/colorspec.html
+#
+# Default is green.
 #
 gotofrom_bgcolor: green
 
@@ -16,5 +18,7 @@ gotofrom_bgcolor: green
 #
 # Acceptable parameter values are:
 #   1 - 25
+#
+# Default is 12.
 #
 heading_size: 12
