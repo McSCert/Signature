@@ -1,5 +1,5 @@
-function moveUnselected(xshift, yshift, blocks, allLines, annotations)
-% MOVEALL Move all blocks/lines/etc. in a system to a new position.
+function moveSelected(xshift, yshift, blocks, allLines, annotations)
+% MOVESELECTED Move selected blocks/lines/etc. in a system to a new position.
 %
 %   Inputs:
 %       address Path of the system to be moved.

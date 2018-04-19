@@ -1,5 +1,5 @@
 function moveUnselected(address, xoffset, yshift, dontMoveBlocks, dontMoveNotes)
-% MOVEALL Move all blocks/lines/etc. in a system to a new position.
+% MOVEUNSELECTED Move unselected blocks/lines/etc. in a system to a new position.
 %
 %   Inputs:
 %       address         Path of the system to be moved.
