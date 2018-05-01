@@ -49,7 +49,7 @@ function [table, title] = SignatureTableSetup(system, dataTypeMap, getUnit, ...
     end
 
     % Set table header
-    tableHeader = [{'Name'}, {'Unit'}, {'Min'}, {'Max'}, {'Data Type'}, {'Description'}];
+    tableHeader = [{'Name'}, {'Data Type'}, {'Min'}, {'Max'}, {'Unit'}, {'Description'}];
     table = tableHeader;
 
     blocks = eval(['signatures{' int2str(index) '}.' tableType]);
@@ -63,7 +63,7 @@ end
 
 function blockInfo = findBlockInfo(block, name, dataTypeMap, getUnit)
 % BLOCKINFO Produce block information in the form:
-%    [{'Name'}, {'Unit'}, {'Min'}, {'Max'}, {'Data Type'}, {'Description'}];
+%    [{'Name'}, {'Data Type'}, {'Min'}, {'Max'}, {'Unit'}, {'Description'}];
 % where each char is replaced with an appropriate value for the block
 
     % Find appropriate values for the row entries
@@ -99,5 +99,5 @@ function blockInfo = findBlockInfo(block, name, dataTypeMap, getUnit)
     end
 
     % Set ith row entries
-    blockInfo = [name, unit, min, max, datatype, description];
+    blockInfo = [name, datatype, min, max, unit, description];
 end
