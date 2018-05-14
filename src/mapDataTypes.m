@@ -214,7 +214,7 @@ function [RecurseCell, mapPrevBlocks] = addNextBlocks(RecurseCell, mapPrevBlocks
                     % however it gets repeated for variations in the
                     % form the inputs are given in
                     if ~isKey(mapPrevBlocks, getfullname(nextBlocks{i}))
-                        if prevBlock
+                        if islogical(prevBlock) && prevBlock
                             mapPrevBlocks(getfullname(nextBlocks{i})) = getfullname(nextBlocks{i});
                         else
                             mapPrevBlocks(getfullname(nextBlocks{i})) = prevBlock;
@@ -223,7 +223,7 @@ function [RecurseCell, mapPrevBlocks] = addNextBlocks(RecurseCell, mapPrevBlocks
                     end
                 else
                     if ~isKey(mapPrevBlocks, getfullname(nextBlocks(i)))
-                        if prevBlock
+                        if islogical(prevBlock) && prevBlock
                             mapPrevBlocks(getfullname(nextBlocks(i))) = getfullname(nextBlocks(i));
                         else
                             mapPrevBlocks(getfullname(nextBlocks(i))) = prevBlock;
@@ -234,7 +234,7 @@ function [RecurseCell, mapPrevBlocks] = addNextBlocks(RecurseCell, mapPrevBlocks
             end
         else
             if ~isKey(mapPrevBlocks, nextBlocks)
-                if prevBlock
+                if islogical(prevBlock) && prevBlock
                     mapPrevBlocks(nextBlocks) = nextBlocks;
                 else
                     mapPrevBlocks(nextBlocks) = prevBlock;
