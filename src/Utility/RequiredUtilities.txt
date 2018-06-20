@@ -1,0 +1,17 @@
+.../tools/Simulink/Tools/Utility/
+	FindingConnectedBlocks/
+		findDataStoreMemory.m
+		findFromsInScope.m
+		findGotoFromsInScope.m
+		findGotosInScope.m
+		findReadsInScope.m
+		findReadWritesInScope.m
+		findVisibilityTag.m
+		findWritesInScope.m
+
+	DataflowTracing/
+		getDataType.m
+		getDsts.m
+		getSrcs.m
+		inoutblock2subport.m
+		subport2inoutblock.m
