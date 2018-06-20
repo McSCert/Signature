@@ -45,10 +45,35 @@ function dataTypeMap = mapDataTypes(sys)
                         case 'annotation'
                             assert('Something went wrong.')
                         otherwise
-                            assert('Unexpected handle type.') 
+                            assert('Unexpected handle type.')
                     end
                 else
-                    dataTypeMap(dtStruct{i}.block) = dtStruct{i}.datatype{1};
+                    tmpdatatype = dtStruct{i}.datatype{1};
+                    
+                    if regexp(tmpdatatype, '^Inherit: ', 'ONCE') == 1
+                        type = get_param(dtStruct{i}.typesource{1}, 'Type');
+                        switch type
+                            case 'block'
+                                % inherit from this block
+                                sourceName = getBlockName(dtStruct{i}.typesource{1});
+                            case 'port'
+                                % inherit from port
+                                sourceName = getPortName(dtStruct{i}.typesource{1});
+                            case 'line'
+                                % Not possible because datatypes were only
+                                % checked for blocks and blocks just use their
+                                % inport as a source instead of the line
+                                % connecting to it.
+                                assert('Something went wrong.')
+                            case 'annotation'
+                                assert('Something went wrong.')
+                            otherwise
+                                assert('Unexpected handle type.')
+                        end
+                         tmpdatatype = [tmpdatatype(10:end) 'from: ' sourceName];
+                     end
+                     
+                     dataTypeMap(dtStruct{i}.block) = tmpdatatype;
                 end
             otherwise
                 dataTypeMap(dtStruct{i}.block) = 'Inherit from multiple';
