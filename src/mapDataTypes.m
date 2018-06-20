@@ -70,7 +70,7 @@ function dataTypeMap = mapDataTypes(sys)
                             otherwise
                                 assert('Unexpected handle type.')
                         end
-                         tmpdatatype = [tmpdatatype(10:end) 'from: ' sourceName];
+                         tmpdatatype = [tmpdatatype(length('Inherit: ')+1:end) ' from: ' sourceName];
                      end
                      
                      dataTypeMap(dtStruct{i}.block) = tmpdatatype;
