@@ -1,4 +1,12 @@
 .../tools/Simulink/Tools/Utility/
+	DataflowTracing/
+		getDataType.m
+		getDsts.m
+		getPorts.m
+		getSrcs.m
+		inoutblock2subport.m
+		subport2inoutblock.m
+	
 	FindingConnectedBlocks/
 		findDataStoreMemory.m
 		findFromsInScope.m
@@ -8,10 +16,8 @@
 		findReadWritesInScope.m
 		findVisibilityTag.m
 		findWritesInScope.m
-
-	DataflowTracing/
-		getDataType.m
-		getDsts.m
-		getSrcs.m
-		inoutblock2subport.m
-		subport2inoutblock.m
+	
+	InputHandling/
+		inputToNumeric.m
+	
+	getDepthFromSys.m
