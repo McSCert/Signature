@@ -63,7 +63,7 @@ guidata(hObject, handles);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = sigGUI_OutputFcn(hObject, eventdata, handles) 
+function varargout = sigGUI_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -101,7 +101,11 @@ else
     WeakSignature(address, exportType, hasUpdates, sys, docType);
 end
 
-close(handles.signaturegui);
+try
+    close(handles.signaturegui);
+catch
+    % User may have deleted already
+end
 
 % --- Executes during object creation, after setting all properties.
 function signaturegui_CreateFcn(hObject, eventdata, handles)
@@ -111,7 +115,7 @@ function signaturegui_CreateFcn(hObject, eventdata, handles)
 
 % --- Executes when selected object is changed in group_ExportAs.
 function group_ExportAs_SelectionChangeFcn(hObject, eventdata, handles)
-% hObject    handle to the selected object in group_ExportAs 
+% hObject    handle to the selected object in group_ExportAs
 % eventdata  structure with the following fields (see UIBUTTONGROUP)
 %	EventName: string 'SelectionChanged' (read only)
 %	OldValue: handle of the previously selected object or empty if none was selected

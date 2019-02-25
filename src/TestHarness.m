@@ -20,6 +20,7 @@ function TestHarness(system)
 
     sysSplit = strsplit(system, '/');
     topLevelSys = sysSplit{1};
+    % TODO: This function takes a lot of time
     typeMap = mapDataTypes(topLevelSys);
 
     % Add Inport and Goto to supply test info to Froms
