@@ -12,4 +12,9 @@ The Signature Tool extracts the signature of a Simulink subsystem. A signature r
 ## User Guide
 For installation and other information, please see the [User Guide](doc/Signature_UserGuide.pdf).
 
+## Related Publications
+Marc Bender, Karen Laurin, Mark Lawford, Vera Pantelic, Alexandre Korobkine, Jeff Ong, Bennett Mackenzie, Monika Bialy, Steven Postma, [“Signature required: Making Simulink data flow and interfaces explicit,”](https://www.sciencedirect.com/science/article/pii/S0167642315001392) Science of Computer Programming, Elsevier, 2015, 113, Part 1, 29-50.
+
+Vera Pantelic, Steven Postma, Mark Lawford, Alexandre Korobkine, Bennett Mackenzie, Jeff Ong, Marc Bender, ["A Toolset for Simulink: Improving Software Engineering Practices in Development with Simulink,"](https://ieeexplore.ieee.org/document/7323083/) Proceedings of 3rd International Conference on Model-Driven Engineering and Software Development (MODELSWARD 2015), SCITEPRESS, 2015, 50-61. (Best Paper Award)
+
 [![View Signature Tool on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/49897-signature-tool)
