@@ -11,3 +11,5 @@ The Signature Tool extracts the signature of a Simulink subsystem. A signature r
 
 ## User Guide
 For installation and other information, please see the [User Guide](doc/Signature_UserGuide.pdf).
+
+[![View Signature Tool on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/49897-signature-tool)
