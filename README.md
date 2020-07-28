@@ -21,7 +21,7 @@ Vera Pantelic, Steven Postma, Mark Lawford, Monika Jaskolka, Bennett Mackenzie, 
 
 ## Matlab Central
 
-*This tool was selected by MathWorks as ["Pick of the Week"](https://blogs.mathworks.com/pick/2017/07/14/what-are-the-functional-inputs-and-outputs-of-my-simulink-model/)!*
+:star: *This tool was selected by MathWorks as ["Pick of the Week"](https://blogs.mathworks.com/pick/2017/07/14/what-are-the-functional-inputs-and-outputs-of-my-simulink-model/)!*
 
 It is also available on the [Matlab Central File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/49897-signature-tool). 
 
