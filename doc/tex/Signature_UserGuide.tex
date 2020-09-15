@@ -3,12 +3,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Packages & Macros
 %%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{colortbl}
-\usepackage{datetime}
-	\newdateformat{monthyeardate}{\monthname[\THEMONTH] \THEYEAR}
+
+% For including graphics
 \usepackage{graphicx}
+
+% For title page
+\usepackage{datetime}
+\newdateformat{monthyeardate}{\monthname[\THEMONTH] \THEYEAR}
+
+% For supporting linking
 \usepackage{hyperref}
-\hypersetup{colorlinks,urlcolor=blue}
+\hypersetup{colorlinks,urlcolor=blue,linkcolor=blue,anchorcolor=blue,citecolor=blue}
+
+% For table colouring (in command line tables)
+\usepackage{colortbl}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Tool-Specific Macros
@@ -61,6 +69,12 @@
 \newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table of Contents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tableofcontents
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Introduction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
@@ -73,7 +87,7 @@ The \ToolName tool extracts the \emph{signature} of a Simulink subsystem. A sign
 The \ToolName tool can be used to either include the signature in the model itself, or export the signature into a text~(\texttt{.txt}), \TeX~(\texttt{.tex}), or Microsoft Word~(\texttt{.doc}) file. The tool can also be used to improve test harnessing with commercial automatic test generation tools.
 
 % Is there more information?
-\subsection*{More Information}
+\subsection{More Information}
 For more about the theoretical background of signatures and how they can be used, an interested reader is referred to:
 
 Marc Bender, Karen Laurin, Mark Lawford, Jeff Ong, Steven Postma, Vera Pantelic, \href{http://www.cas.mcmaster.ca/~lawford/papers/MODELSWARD2014.pdf}{``Signature Required - Making Simulink Dataflow and Interfaces Explicit,"} \textit{Proceedings of 2nd International Conference on Model-Driven Engineering and Software Development (MODELSWARD 2014)}, SCITEPRESS, 2014, 119-131. (Nominated for Best Paper Award)
