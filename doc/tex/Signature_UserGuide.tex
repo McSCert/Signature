@@ -3,17 +3,25 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Packages & Macros
 %%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{colortbl}
-\usepackage{datetime}
-	\newdateformat{monthyeardate}{\monthname[\THEMONTH] \THEYEAR}
+
+% For including graphics
 \usepackage{graphicx}
+
+% For title page
+\usepackage{datetime}
+\newdateformat{monthyeardate}{\monthname[\THEMONTH] \THEYEAR}
+
+% For supporting linking
 \usepackage{hyperref}
-\hypersetup{colorlinks,urlcolor=blue}
+\hypersetup{colorlinks,urlcolor=blue,linkcolor=blue,anchorcolor=blue,citecolor=blue}
+
+% For table colouring (in command line tables)
+\usepackage{colortbl}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Tool-Specific Macros
 %%%%%%%%%%%%%%%%%%%%%%%%%
-\input{../../common/macros}
+\input{macros}
 
 \newcommand{\ToolName}{Signature\@\xspace}
 
@@ -54,10 +62,16 @@
 
 \begin{figure}
 	\centering
-	\includegraphics[]{../../common/McSCert_Logo.pdf} \\
+	\includegraphics[]{../figs/McSCert_Logo.pdf} \\
 	McMaster Centre for Software Certification (McSCert)
 \end{figure}
 
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table of Contents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tableofcontents
 \newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,7 +87,7 @@ The \ToolName tool extracts the \emph{signature} of a Simulink subsystem. A sign
 The \ToolName tool can be used to either include the signature in the model itself, or export the signature into a text~(\texttt{.txt}), \TeX~(\texttt{.tex}), or Microsoft Word~(\texttt{.doc}) file. The tool can also be used to improve test harnessing with commercial automatic test generation tools.
 
 % Is there more information?
-\subsection*{More Information}
+\subsection{More Information}
 For more about the theoretical background of signatures and how they can be used, an interested reader is referred to:
 
 Marc Bender, Karen Laurin, Mark Lawford, Jeff Ong, Steven Postma, Vera Pantelic, \href{http://www.cas.mcmaster.ca/~lawford/papers/MODELSWARD2014.pdf}{``Signature Required - Making Simulink Dataflow and Interfaces Explicit,"} \textit{Proceedings of 2nd International Conference on Model-Driven Engineering and Software Development (MODELSWARD 2014)}, SCITEPRESS, 2014, 119-131. (Nominated for Best Paper Award)
@@ -82,7 +96,7 @@ Marc Bender, Karen Laurin, Mark Lawford, Jeff Ong, Steven Postma, Vera Pantelic,
 For more information on the tool and how it can be used in a model-based development with Simulink, please refer to the following papers:
 
 \vspace{1em}
-Vera Pantelic, Steven Postma, Mark Lawford, Monika Jaskolka, Bennett Mackenzie, Alexandre Korobkine, Marc Bender, Jeff Ong, Gordon Marks, Alan Wassyng, \href{https://link.springer.com/article/10.1007/s10009-017-0450-9}{``Software engineering practices and Simulink: bridging the gap,"} \textit{International Journal on Software Tools for Technology Transfer (STTT)}, 2017, 1-23.
+Vera Pantelic, Steven Postma, Mark Lawford, Monika Jaskolka, Bennett Mackenzie, Alexandre Korobkine, Marc Bender, Jeff Ong, Gordon Marks, Alan Wassyng, \href{https://link.springer.com/article/10.1007/s10009-017-0450-9}{``Software engineering practices and Simulink: bridging the gap,"} \textit{International Journal on Software Tools for Technology Transfer (STTT)}, 2017, 95--117.
 
 \vspace{1em}
 Vera Pantelic, Steven Postma, Mark Lawford, Alexandre Korobkine, Bennett Mackenzie, Jeff Ong, and Marc Bender, \href{http://www.cas.mcmaster.ca/~lawford/papers/MODELSWARD2015.pdf}{``A Toolset for Simulink: Improving Software Engineering Practices in Development with Simulink,"}\textit{Proceedings of 3rd International Conference on Model-Driven Engineering and Software Development (MODELSWARD 2015)}, SCITEPRESS, 2015, 50--61.
@@ -112,6 +126,7 @@ This section describes what must be done to setup the tool, as well as how to us
 		\item \textit{Note:} If running the command ``\cmd{which StrongSignature}'' indicates that the script is not found, then the tool needs to be added to the \mpath.
 		For information on adding files to the \mpath, please see the \href{https://www.mathworks.com/help/matlab/matlab_env/add-remove-or-reorder-folders-on-the-search-path.html}{MathWorks documentation}.
 	\end{itemize}
+	\item Ensure the Simulink-Utility folder is on your \mpath. This is a dependency for the tool to work correctly.
 	\item Ensure your model is open (or loaded, for command line use) and unlocked.
 \end{enumerate}
 
