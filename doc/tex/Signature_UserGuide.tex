@@ -13,7 +13,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Tool-Specific Macros
 %%%%%%%%%%%%%%%%%%%%%%%%%
-\input{../../common/macros}
+\input{macros}
 
 \newcommand{\ToolName}{Signature\@\xspace}
 
@@ -54,7 +54,7 @@
 
 \begin{figure}
 	\centering
-	\includegraphics[]{../../common/McSCert_Logo.pdf} \\
+	\includegraphics[]{../figs/McSCert_Logo.pdf} \\
 	McMaster Centre for Software Certification (McSCert)
 \end{figure}
 
@@ -82,7 +82,7 @@ Marc Bender, Karen Laurin, Mark Lawford, Jeff Ong, Steven Postma, Vera Pantelic,
 For more information on the tool and how it can be used in a model-based development with Simulink, please refer to the following papers:
 
 \vspace{1em}
-Vera Pantelic, Steven Postma, Mark Lawford, Monika Jaskolka, Bennett Mackenzie, Alexandre Korobkine, Marc Bender, Jeff Ong, Gordon Marks, Alan Wassyng, \href{https://link.springer.com/article/10.1007/s10009-017-0450-9}{``Software engineering practices and Simulink: bridging the gap,"} \textit{International Journal on Software Tools for Technology Transfer (STTT)}, 2017, 1-23.
+Vera Pantelic, Steven Postma, Mark Lawford, Monika Jaskolka, Bennett Mackenzie, Alexandre Korobkine, Marc Bender, Jeff Ong, Gordon Marks, Alan Wassyng, \href{https://link.springer.com/article/10.1007/s10009-017-0450-9}{``Software engineering practices and Simulink: bridging the gap,"} \textit{International Journal on Software Tools for Technology Transfer (STTT)}, 2017, 95--117.
 
 \vspace{1em}
 Vera Pantelic, Steven Postma, Mark Lawford, Alexandre Korobkine, Bennett Mackenzie, Jeff Ong, and Marc Bender, \href{http://www.cas.mcmaster.ca/~lawford/papers/MODELSWARD2015.pdf}{``A Toolset for Simulink: Improving Software Engineering Practices in Development with Simulink,"}\textit{Proceedings of 3rd International Conference on Model-Driven Engineering and Software Development (MODELSWARD 2015)}, SCITEPRESS, 2015, 50--61.
@@ -112,6 +112,7 @@ This section describes what must be done to setup the tool, as well as how to us
 		\item \textit{Note:} If running the command ``\cmd{which StrongSignature}'' indicates that the script is not found, then the tool needs to be added to the \mpath.
 		For information on adding files to the \mpath, please see the \href{https://www.mathworks.com/help/matlab/matlab_env/add-remove-or-reorder-folders-on-the-search-path.html}{MathWorks documentation}.
 	\end{itemize}
+	\item Ensure the Simulink-Utility folder is on your \mpath. This is a dependency for the tool to work correctly.
 	\item Ensure your model is open (or loaded, for command line use) and unlocked.
 \end{enumerate}
 
